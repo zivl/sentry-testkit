@@ -57,3 +57,17 @@ typings/
 # dotenv environment variables file
 .env
 
+#intelliJ
+.idea
+*.iml
+target
+
+# Sublime Text
+*.sublime-*
+
+dist/
+.eslintcache
+.vscode/
+
+# Mac's .DS_Store
+.DS_Store

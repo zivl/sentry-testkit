@@ -1,0 +1,36 @@
+{
+  "name": "raven-testkit",
+  "version": "1.0.0",
+  "description": "Raven test kit module to enable reports to sentry in tests without really sending the report",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel index.js --out-dir dist",
+    "test": "npm run-script build && mocha test/**/*.test.js --reporter mocha-env-reporter",
+    "release": "wnpm-release --no-shrinkwrap",
+    "prepublish": "npm run-script build"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix/raven-testkit.git"
+  },
+  "keywords": [
+    "raven"
+  ],
+  "author": "Ziv Levy (zivl@wix.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wix/raven-testkit/issues"
+  },
+  "homepage": "https://github.com/wix/raven-testkit#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "mocha-env-reporter": "^3.0.0",
+    "raven-js": "^3.18.1"
+  }
+}

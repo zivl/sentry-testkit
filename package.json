@@ -31,6 +31,7 @@
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
     "mocha-env-reporter": "^3.0.0",
-    "raven-js": "^3.18.1"
+    "raven-js": "^3.18.1",
+    "wnpm-ci": "*"
   }
 }

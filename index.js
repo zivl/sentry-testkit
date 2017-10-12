@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = (Raven) => {
+module.exports = (Raven, callback = () => true) => {
     let reports = []
 
     Raven.setTransport(({data, onSuccess /*, url, auth, onError*/}) => {
@@ -10,7 +10,7 @@ module.exports = (Raven) => {
         }
     })
 
-    Raven.setShouldSendCallback(() => true)
+    Raven.setShouldSendCallback(callback)
 
     return {
         reports: () => reports,

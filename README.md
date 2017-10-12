@@ -16,20 +16,27 @@ npm install raven-testkit --save-dev
 ### Instantiation
 ```javascript
 // CommonJS 
-const testKitFactory = require('raven-testkit')
+const testKitInitializer = require('raven-testkit')
 
 // ES6 Modules
-import testKitFactory from 'raven-testkit'
+import testKitInitializer from 'raven-testkit'
 ```
 ### Using in tests
 ```javascript
-const testKit = testKitFactory(Raven)
+const testKit = testKitInitializer(Raven)
 
-/* any scenario that should call Raven.catchException(...) 
-*/
+// any scenario that should call Raven.catchException(...)
 
-        expect(testKit.reports()).to.have.lengthOf(1)
-const report = testKit.reports()[0]        expect(report).to.have.property('release').to.equal('test')
+expect(testKit.reports()).to.have.lengthOf(1)
+const report = testKit.reports()[0]
+expect(report).to.have.property('release').to.equal('test')
+```
+#### Pass your own `shouldSendCallback` logic
+```javascript
+const shouldSendCallback = data => {
+    return /* your own logic */
+}
+const testKit = testKitInitializer(Raven, shouldSendCallback)
 ```
 
 You may see more example usage in the testing section of this repository as well
@@ -42,4 +49,6 @@ You may refer to [Sentry Docs](https://docs.sentry.io/clients/) for further expl
 **reset**<br>
 Resets and clears the current test-kit instance logs
 
-
+## Gotcha(s)
+* In case you have set the `shouldSendCallback` hook in your `Raven` configuration, pay attention to call `testKitInitializer(Raven)` function **after** your code has finished configuring Raven. It is because we call `Raven.setShouldSendCallback` to ensure proper functionality of `Raven` lifecycle.<br>
+See documentation above to pass your own `shouldSendCallback` to `raven-testkit`

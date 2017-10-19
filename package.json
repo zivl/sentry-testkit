@@ -1,6 +1,6 @@
 {
   "name": "raven-testkit",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Raven test kit module to enable reports to sentry in tests without really sending the report",
   "main": "dist/index.js",
   "scripts": {

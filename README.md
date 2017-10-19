@@ -46,6 +46,12 @@ You may see more example usage in the testing section of this repository as well
 returns `Array`, where each member of the array consists of `Raven`'s *data* object<br>
 You may refer to [Sentry Docs](https://docs.sentry.io/clients/) for further explanation and details
 
+**extractException(report:Object)**<br>
+Extracts the `exception` out of a given `report` object
+
+**getExceptionAt(index:Number)**<br>
+Extracts the `exception` out of a `report` object at a given index
+
 **reset**<br>
 Resets and clears the current test-kit instance logs
 

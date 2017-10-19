@@ -1,5 +1,7 @@
 'use strict'
 
+const getException = report => report.exception.values[0]
+
 module.exports = (Raven, callback = () => true) => {
     let reports = []
 
@@ -14,6 +16,8 @@ module.exports = (Raven, callback = () => true) => {
 
     return {
         reports: () => reports,
-        reset: () => reports = []
+        reset: () => reports = [],
+        extractException: report => getException(report),
+        getExceptionAt: index => getException(reports[index])
     }
 }

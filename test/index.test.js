@@ -30,6 +30,23 @@ describe('raven test-kit test suite', function() {
         })
     })
 
+    it('should extract the exception out of the report', function() {
+        const testKit = testKitInitializer(Raven)
+        Raven.captureException(new Error('testing exception extraction'))
+        const report = testKit.reports()[0]
+        const {type, value} = testKit.extractException(report)
+        expect(type).to.equals('Error')
+        expect(value).to.equals('testing exception extraction')
+    })
+
+    it('should extract the exception out of the report at specific index', function() {
+        const testKit = testKitInitializer(Raven)
+        Raven.captureException(new Error('testing get exception at index 0'))
+        Raven.captureException(new Error('testing get exception at index 1'))
+        const {value} = testKit.getExceptionAt(1)
+        expect(value).to.equals('testing get exception at index 1')
+    })
+
     it('should reset and empty the reports log', function() {
         const testKit = testKitInitializer(Raven)
         Raven.captureException(new Error('raven test kit is awesome!'))

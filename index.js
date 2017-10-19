@@ -18,6 +18,10 @@ module.exports = (Raven, callback = () => true) => {
         reports: () => reports,
         reset: () => reports = [],
         extractException: report => getException(report),
-        getExceptionAt: index => getException(reports[index])
+        getExceptionAt: index => getException(reports[index]),
+        findReport: e => reports.find(r => {
+            const err = getException(r)
+            return err.type === e.name && err.value === e.message
+        })
     }
 }

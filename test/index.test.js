@@ -47,6 +47,21 @@ describe('raven test-kit test suite', function() {
         expect(value).to.equals('testing get exception at index 1')
     })
 
+    it('should find the report with a specific error', function() {
+        const testKit = testKitInitializer(Raven)
+        const err = new Error('error to look for')
+        Raven.captureException(err)
+        const report = testKit.findReport(err)
+        expect(report).to.exist
+    })
+
+    it('should not find the report with a specific error', function() {
+        const testKit = testKitInitializer(Raven)
+        Raven.captureException(new Error('simple error'))
+        const report = testKit.findReport(new Error('error to look for'))
+        expect(report).to.be.undefined
+    })
+
     it('should reset and empty the reports log', function() {
         const testKit = testKitInitializer(Raven)
         Raven.captureException(new Error('raven test kit is awesome!'))

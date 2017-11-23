@@ -70,14 +70,17 @@ describe('raven test-kit test suite', function() {
         expect(testKit.reports()).to.be.empty
     })
 
-    it('should act according to a given \'shouldSendCallback\' ', function() {
-        let shouldIt = Math.random() * 100 <= 50
-        const shouldSendCallback = data => shouldIt
+    it('should not report if \'shouldSendCallback\' returns false ', function() {
+        const shouldSendCallback = data => false
         const testKit = testKitInitializer(Raven, shouldSendCallback)
         Raven.captureException(new Error('raven test kit is awesome!'))
-        shouldIt ?
-            expect(testKit.reports()).to.have.lengthOf(1)
-            : expect(testKit.reports()).to.have.lengthOf(0) 
-        
+        expect(testKit.reports()).to.have.lengthOf(0)        
+    })
+
+    it('should report if \'shouldSendCallback\' returns true', function() {
+        const shouldSendCallback = data => true
+        const testKit = testKitInitializer(Raven, shouldSendCallback)
+        Raven.captureException(new Error('raven test kit is awesome!'))
+        expect(testKit.reports()).to.have.lengthOf(1)
     })
 })

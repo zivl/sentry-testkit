@@ -71,3 +71,6 @@ dist/
 
 # Mac's .DS_Store
 .DS_Store
+
+# other lock files
+package-lock.json

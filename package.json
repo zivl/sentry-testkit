@@ -21,7 +21,10 @@
     "testkit",
     "test kit",
     "raven test kit",
-    "raven test"
+    "raven test",
+    "sentry",
+    "sentry.io",
+    "sentry test kit"
   ],
   "author": "Ziv Levy (zivl@wix.com)",
   "license": "MIT",
@@ -33,6 +36,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "chai": "^4.1.2",
+    "jsdoc-to-markdown": "^3.0.4",
     "mocha": "^4.0.1",
     "mocha-env-reporter": "^3.0.0",
     "raven-js": "^3.18.1",

@@ -1,4 +1,4 @@
-# raven-testkit
+# raven-testkit ![logo](logo/raven-testkit-logo.png)
 
 [![npm version](https://badge.fury.io/js/raven-testkit.svg)](https://badge.fury.io/js/raven-testkit)
 
@@ -6,7 +6,7 @@ Raven is a JavaScript SDK published by [Sentry.io](https://docs.sentry.io/client
 However, when building tests for your application, you want to assert that the right flow-tracking or error is being sent to *Sentry*, **but** without really sending it to the *Sentry* system. This way you won't swamp it with false reports during test running and other CI operations.
 
 ## Raven Test Kit - to the rescue
-Raven test kit enables Raven to work natively in your application, but it overrides the default Raven transport mechanism so the report is not really sent but rather logged locally. In this way, the logged reports can be fetched later for verification usage or other uses you may have in your testing environment.
+Raven test kit enables Raven to work natively in your application, but it overrides the default Raven transport mechanism so the report is not really sent but rather logged locally. In this way, the logged reports can be fetched later for usage verification or other uses you may have in your testing environment.
 
 ## Usage
 ### Installation
@@ -15,7 +15,7 @@ npm install raven-testkit --save-dev
 ```
 ### Instantiation
 ```javascript
-// CommonJS 
+// CommonJS
 const testKitInitializer = require('raven-testkit')
 
 // ES6 Modules
@@ -47,23 +47,23 @@ You may see more example usage in the testing section of this repository as well
 ### reports() : <code>Array</code>
 Get all existing reports.
 
-**Kind**: instance function  
-**Returns**: <code>Array</code> - where each member of the array consists of `Raven`'s *data* object.  
-**See**: You may refer to the [Sentry Docs](https://docs.sentry.io/clients/) for further explanation and details.  
+**Kind**: instance function
+**Returns**: <code>Array</code> - where each member of the array consists of `Raven`'s *data* object.
+**See**: You may refer to the [Sentry Docs](https://docs.sentry.io/clients/) for further explanation and details.
 <a name="reset"></a>
 
 ### reset() : <code>Array</code>
 Reset the teskit state and clear all existing reports.
 
-**Kind**: instance function  
-**Returns**: <code>Array</code> - empty array.  
+**Kind**: instance function
+**Returns**: <code>Array</code> - empty array.
 <a name="extractException"></a>
 
 ### extractException(report) : <code>Object</code>
 Extract the exception object of a given report.
 
-**Kind**: instance function  
-**Returns**: <code>Object</code> - the exception object as built by `Raven`  
+**Kind**: instance function
+**Returns**: <code>Object</code> - the exception object as built by `Raven`
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -74,8 +74,8 @@ Extract the exception object of a given report.
 ### getExceptionAt(index) : <code>Object</code>
 Extract the exception object of a report in a specific position.
 
-**Kind**: instance function  
-**Returns**: <code>Object</code> - the exception object as built by `Raven`  
+**Kind**: instance function
+**Returns**: <code>Object</code> - the exception object as built by `Raven`
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -86,9 +86,9 @@ Extract the exception object of a report in a specific position.
 ### findReport(error) : <code>Object</code> \| <code>undefind</code>
 Find a report by a given error.
 
-**Kind**: instance function  
-**Returns**: <code>Object</code> \| <code>undefind</code> - the report object if one found. `undefined` otherwise  
-**See**: Uses [Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)  
+**Kind**: instance function
+**Returns**: <code>Object</code> \| <code>undefind</code> - the report object if one found. `undefined` otherwise
+**See**: Uses [Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
 
 | Param | Type | Description |
 | --- | --- | --- |

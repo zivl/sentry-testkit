@@ -1,8 +1,7 @@
-
-<div style="text-align: center;">
-    <img src="logo/raven-testkit-logo.png">
-    <h1>Raven TestKit</h1>
-</div>
+<p align="center">
+    <img src="logo/raven-testkit-logo.png"><br>
+    <span size="28">Raven TestKit</span>
+</p>
 
 
 

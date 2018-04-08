@@ -1,4 +1,10 @@
-# raven-testkit ![logo](logo/raven-testkit-logo.png)
+
+<div style="text-align: center;">
+    <img src="logo/raven-testkit-logo.png">
+    <h1>Raven TestKit</h1>
+</div>
+
+
 
 [![npm version](https://badge.fury.io/js/raven-testkit.svg)](https://badge.fury.io/js/raven-testkit)
 

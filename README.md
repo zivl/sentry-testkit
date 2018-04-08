@@ -1,6 +1,6 @@
 <p align="center">
     <img src="logo/raven-testkit-logo.png"><br>
-    <span size="28">Raven TestKit</span>
+    <h1 align="center">Raven TestKit</h1>
 </p>
 
 

@@ -72,6 +72,8 @@ module.exports = (Raven, callback = () => true) => {
       reports.find(r => {
         const err = getException(r)
         return err.type === e.name && err.value === e.message
-      })
+      }),
+
+    isExist: e => findReport(e) !== undefined
   }
 }

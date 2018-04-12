@@ -41,5 +41,8 @@
     "mocha-env-reporter": "^3.0.0",
     "raven-js": "^3.18.1",
     "wnpm-ci": "*"
+  },
+  "peerDependencies": {
+    "raven-js": "^3.18.1"
   }
 }

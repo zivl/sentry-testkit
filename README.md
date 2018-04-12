@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="logo/raven-testkit-github.png">
+    <img width="70%" src="logo/raven-testkit-github.png">
 </p>
 
 

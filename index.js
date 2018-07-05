@@ -65,7 +65,7 @@ module.exports = (Raven, callback = () => true) => {
      *
      * @instance
      * @param {Error} error the error to look for in the reports
-     * @returns {Object | undefind} the report object if one found. `undefined` otherwise
+     * @returns {Object | undefined} the report object if one found. `undefined` otherwise
      * @see Uses [Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
      */
     findReport: e =>

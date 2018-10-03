@@ -7,7 +7,8 @@
     "build": "babel index.js --out-dir dist",
     "test": "npm run-script build && mocha test/**/*.test.js --reporter mocha-env-reporter",
     "release": "wnpm-release --no-shrinkwrap",
-    "prepublish": "npm run-script build"
+    "prepublish": "npm run-script build",
+    "docs": "jsdoc2md index.js"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

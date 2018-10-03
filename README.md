@@ -87,11 +87,11 @@ Extract the exception object of a report in a specific position.
 
 <a name="findReport"></a>
 
-### findReport(error) : <code>Object</code> \| <code>undefind</code>
+### findReport(error) : <code>Object</code> \| <code>undefined</code>
 Find a report by a given error.
 
 **Kind**: instance function
-**Returns**: <code>Object</code> \| <code>undefind</code> - the report object if one found. `undefined` otherwise
+**Returns**: <code>Object</code> \| <code>undefined</code> - the report object if one found. `undefined` otherwise
 **See**: Uses [Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
 
 | Param | Type | Description |

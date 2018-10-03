@@ -103,3 +103,4 @@ Find a report by a given error.
 ## Gotcha(s)
 * if you set the `shouldSendCallback` hook in your `Raven` configuration, make sure to call the `testKitInitializer(Raven)` function **after** your code has finished configuring Raven. You need to do this because we call `Raven.setShouldSendCallback` to ensure the proper functionality of the `Raven` lifecycle so you need to call the `testKitInitializer(Raven)` only after `Raven` is configured.<br>
 See the documentation above if you want to pass your own `shouldSendCallback` logic to `raven-testkit`.
+* Configure Raven to allow duplicates as otherwise the same dummy error will only be reported once. `Raven.config(dummyDsn, { allowDuplicates: true })` ([Documentation](https://docs.sentry.io/clients/javascript/config/?platform=javascript))

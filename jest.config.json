@@ -1,0 +1,11 @@
+{
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testRegex": "/test/.*\\.test.js$",
+    "reporters": [
+      "default"
+    ],
+    "testEnvironment": "node",
+    "resetMocks": true
+  }

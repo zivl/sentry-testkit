@@ -59,14 +59,12 @@ Get all existing reports.
 ### reset() : <code>Array</code>
 Reset the teskit state and clear all existing reports.
 
-**Kind**: instance function
 **Returns**: <code>Array</code> - empty array.
 <a name="extractException"></a>
 
 ### extractException(report) : <code>Object</code>
 Extract the exception object of a given report.
 
-**Kind**: instance function
 **Returns**: <code>Object</code> - the exception object as built by `Raven`
 
 | Param | Type | Description |
@@ -78,7 +76,6 @@ Extract the exception object of a given report.
 ### getExceptionAt(index) : <code>Object</code>
 Extract the exception object of a report in a specific position.
 
-**Kind**: instance function
 **Returns**: <code>Object</code> - the exception object as built by `Raven`
 
 | Param | Type | Description |
@@ -90,7 +87,6 @@ Extract the exception object of a report in a specific position.
 ### findReport(error) : <code>Object</code> \| <code>undefined</code>
 Find a report by a given error.
 
-**Kind**: instance function
 **Returns**: <code>Object</code> \| <code>undefined</code> - the report object if one found. `undefined` otherwise
 **See**: Uses [Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
 
@@ -98,7 +94,16 @@ Find a report by a given error.
 | --- | --- | --- |
 | error | <code>Error</code> | error to look for in the reports |
 
+<a name="isExist"></a>
 
+### isExist(error) : <code>Boolean</code>
+check whether a given error exist (i.e. has been reported)
+
+**Returns**: <code>Boolean</code> - `true` if the error exists. `false` otherwise
+
+| Param | Type | Description |
+| --- | --- | --- |
+| error | <code>Error</code> | the error to look for in the reports |
 
 ## Gotcha(s)
 * if you set the `shouldSendCallback` hook in your `Raven` configuration, make sure to call the `testKitInitializer(Raven)` function **after** your code has finished configuring Raven. You need to do this because we call `Raven.setShouldSendCallback` to ensure the proper functionality of the `Raven` lifecycle so you need to call the `testKitInitializer(Raven)` only after `Raven` is configured.<br>

@@ -74,6 +74,15 @@ module.exports = (Raven, callback = () => true) => {
         return err.type === e.name && err.value === e.message
       }),
 
+    /**
+     * @function isExist
+     * @description
+     * check whether a given error exist (i.e. has been reported)
+     *
+     * @instance
+     * @param {Error} error the error to look for in the reports
+     * @returns {Boolean} `true` if the error exists. `false` otherwise
+     */
     isExist: e => findReport(e) !== undefined
   }
 }

@@ -31,9 +31,9 @@ const testKit = testKitInitializer(Raven)
 
 // any scenario that should call Raven.catchException(...)
 
-expect(testKit.reports()).to.have.lengthOf(1)
+expect(testKit.reports()).toHaveLength(1)
 const report = testKit.reports()[0]
-expect(report).to.have.property('release').to.equal('test')
+expect(report).toHaveProperty('release', 'test')
 ```
 #### Pass your own `shouldSendCallback` logic
 ```javascript

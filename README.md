@@ -3,8 +3,10 @@
 </p>
 
 
-
 [![npm version](https://badge.fury.io/js/raven-testkit.svg)](https://badge.fury.io/js/raven-testkit)
+![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout)
+![Hackage-Deps](https://img.shields.io/hackage-deps/v/lens.svg)
+
 
 Raven is a JavaScript SDK published by [Sentry.io](https://docs.sentry.io/clients/) to enable software flow tracking and issues reporting to the *Sentry* system.<br>
 However, when building tests for your application, you want to assert that the right flow-tracking or error is being sent to *Sentry*, **but** without really sending it to the *Sentry* system. This way you won't swamp it with false reports during test running and other CI operations.

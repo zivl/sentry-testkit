@@ -43,7 +43,7 @@ expect(report).toHaveProperty(...)
 You may see more usage examples in the testing section of this repository as well.
 
 ## Test Kit API
-See full API description and documentation here:
+See full API description and documentation here: https://wix.github.io/sentry-testkit/
 
 ## Raven-Testkit
 The good old legacy `raven-testkit` documentation can be found [here](LEGACY_API.md). It it still there to serve `Raven` which is the old legacy SDK of *Sentry* for JavaScript/Node.js platforms

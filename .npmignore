@@ -1,3 +1,6 @@
 .idea
 .vscode
 test
+logo
+wallaby.js
+jest.config.json

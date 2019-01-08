@@ -4,10 +4,10 @@
   "description": "Sentry test kit module to enable reports to sentry in tests without really sending the report",
   "main": "dist/index.js",
   "scripts": {
+    "start": "docsify serve ./docs",
     "build": "babel index.js --out-dir dist",
-    "test": "npm run-script build && jest --config jest.config.json",
-    "prepublish": "npm run-script build",
-    "docs": "jsdoc2md index.js"
+    "test": "jest --config jest.config.json",
+    "prepublish": "npm run-script build"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
@@ -41,6 +41,7 @@
     "@sentry/node": "^4.4.2",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0",
+    "docsify-cli": "^4.3.0",
     "jest": "^23.6.0",
     "wait-for-expect": "^1.1.0"
   },

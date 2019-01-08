@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix/raven-testkit.git"
+    "url": "git+https://github.com/wix/sentry-testkit.git"
   },
   "keywords": [
     "raven",
@@ -29,17 +29,19 @@
   "author": "Ziv Levy (zivl@wix.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wix/raven-testkit/issues"
+    "url": "https://github.com/wix/sentry-testkit/issues"
   },
-  "homepage": "https://github.com/wix/raven-testkit#readme",
+  "homepage": "https://github.com/wix/sentry-testkit#readme",
   "devDependencies": {
+    "@sentry/browser": "^4.4.2",
+    "@sentry/node": "^4.4.2",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "jest": "^23.6.0",
-    "jsdoc-to-markdown": "^3.0.4",
-    "raven-js": "^3.18.1"
+    "wait-for-expect": "^1.1.0"
   },
   "peerDependencies": {
-    "raven-js": "^3.18.1"
+    "@sentry/browser": "^4.4.2",
+    "@sentry/node": "^4.4.2"
   }
 }

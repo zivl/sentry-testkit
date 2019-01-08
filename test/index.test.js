@@ -1,84 +1,110 @@
 
-const Raven = require('raven-js')
-const testKitInitializer = require('../dist/index.js')
+const BrowserSentry = require('@sentry/browser')
+const waitForExpect = require('wait-for-expect')
+const sentryTestkit = require('../index.js')
 
+const {testkit, sentryTransport} = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
 
-describe('raven test-kit test suite', function() {
+describe('sentry test-kit test suite', function() {
 
-    beforeAll(function() {
-        Raven.config(DUMMY_DSN, {release: 'test'})
+    beforeAll(() =>
+        BrowserSentry.init({
+            dsn: DUMMY_DSN,
+            release: 'test',
+            transport: sentryTransport,
+            beforeSend(event) {
+                event.extra = { os: 'mac-os' }
+                return event
+            }
+        })
+    )
+
+    beforeEach(() => testkit.reset())
+
+    test('should be properly initialized with empty reports', function() {
+        expect(testkit).toBeDefined()
+        expect(testkit.reports()).toHaveLength(0)
     })
 
-    it('should be properly initialized with empty reports', function() {
-        const testKit = testKitInitializer(Raven)
-        expect(testKit).toBeDefined()
-        expect(testKit.reports()).toHaveLength(0)
-    })
-
-    it('should report to test kit instead of sending http request', function() {
-        const testKit = testKitInitializer(Raven)
-        Raven.captureException(new Error('raven test kit is awesome!'), {extra: {os: 'mac-os'}})
-        expect(testKit.reports()).toHaveLength(1)
-        const report = testKit.reports()[0]
-        expect(report).toHaveProperty('release', 'test')
-        expect(report.extra).toMatchObject({ os: 'mac-os' })
-        expect(report.exception).toMatchObject({
-            values: [{type:'Error', value: 'raven test kit is awesome!'}]
+    test('should report to test kit instead of sending http request', async function() {
+        BrowserSentry.captureException(new Error('sentry test kit is awesome!'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        expect(testkit.reports()[0].exception).toMatchObject({
+            values: [{type:'Error', value: 'sentry test kit is awesome!'}]
         })
     })
 
-    it('should extract the exception out of the report', function() {
-        const testKit = testKitInitializer(Raven)
-        Raven.captureException(new Error('testing exception extraction'))
-        const report = testKit.reports()[0]
-        const {type, value} = testKit.extractException(report)
+    test('should have release data on the report as given in Sentry.init', async function() {
+        BrowserSentry.captureException(new Error('sentry test kit is awesome!'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        const report = testkit.reports()[0]
+        expect(report).toHaveProperty('release', 'test')
+    })
+
+    test('should not harm Sentry event\'s reporting life-cycle - return eventId', async function() {
+        const eventId = BrowserSentry.captureException(new Error('sentry test kit is awesome!'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        expect(eventId).toEqual(expect.anything())
+    })
+
+    test('should not harm Sentry event\'s reporting life-cycle - call beforeSend hook with extra data', async function() {
+        BrowserSentry.captureException(new Error('raven test kit is awesome!'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        const report = testkit.reports()[0]
+        expect(report.extra).toMatchObject({ os: 'mac-os' })
+    })
+
+    test('should extract the exception out of the report', async function() {
+        BrowserSentry.captureException(new Error('testing exception extraction'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        const report = testkit.reports()[0]
+        const {type, value} = testkit.extractException(report)
         expect(type).toEqual('Error')
         expect(value).toEqual('testing exception extraction')
     })
 
-    it('should extract the exception out of the report at specific index', function() {
-        const testKit = testKitInitializer(Raven)
-        Raven.captureException(new Error('testing get exception at index 0'))
-        Raven.captureException(new Error('testing get exception at index 1'))
-        const {value} = testKit.getExceptionAt(1)
+    test('should extract the exception out of the report at specific index', async function() {
+        BrowserSentry.captureException(new Error('testing get exception at index 0'))
+        BrowserSentry.captureException(new Error('testing get exception at index 1'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(2))
+        const {value} = testkit.getExceptionAt(1)
         expect(value).toEqual('testing get exception at index 1')
     })
 
-    it('should find the report with a specific error', function() {
-        const testKit = testKitInitializer(Raven)
+    test('should find the report with a specific error', async function() {
         const err = new Error('error to look for')
-        Raven.captureException(err)
-        const report = testKit.findReport(err)
+        BrowserSentry.captureException(err)
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        const report = testkit.findReport(err)
         expect(report).toBeDefined()
     })
 
-    it('should not find the report with a specific error', function() {
-        const testKit = testKitInitializer(Raven)
-        Raven.captureException(new Error('simple error'))
-        const report = testKit.findReport(new Error('error to look for'))
+    test('should not find the report with a specific error', async function() {
+        BrowserSentry.captureException(new Error('simple error'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        const report = testkit.findReport(new Error('error to look for'))
         expect(report).toBeUndefined()
     })
 
-    it('should reset and empty the reports log', function() {
-        const testKit = testKitInitializer(Raven)
-        Raven.captureException(new Error('raven test kit is awesome!'))
-        expect(testKit.reports()).toHaveLength(1)
-        testKit.reset()
-        expect(testKit.reports()).toHaveLength(0)
+    test('should reset and empty the reports log', async function() {
+        BrowserSentry.captureException(new Error('raven test kit is awesome!'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        expect(testkit.reports()).toHaveLength(1)
+        testkit.reset()
+        expect(testkit.reports()).toHaveLength(0)
     })
 
-    it('should not report if \'shouldSendCallback\' returns false ', function() {
-        const shouldSendCallback = data => false
-        const testKit = testKitInitializer(Raven, shouldSendCallback)
-        Raven.captureException(new Error('raven test kit is awesome!'))
-        expect(testKit.reports()).toHaveLength(0)
+    test('isExist returns true if the report with a specific error has been reported', async function() {
+        BrowserSentry.captureException(new Error('simple error'))
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        expect(testkit.isExist(new Error('error to look for'))).toBe(false)
     })
 
-    it('should report if \'shouldSendCallback\' returns true', function() {
-        const shouldSendCallback = data => true
-        const testKit = testKitInitializer(Raven, shouldSendCallback)
-        Raven.captureException(new Error('raven test kit is awesome!'))
-        expect(testKit.reports()).toHaveLength(1)
+    test('isExist returns false if the report with a specific error has not been reported', async function() {
+        const err = new Error('error to look for')
+        BrowserSentry.captureException(err)
+        await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+        expect(testkit.isExist(err)).toBe(true)
     })
 })

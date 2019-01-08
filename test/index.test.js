@@ -49,7 +49,7 @@ describe('sentry test-kit test suite', function() {
     })
 
     test('should not harm Sentry event\'s reporting life-cycle - call beforeSend hook with extra data', async function() {
-        BrowserSentry.captureException(new Error('raven test kit is awesome!'))
+        BrowserSentry.captureException(new Error('Sentry test kit is awesome!'))
         await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
         const report = testkit.reports()[0]
         expect(report.extra).toMatchObject({ os: 'mac-os' })
@@ -88,7 +88,7 @@ describe('sentry test-kit test suite', function() {
     })
 
     test('should reset and empty the reports log', async function() {
-        BrowserSentry.captureException(new Error('raven test kit is awesome!'))
+        BrowserSentry.captureException(new Error('Sentry test kit is awesome!'))
         await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
         expect(testkit.reports()).toHaveLength(1)
         testkit.reset()

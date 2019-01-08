@@ -26,7 +26,7 @@ module.exports = () => {
        * Get all existing reports.
        *
        * @instance
-       * @returns {Array} where each member of the array consists of `Raven`'s *data* object.
+       * @returns {Array} where each member of the array consists of `Sentry`'s *data* object.
        * @see You may refer to the [Sentry Docs](https://docs.sentry.io/clients/) for further explanation and details.
        */
       reports() {
@@ -52,7 +52,7 @@ module.exports = () => {
        *
        * @instance
        * @param {Object} report the report object.
-       * @returns {Object} the exception object as built by `Raven`
+       * @returns {Object} the exception object as built by `Sentry`
        */
       extractException(report) {
         return getException(report);
@@ -65,7 +65,7 @@ module.exports = () => {
        *
        * @instance
        * @param {number} index the index position of the report
-       * @returns {Object} the exception object as built by `Raven`
+       * @returns {Object} the exception object as built by `Sentry`
        */
       getExceptionAt(index) {
         return getException(reports[index]);

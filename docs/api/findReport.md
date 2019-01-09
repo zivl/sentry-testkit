@@ -10,3 +10,15 @@ Finds a report by a given error.
 **See**: Uses [Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
 
 **See**: You may refer to the original definition of [<code>SentryEvent</code>](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/index.ts) for further explanation and details.
+
+### Example
+```javascript
+test('findReport example', async function() {
+    const err = new Error('error to look for')
+
+    // Some faulty scenario that will report err
+
+    const report = testkit.findReport(err)
+    expect(report).toBeDefined()
+})
+```

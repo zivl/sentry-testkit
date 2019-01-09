@@ -7,3 +7,14 @@ Extracts the exception object of a report in a specific position.
 **Returns**: <code>SentryEvent</code> - the exception object as built by *Sentry*.
 
 **See**: You may refer to the original definition of [<code>SentryEvent</code>](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/index.ts) for further explanation and details.
+
+### Example
+```javascript
+test('getExceptionAt example', async function() {
+    Sentry.captureException(new Error('testing get exception at index 0'))
+    Sentry.captureException(new Error('testing get exception at index 1'))
+    await waitForExpect(() => expect(testkit.reports()).toHaveLength(2))
+    const { value } = testkit.getExceptionAt(1)
+    expect(value).toEqual('testing get exception at index 1')
+})
+```

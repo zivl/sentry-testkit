@@ -24,6 +24,20 @@ const report = testKit.reports()[0]
 expect(report).toHaveProperty(...)
 ```
 
+### Reset between tests
+As you might run more than one test with *Sentry* and *Sentry-Testkit*, you might want to use the `reset` function in between tests.
+Usually, your testing framework will have a hook for that kind of action. In the following example, We're using [Jest](https://jestjs.io/docs/en/api.html)'s hooks: `beforeEach`, `beforeAll`
+```javascript
+beforeEach(function(){
+    testkit.reset()
+})
+```
+```javascript
+beforeAll(function(){
+    testkit.reset()
+})
+```
+
 You may see more usage examples in the [testing section](https://github.com/wix/sentry-testkit/tree/master/test) of `sentry-testkit` repository as well
 
 ## Caveats

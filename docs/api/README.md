@@ -1,6 +1,5 @@
 
-Sentry testkit API consists of a very simple and strait-forward, using the following functions:
-
+Sentry testkit consists of a very simple and strait-forward API using the following functions:
 * [extractException](/api/extractException.md)
 * [findReport](/api/findReport.md)
 * [getExceptionAt](/api/getExceptionAt.md)

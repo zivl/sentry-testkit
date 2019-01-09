@@ -14,6 +14,7 @@ However, when building tests for your application, you want to assert that the r
 ## Sentry Testkit - to the rescue
 *Sentry Testkit* enables Sentry to work natively in your application, and by overriding the default Sentry transport mechanism, the report is not really sent but rather logged locally into memory. In this way, the logged reports can be fetched later for your own usage, verification, or any other use you may have in your local developing/testing environment.
 
+
 ## Usage
 ### Installation
 ```
@@ -44,6 +45,10 @@ You may see more usage examples in the testing section of this repository as wel
 
 ## Test Kit API
 See full API description and documentation here: https://wix.github.io/sentry-testkit/
+
+## What About Nodejs?
+**Of Course!**
+`sentry-testkit` have full support in both `@sentry/browser` and `@sentry/node` since they have the same API and lifecycle under the hood.
 
 ## Raven-Testkit
 The good old legacy `raven-testkit` documentation can be found [here](LEGACY_API.md). It it still there to serve `Raven` which is the old legacy SDK of *Sentry* for JavaScript/Node.js platforms

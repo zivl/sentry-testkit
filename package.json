@@ -44,9 +44,5 @@
     "docsify-cli": "^4.3.0",
     "jest": "^23.6.0",
     "wait-for-expect": "^1.1.0"
-  },
-  "peerDependencies": {
-    "@sentry/browser": "^4.4.2",
-    "@sentry/node": "^4.4.2"
   }
 }

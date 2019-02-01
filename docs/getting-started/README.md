@@ -17,11 +17,29 @@ Sentry.init({
     //... other configurations
 })
 
-// then run any scenario that eventually calls Sentry.catchException(...)
+// then run any scenario that eventually calls Sentry.captureException(...)
 
 expect(testKit.reports()).toHaveLength(1)
 const report = testKit.reports()[0]
 expect(report).toHaveProperty(...)
+```
+
+### Using with puppeteer
+```javascript
+const sentryTestkit = require('sentry-testkit')
+
+const {testkit} = sentryTestkit()
+
+testkit.puppeteer.startListening(page);
+
+// Run any scenario that will call Sentry.captureException(...), for example:
+await page.addScriptTag({ content: `throw new Error('An error');` });
+
+expect(testKit.reports()).toHaveLength(1)
+const report = testKit.reports()[0]
+expect(report).toHaveProperty(...)
+
+testkit.puppeteer.stoptListening(page);
 ```
 
 ### Reset between tests

@@ -6,6 +6,11 @@ function getException(report) {
 
 module.exports = () => {
   let reports = [];
+  const puppeteerHandler = request => {
+    if (/https:\/\/sentry\.io\/api\/[0-9]*\/store/.test(request.url())) {
+      reports.push(JSON.parse(request.postData()));
+    }
+  };
   return {
     sentryTransport: function(options) {
       return {
@@ -20,6 +25,16 @@ module.exports = () => {
       };
     },
     testkit: {
+      puppeteer: {
+        startListening: page => {
+          page.on('request', puppeteerHandler);
+        },
+
+        stopListening: page => {
+          page.removeListener('request', puppeteerHandler);
+        },
+      },
+
       reports() {
         return reports;
       },

@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="sentry-teskit" src="./docs/logo/Sentry_github.svg">
+    <img alt="sentry-teskit" src="./docs/logo/Sentry_github.svg" height="132">
 </p>
 
 

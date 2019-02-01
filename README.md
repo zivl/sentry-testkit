@@ -1,5 +1,5 @@
 <p align="center">
-    <h1>Sentry Testkit</h1>
+    <img alt="sentry-teskit" src="./docs/logo/Sentry_github.svg">
 </p>
 
 

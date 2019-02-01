@@ -1,4 +1,4 @@
-* [About](/)
+* [](/)
 * [Getting Started](/getting-started/)
 * [Testkit API](/api/)
     * [extractException](/api/extractException.md)

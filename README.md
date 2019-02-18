@@ -41,6 +41,24 @@ const report = testKit.reports()[0]
 expect(report).toHaveProperty(...)
 ```
 
+## Yes! We Love [Puppeteer](https://pptr.dev/)
+```javascript
+const sentryTestkit = require('sentry-testkit')
+
+const {testkit} = sentryTestkit()
+
+testkit.puppeteer.startListening(page);
+
+// Run any scenario that will call Sentry.captureException(...), for example:
+await page.addScriptTag({ content: `throw new Error('An error');` });
+
+expect(testKit.reports()).toHaveLength(1)
+const report = testKit.reports()[0]
+expect(report).toHaveProperty(...)
+
+testkit.puppeteer.stopListening(page);
+```
+
 You may see more usage examples in the testing section of this repository as well.
 
 ## Test Kit API

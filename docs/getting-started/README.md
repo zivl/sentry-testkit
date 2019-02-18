@@ -24,7 +24,7 @@ const report = testKit.reports()[0]
 expect(report).toHaveProperty(...)
 ```
 
-### Using with puppeteer
+### Using with [Puppeteer](https://pptr.dev/)
 ```javascript
 const sentryTestkit = require('sentry-testkit')
 

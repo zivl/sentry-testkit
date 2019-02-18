@@ -39,7 +39,7 @@ expect(testKit.reports()).toHaveLength(1)
 const report = testKit.reports()[0]
 expect(report).toHaveProperty(...)
 
-testkit.puppeteer.stoptListening(page);
+testkit.puppeteer.stopListening(page);
 ```
 
 ### Reset between tests

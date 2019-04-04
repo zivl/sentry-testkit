@@ -21,7 +21,14 @@ module.exports = () => {
             status: 'success',
             event: report
           });
-        }
+        },
+        sendEvent: function(report) {
+          reports.push(report);
+          return Promise.resolve({
+            status: 'success',
+            event: report
+          });
+        },
       };
     },
     testkit: {

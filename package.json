@@ -1,6 +1,6 @@
 {
   "name": "sentry-testkit",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Sentry test kit module to enable reports to sentry in tests without really sending the report",
   "main": "dist/index.js",
   "scripts": {
@@ -37,8 +37,8 @@
   },
   "homepage": "https://github.com/wix/sentry-testkit#readme",
   "devDependencies": {
-    "@sentry/browser": "^4.4.2",
-    "@sentry/node": "^4.4.2",
+    "@sentry/browser": "^5.0.3",
+    "@sentry/node": "^5.0.3",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "docsify-cli": "^4.3.0",

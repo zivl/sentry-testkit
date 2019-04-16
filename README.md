@@ -26,10 +26,11 @@ npm install sentry-testkit --save-dev
 const sentryTestkit = require('sentry-testkit')
 
 const {testkit, sentryTransport} = sentryTestkit()
+const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001';
 
 // initialize your Sentry instance with sentryTransport
 Sentry.init({
-    dsn: 'some_dummy_dsn',
+    dsn: DUMMY_DSN,
     transport: sentryTransport,
     //... other configurations
 })

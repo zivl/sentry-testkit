@@ -26,18 +26,19 @@ npm install sentry-testkit --save-dev
 const sentryTestkit = require('sentry-testkit')
 
 const {testkit, sentryTransport} = sentryTestkit()
+const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001';
 
 // initialize your Sentry instance with sentryTransport
 Sentry.init({
-    dsn: 'some_dummy_dsn',
+    dsn: DUMMY_DSN,
     transport: sentryTransport,
     //... other configurations
 })
 
 // then run any scenario that should call Sentry.catchException(...)
 
-expect(testKit.reports()).toHaveLength(1)
-const report = testKit.reports()[0]
+expect(testkit.reports()).toHaveLength(1)
+const report = testkit.reports()[0]
 expect(report).toHaveProperty(...)
 ```
 

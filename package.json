@@ -1,6 +1,6 @@
 {
   "name": "sentry-testkit",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Sentry test kit module to enable reports to sentry in tests without really sending the report",
   "main": "dist/index.js",
   "types": "index.d.ts",

@@ -19,14 +19,14 @@ module.exports = () => {
           reports.push(report);
           return Promise.resolve({
             status: 'success',
-            event: report
+            event: report,
           });
         },
         sendEvent: function(report) {
           reports.push(report);
           return Promise.resolve({
             status: 'success',
-            event: report
+            event: report,
           });
         },
       };
@@ -67,7 +67,7 @@ module.exports = () => {
 
       isExist(e) {
         return this.findReport(e) !== undefined;
-      }
-    }
+      },
+    },
   };
 };

@@ -10,7 +10,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     Sentry.captureException(new Error('sentry test kit is awesome!'));
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1));
     expect(testkit.reports()[0].exception).toMatchObject({
-      values: [{ type: 'Error', value: 'sentry test kit is awesome!' }]
+      values: [{ type: 'Error', value: 'sentry test kit is awesome!' }],
     });
   });
 
@@ -22,7 +22,9 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
   });
 
   test("should not harm Sentry event's reporting life-cycle - return eventId", async function() {
-    const eventId = Sentry.captureException(new Error('sentry test kit is awesome!'));
+    const eventId = Sentry.captureException(
+      new Error('sentry test kit is awesome!')
+    );
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1));
     expect(eventId).toEqual(expect.anything());
   });
@@ -86,4 +88,4 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1));
     expect(testkit.isExist(err)).toBe(true);
   });
-}
+};

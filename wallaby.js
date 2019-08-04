@@ -5,8 +5,8 @@ module.exports = function() {
     tests: ['test/**/*.test.js'],
 
     env: {
-      type: 'node'
+      type: 'node',
     },
-    testFramework: 'jest'
+    testFramework: 'jest',
   };
 };

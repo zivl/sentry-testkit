@@ -4,7 +4,7 @@ const { createCommonTests } = require('./commonTests');
 
 const { testkit, sentryTransport } = sentryTestkit();
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001';
-const Sentry = BrowserSentry
+const Sentry = BrowserSentry;
 describe('sentry test-kit test suite - @sentry/browser', function() {
   beforeAll(() =>
     Sentry.init({
@@ -14,7 +14,7 @@ describe('sentry test-kit test suite - @sentry/browser', function() {
       beforeSend(event) {
         event.extra = { os: 'mac-os' };
         return event;
-      }
+      },
     })
   );
 

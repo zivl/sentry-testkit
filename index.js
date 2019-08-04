@@ -13,22 +13,18 @@ module.exports = () => {
   }
   return {
     sentryTransport: function(options) {
+      const sendEvent = function(report) {
+        reports.push(report)
+        return Promise.resolve({
+          status: 'success',
+          event: report,
+        })
+      }
+
       return {
         // captureEvent(event: SentryEvent): Promise<SentryResponse>;
-        captureEvent: function(report) {
-          reports.push(report)
-          return Promise.resolve({
-            status: 'success',
-            event: report,
-          })
-        },
-        sendEvent: function(report) {
-          reports.push(report)
-          return Promise.resolve({
-            status: 'success',
-            event: report,
-          })
-        },
+        captureEvent: sendEvent, // support for v4 API
+        sendEvent, // support for v5 API
       }
     },
     testkit: {

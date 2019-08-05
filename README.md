@@ -42,6 +42,40 @@ const report = testkit.reports()[0]
 expect(report).toHaveProperty(...)
 ```
 
+## Network interception support
+Instead of modifying your application code, you can use network interception libraries in conjunction with the testkit.\
+Example with [nock](https://github.com/nock/nock):
+```javascript
+
+const nock = require('nock')
+const sentryTestkit = require('sentry-testkit')
+const { testkit, initNetworkInterceptor } = sentryTestkit()
+
+beforeAll(() => {
+    const myAppDSN = '<your DSN goes here>'
+    initNetworkInterceptor(myAppDSN, (baseUrl, handleRequestBody) => {
+      // This callback is where we init our interceptor.
+      // The interceptor should intercept requests from `baseUrl` and pass the
+      // request body (as json) to the `handleRequestBody` function.
+      nock(baseUrl)
+        .persist()
+        .post(/.*/)
+        .reply(200, (_, requestBody) => {
+          handleRequestBody(requestBody)
+        })
+    })
+})
+
+test('findReport example', async function() {
+    const err = new Error('error to look for')
+
+    // Some faulty scenario that will report err
+
+    const report = testkit.findReport(err)
+    expect(report).toBeDefined()
+})
+```
+
 ## Yes! We Love [Puppeteer](https://pptr.dev/)
 ```javascript
 const sentryTestkit = require('sentry-testkit')

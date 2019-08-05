@@ -1,5 +1,6 @@
 * [](/)
 * [Getting Started](/getting-started/)
+* [Network Interception Support](/api/network-interception.md)
 * [Testkit API](/api/)
     * Methods
         * [findReport](/api/findReport.md)

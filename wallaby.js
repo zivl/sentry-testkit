@@ -8,5 +8,5 @@ module.exports = function() {
       type: 'node',
     },
     testFramework: 'jest',
-  };
-};
+  }
+}

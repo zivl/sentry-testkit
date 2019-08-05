@@ -1,10 +1,10 @@
-const BrowserSentry = require('@sentry/browser');
-const sentryTestkit = require('../index.js');
-const { createCommonTests } = require('./commonTests');
+const BrowserSentry = require('@sentry/browser')
+const sentryTestkit = require('../index.js')
+const { createCommonTests } = require('./commonTests')
 
-const { testkit, sentryTransport } = sentryTestkit();
-const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001';
-const Sentry = BrowserSentry;
+const { testkit, sentryTransport } = sentryTestkit()
+const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
+const Sentry = BrowserSentry
 describe('sentry test-kit test suite - @sentry/browser', function() {
   beforeAll(() =>
     Sentry.init({
@@ -12,13 +12,13 @@ describe('sentry test-kit test suite - @sentry/browser', function() {
       release: 'test',
       transport: sentryTransport,
       beforeSend(event) {
-        event.extra = { os: 'mac-os' };
-        return event;
+        event.extra = { os: 'mac-os' }
+        return event
       },
     })
-  );
+  )
 
-  beforeEach(() => testkit.reset());
+  beforeEach(() => testkit.reset())
 
-  createCommonTests({ Sentry, testkit });
-});
+  createCommonTests({ Sentry, testkit })
+})

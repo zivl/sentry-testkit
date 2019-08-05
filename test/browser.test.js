@@ -1,5 +1,5 @@
 const BrowserSentry = require('@sentry/browser')
-const sentryTestkit = require('../index.js')
+const sentryTestkit = require('../src/index')
 const { createCommonTests } = require('./commonTests')
 
 const { testkit, sentryTransport } = sentryTestkit()

@@ -1,5 +1,5 @@
 const EventEmitter = require('events')
-const sentryTestkit = require('../index.js')
+const sentryTestkit = require('../src/index')
 const { testkit } = sentryTestkit()
 
 describe('Puppeteer testkit', () => {

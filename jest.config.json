@@ -7,5 +7,6 @@
       "default"
     ],
     "testEnvironment": "node",
-    "resetMocks": true
+    "resetMocks": true,
+    "transformIgnorePatterns": ["^.*\\.js$"]
   }

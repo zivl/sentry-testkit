@@ -47,10 +47,17 @@ module.exports = () => {
         })
       }
 
+      const close = function() {
+        return Promise.resolve(true);
+      }
+
       return {
         // captureEvent(event: SentryEvent): Promise<SentryResponse>;
         captureEvent: sendEvent, // support for v4 API
         sendEvent, // support for v5 API
+
+        // close(timeout?: number): Promise<boolean>;
+        close,
       }
     },
     initNetworkInterceptor: (dsn, cb) => {

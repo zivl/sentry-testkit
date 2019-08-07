@@ -1,4 +1,4 @@
-## findReport(error: Error) : SentryEvent | undefined
+## findReport(error: Error) : Report | undefined
 
 Finds a report by a given error.
 

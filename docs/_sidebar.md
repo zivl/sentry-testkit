@@ -10,4 +10,5 @@
         * [reset](/api/reset.md)
     * Types
         * [Report](/api/report.md)
+        * [ReportError](/api/reportError.md)
 * [Raven Testkit (LEGACY)](/raven/LEGACY_API.md)

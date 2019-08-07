@@ -5,13 +5,9 @@ Default: `[]`\
 An array of [`Breadcrumb`](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/breadcrumb.ts) objects
 
 
-#### `error` [object]
+#### `error` [[`ReportError`](/api/reportError.md)]
 Default: `undefined`\
-An error object with the following keys:
-
-`name`: `string`\
-`message`: `string`\
-`stacktrace`: [StackFrame[]](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/stackframe.ts)
+A [`ReportError`](/api/reportError.md) object
 
 The error will be defined when using `Sentry.captureException`.
 
@@ -39,6 +35,6 @@ The release string provided by `scope.setRelease`.
 Default: `undefined`\
 The user provided by `scope.setUser`.
 
-#### `originalReport` [[SentryEvent](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/index.ts)]
+#### `originalReport` [[SentryEvent](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/event.ts)]
 Default: `object`\
 Sentry's original report object.

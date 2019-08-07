@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "start": "docsify serve ./docs",
-    "build": "babel index.js --out-dir dist",
+    "build": "babel src --out-dir dist",
     "test": "jest --config jest.config.json",
     "prepublish": "npm run-script build"
   },
@@ -51,6 +51,7 @@
     "husky": "^3.0.2",
     "jest": "^23.6.0",
     "lint-staged": "^9.2.1",
+    "nock": "^10.0.6",
     "prettier": "^1.18.2",
     "wait-for-expect": "^1.1.0"
   },

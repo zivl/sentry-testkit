@@ -45,5 +45,6 @@ declare namespace sentryTestkit {
     sentryTransport: {
       new (options: TransportOptions): Transport;
     };
+    initNetworkInterceptor<T>(dsn: string, initCallback: (baseUrl: string, handleRequestBody: (requestBody: { [key: string]: any }) => void) => T): T
   }
 }

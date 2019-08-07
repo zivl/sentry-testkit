@@ -1,5 +1,7 @@
 'use strict'
 
+const { parseDsn } = require('./parseDsn')
+
 function getException(report) {
   return report.error
 }
@@ -50,6 +52,14 @@ module.exports = () => {
         captureEvent: sendEvent, // support for v4 API
         sendEvent, // support for v5 API
       }
+    },
+    initNetworkInterceptor: (dsn, cb) => {
+      const { protocol, host } = parseDsn(dsn)
+      const baseUrl = `${protocol}://${host}`
+      const handleRequestBody = requestBody =>
+        reports.push(transformReport(requestBody))
+
+      return cb(baseUrl, handleRequestBody)
     },
     testkit: {
       puppeteer: {

@@ -6,7 +6,7 @@ Extracts the exception object of a report in a specific position.
 
 **Returns**: <code>SentryEvent</code> - the exception object as built by *Sentry*.
 
-**See**: You may refer to the original definition of [<code>SentryEvent</code>](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/index.ts) for further explanation and details.
+**See**: You may refer to the definition of [<code>Report</code>](/api/report.md) for further explanation and details.
 
 ### Example
 ```javascript

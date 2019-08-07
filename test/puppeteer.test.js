@@ -24,8 +24,8 @@ describe('Puppeteer testkit', () => {
   test('should report to testkit', () => {
     page.emit('request', sentryCaptureRequest)
     expect(testkit.reports()).toHaveLength(1)
-    const { value } = testkit.getExceptionAt(0)
-    expect(value).toEqual(errorMessage)
+    const { message } = testkit.getExceptionAt(0)
+    expect(message).toEqual(errorMessage)
   })
 
   test('should stop listening after calling stopListening', () => {

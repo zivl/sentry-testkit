@@ -96,15 +96,6 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     expect(report.extra).toMatchObject({ os: 'mac-os' })
   })
 
-  test('should extract the exception out of the report', async function() {
-    Sentry.captureException(new Error('testing exception extraction'))
-    await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    const report = testkit.reports()[0]
-    const { name, message } = testkit.extractException(report)
-    expect(name).toEqual('Error')
-    expect(message).toEqual('testing exception extraction')
-  })
-
   test('should extract the exception out of the report at specific index', async function() {
     Sentry.captureException(new Error('testing get exception at index 0'))
     Sentry.captureException(new Error('testing get exception at index 1'))

@@ -70,10 +70,6 @@ module.exports = () => {
         reports = []
       },
 
-      extractException(report) {
-        return getException(report)
-      },
-
       getExceptionAt(index) {
         return getException(reports[index])
       },

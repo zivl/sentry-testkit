@@ -2,7 +2,6 @@
 * [Getting Started](/getting-started/)
 * [Testkit API](/api/)
     * Methods
-        * [extractException](/api/extractException.md)
         * [findReport](/api/findReport.md)
         * [getExceptionAt](/api/getExceptionAt.md)
         * [isExist](/api/isExist.md)

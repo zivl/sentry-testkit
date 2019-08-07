@@ -17,7 +17,6 @@ declare namespace sentryTestkit {
     };
     reports(): Event[];
     reset(): void;
-    extractException(report: Event): Exception;
     getExceptionAt(index: number): Exception;
     findReport(e: Error): Event;
     isExist(e: Error): boolean;

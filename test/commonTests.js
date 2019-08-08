@@ -139,4 +139,11 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     expect(testkit.isExist(err)).toBe(true)
   })
+
+  test('should allow flush be called', async function() {
+    const err = new Error('error to look for');
+    Sentry.captureException(err);
+    await waitForExpect(() => expect(testkit.reports()).toHaveLength(1));
+    expect(() => Sentry.flush()).not.toThrow();
+  });
 }

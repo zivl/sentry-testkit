@@ -12,5 +12,5 @@
         * [Report](/api/report.md)
         * [ReportError](/api/reportError.md)
 * Migration
-    * [v2 to v3](/migration/v2-v3.md)
+    * [Migrating 2.x to 3.x](/migration/v2-v3.md)
 * [Raven Testkit (LEGACY)](/raven/LEGACY_API.md)

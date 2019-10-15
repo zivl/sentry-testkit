@@ -21,7 +21,7 @@
 </head>
 <body>
   <div id="app"></div>
-  <script src="//unpkg.com/docsify-edit-on-github@1.0.1/index.js"></script>
+    <script src="//unpkg.com/docsify-edit-on-github"></script>
   <script>
     window.$docsify = {
       name: 'Sentry Testkit',
@@ -34,11 +34,15 @@
       ],
       search: 'auto',
       logo: './logo/sentry-testkit-logo.svg',
-      themeColor: '#f47b75'
+      themeColor: '#f47b75',
+      'flexible-alerts': {
+        style: 'callout'
+      }
     }
-  </script>
+    </script>
     <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
-    <script src="//unpkg.com/docsify-copy-code@2"></script>
+    <script src="//unpkg.com/docsify-plugin-flexible-alerts"></script>
+    <script src="//unpkg.com/docsify-copy-code"></script>
     <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
 </body>
 </html>

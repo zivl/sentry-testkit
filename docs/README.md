@@ -8,5 +8,5 @@ However, when building tests for your application, you want to assert that the r
 # Sentry Testkit - to the rescue!
 *Sentry Testkit* enables Sentry to work natively in your application, and by overriding the default Sentry transport mechanism, the report is not really sent but rather logged locally into memory. In this way, the logged reports can be fetched later for your own usage, verification, or any other use you may have in your local developing/testing environment.
 
-## Note
-This documentation is for the latest version of sentry-testkit. For v2, please visit [here](https://github.com/wix/sentry-testkit/tree/v2.x/docs/api)
+> [!NOTE]
+> This documentation is for the latest version of `sentry-testkit`. For v2, please visit [here](https://github.com/wix/sentry-testkit/tree/v2.x/docs/api)

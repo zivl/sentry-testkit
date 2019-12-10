@@ -1,6 +1,7 @@
 * [](/)
 * [Getting Started](/getting-started/)
 * [Network Interception Support](/api/network-interception.md)
+* [External Process Support](/api/external-process.md)
 * [Testkit API](/api/)
     * Methods
         * [findReport](/api/findReport.md)

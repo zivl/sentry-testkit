@@ -1,5 +1,8 @@
 'use strict'
 
+const express = require('express')
+const bodyParser = require('body-parser')
+const http = require('http')
 const { parseDsn } = require('./parseDsn')
 
 function getException(report) {
@@ -37,6 +40,61 @@ module.exports = () => {
       reports.push(transformReport(JSON.parse(request.postData())))
     }
   }
+
+  const createLocalServerApi = () => {
+    let runningServer = null
+    let localDsn = null
+
+    const start = userDsn => {
+      if (runningServer !== null) {
+        throw new Error('Local server is already running')
+      }
+
+      const { project } = parseDsn(userDsn)
+      const app = express()
+      app.use(bodyParser.json())
+      app.post(`/api/${project}/store/`, (req, res) => {
+        reports.push(transformReport(req.body))
+        res.sendStatus(200)
+      })
+      runningServer = http.createServer(app)
+
+      return new Promise(resolve => {
+        runningServer.listen(() => {
+          const port = runningServer.address().port
+          localDsn = `http://acacaeaccacacacabcaacdacdacadaca@localhost:${port}/${project}`
+          resolve()
+        })
+      })
+    }
+
+    const stop = () => {
+      if (runningServer === null) {
+        throw new Error('Local server is not running')
+      }
+
+      return new Promise((resolve, reject) => {
+        runningServer.close(error => (error ? reject(error) : resolve()))
+        runningServer = null
+        localDsn = null
+      })
+    }
+
+    const getDsn = () => {
+      if (runningServer === null) {
+        throw new Error('Local server is not running')
+      }
+
+      return localDsn
+    }
+
+    return {
+      start,
+      stop,
+      getDsn,
+    }
+  }
+
   return {
     sentryTransport: function(options) {
       const sendEvent = function(report) {
@@ -48,7 +106,7 @@ module.exports = () => {
       }
 
       const close = function() {
-        return Promise.resolve(true);
+        return Promise.resolve(true)
       }
 
       return {
@@ -68,6 +126,7 @@ module.exports = () => {
 
       return cb(baseUrl, handleRequestBody)
     },
+    localServer: createLocalServerApi(),
     testkit: {
       puppeteer: {
         startListening: page => {

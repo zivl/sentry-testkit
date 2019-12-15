@@ -40,11 +40,18 @@ declare namespace sentryTestkit {
     isExist(e: Error): boolean;
   }
 
+  export interface LocalServer {
+    start: (dsn: string) => Promise<void>;
+    stop: () => Promise<void>;
+    getDsn: () => string;
+  }
+
   export interface TestkitResult {
     testkit: Testkit;
     sentryTransport: {
       new (options: TransportOptions): Transport;
     };
-    initNetworkInterceptor<T>(dsn: string, initCallback: (baseUrl: string, handleRequestBody: (requestBody: { [key: string]: any }) => void) => T): T
+    initNetworkInterceptor<T>(dsn: string, initCallback: (baseUrl: string, handleRequestBody: (requestBody: { [key: string]: any }) => void) => T): T;
+    localServer: LocalServer
   }
 }

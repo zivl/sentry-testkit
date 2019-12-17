@@ -35,8 +35,15 @@ function transformReport(report) {
 
 module.exports = () => {
   let reports = []
-  const puppeteerHandler = request => {
-    if (/https:\/\/sentry\.io\/api\/[0-9]*\/store/.test(request.url())) {
+
+  let puppeteerHandler = null
+  const createPuppeteerHandler = baseUrl => request => {
+    const url = request.url()
+    if (!url.startsWith(baseUrl)) {
+      return
+    }
+    const path = url.substring(baseUrl.length)
+    if (/\/api\/[0-9]*\/store/.test(path)) {
       reports.push(transformReport(JSON.parse(request.postData())))
     }
   }
@@ -129,7 +136,8 @@ module.exports = () => {
     localServer: createLocalServerApi(),
     testkit: {
       puppeteer: {
-        startListening: page => {
+        startListening: (page, baseUrl = 'https://sentry.io') => {
+          puppeteerHandler = createPuppeteerHandler(baseUrl)
           page.on('request', puppeteerHandler)
         },
 

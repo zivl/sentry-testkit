@@ -42,6 +42,13 @@ expect(report).toHaveProperty(...)
 testkit.puppeteer.stopListening(page);
 ```
 
+#### Self-hosted Sentry
+
+`startListening` has an optional `baseUrl` as second parameter (it defaults to 'https://sentry.io'), so you can pass the URL of your server:
+```javascript
+testkit.puppeteer.startListening(page, 'https://my-self-hosted-sentry.com');
+```
+
 ### Reset between tests
 As you might run more than one test with *Sentry* and *Sentry-Testkit*, you might want to use the `reset` function in between tests.
 Usually, your testing framework will have a hook for that kind of action. In the following example, We're using [Jest](https://jestjs.io/docs/en/api.html)'s hooks: `beforeEach`, `beforeAll`

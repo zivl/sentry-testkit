@@ -30,7 +30,7 @@ declare namespace sentryTestkit {
 
   export interface Testkit {
     puppeteer: {
-      startListening(page: Page): void;
+      startListening(page: Page, baseUrl?: String): void;
       stopListening(page: Page): void;
     };
     reports(): Report[];

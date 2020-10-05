@@ -12,7 +12,7 @@
     "start": "docsify serve ./docs",
     "build": "babel src --out-dir dist",
     "test": "jest --config jest.config.json",
-    "prepublish": "npm run-script build"
+    "prepublish": "yarn build"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

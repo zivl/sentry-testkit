@@ -1,6 +1,5 @@
 language: node_js
-install:
-- npm ci
+cache: yarn
 deploy:
   provider: npm
   email: $NPM_USER

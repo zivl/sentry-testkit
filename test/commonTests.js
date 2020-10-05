@@ -9,11 +9,13 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
   })
 
   test('should return a breadcrumbs array', async function() {
-    const breadcrumb = { message: 'breadcrumb' }
+    const breadcrumb = { message: 'breadcrumb', timestamp: expect.anything() }
     Sentry.addBreadcrumb(breadcrumb)
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].breadcrumbs).toMatchObject([breadcrumb])
+    expect(testkit.reports()[0].breadcrumbs).toEqual(
+      expect.arrayContaining([breadcrumb])
+    )
   })
 
   test('should return report.message when using captureMessage', async function() {
@@ -141,9 +143,9 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
   })
 
   test('should allow flush be called', async function() {
-    const err = new Error('error to look for');
-    Sentry.captureException(err);
-    await waitForExpect(() => expect(testkit.reports()).toHaveLength(1));
-    expect(() => Sentry.flush()).not.toThrow();
-  });
+    const err = new Error('error to look for')
+    Sentry.captureException(err)
+    await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+    expect(() => Sentry.flush()).not.toThrow()
+  })
 }

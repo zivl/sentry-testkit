@@ -3,7 +3,8 @@
 </p>
 
 
-[![npm version](https://badge.fury.io/js/sentry-testkit.svg)](https://badge.fury.io/js/sentry-testkit)
+[![npm version](https://img.shields.io/npm/v/sentry-testkit.svg)](https://npmjs.org/package/sentry-testkit)
+[![npm downloads](https://img.shields.io/npm/dm/sentry-testkit.svg)](https://npmjs.org/package/sentry-testkit)
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout)
 ![Hackage-Deps](https://img.shields.io/hackage-deps/v/lens.svg)
 [![Build Status](https://travis-ci.org/wix/sentry-testkit.svg?branch=master)](https://travis-ci.org/wix/sentry-testkit)

@@ -6,7 +6,7 @@
 [![npm version](https://badge.fury.io/js/sentry-testkit.svg)](https://badge.fury.io/js/sentry-testkit)
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout)
 ![Hackage-Deps](https://img.shields.io/hackage-deps/v/lens.svg)
-[![Build Status](https://travis-ci.org/wix/sentry-testkit.svg?branch=master)](https://travis-ci.org/wix/sentry-testkit)
+[![Test](https://github.com/wix/sentry-testkit/workflows/Test/badge.svg)](https://github.com/wix/sentry-testkit/actions)
 
 Sentry is an open-source JavaScript SDK published by [Sentry](https://sentry.io/welcome/) to enable error tracking that helps developers monitor and fix crashes in real time.<br>
 However, when building tests for your application, you want to assert that the right flow-tracking or error is being sent to *Sentry*, **but** without really sending it to *Sentry* servers. This way you won't swamp Sentry with false reports during test running and other CI operations.

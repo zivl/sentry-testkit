@@ -44,6 +44,7 @@ Release process:
 * fetch all tags `git fetch --all --tags`;
 * generate changelog with `npm run release` - it will automatically
   * detect which semver number should be updated (depending on `conventionalcommits` format);
+  * update `package.json` and `package-lock.json` files with new version;
   * create new git `tag` with version;
   * commit the result to current branch.
 * initiate `git push --follow-tags origin master && npm publish` to push changes of master branch and initiate package publishing;

@@ -42,5 +42,8 @@ Release process:
 * merge all related PRs to master;
 * checkout fresh master;
 * fetch all tags `git fetch --all --tags`;
-* generate changelog with `npm run release` - it will automatically detect which semver number should be updated (depending on `conventionalcommits` format);
+* generate changelog with `npm run release` - it will automatically
+  * detect which semver number should be updated (depending on `conventionalcommits` format);
+  * create new git `tag` with version;
+  * commit the result to current branch.
 * initiate `git push --follow-tags origin master && npm publish` to push changes of master branch and initiate package publishing;

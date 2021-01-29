@@ -1,6 +1,6 @@
 {
   "name": "sentry-testkit",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "Sentry Testkit enables Sentry to work natively in your application while running tests. The report is not really sent but rather logged locally into memory. In this way, the logged reports can be fetched for your own verification or any other purpose in your local development environment.",
   "main": "dist/index.js",
   "types": "index.d.ts",

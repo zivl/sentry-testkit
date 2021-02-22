@@ -4,8 +4,9 @@
 npm install sentry-testkit --save-dev
 ```
 
-## Using in tests
+## Usage
 ```javascript
+// some.spec.js
 const sentryTestkit = require('sentry-testkit')
 
 const {testkit, sentryTransport} = sentryTestkit()
@@ -17,14 +18,34 @@ Sentry.init({
     //... other configurations
 })
 
-// then run any scenario that eventually calls Sentry.captureException(...)
-
-expect(testKit.reports()).toHaveLength(1)
-const report = testKit.reports()[0]
-expect(report).toHaveProperty(...)
+test('something', function () {
+  // run any scenario that eventually calls Sentry.captureException(...)
+  expect(testKit.reports()).toHaveLength(1)
+  const report = testKit.reports()[0]
+  expect(report).toHaveProperty(...)
+});
 ```
 
-### Using with [Puppeteer](https://pptr.dev/)
+### Working with []() [Jest](https://jestjs.io/en/)
+We've added a new option to integrate `sentry-testkit` with `jest`'s mocking mechanism. Detailed implementation can be seen [here](https://github.com/wix/sentry-testkit/blob/master/src/jestMock.js).
+
+At the moment it is available only to `@sentry/browser` package but we will expand to more packages as we should figure out how to do it right for all Sentry's client packages.
+
+If you're using `Jest` for testing, all you have to do in your `spec.js` file is to import the Jest mock.
+```javascript
+// some.spec.js
+import { testkit } from 'sentry-testkit/dist/jestMock';
+
+test('something', function () {
+    // click
+    // clack
+    // BOOM!
+    expect(testkit.reports().length).toBeGreaterThan(0);
+});
+```
+> Make sure to put your `import` statement before all other imports.
+
+### Using with []() [Puppeteer](https://pptr.dev/)
 ```javascript
 const sentryTestkit = require('sentry-testkit')
 

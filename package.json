@@ -73,5 +73,8 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1"
+  },
+  "peerDependencies": {
+    "@sentry/types": ">= 3"
   }
 }

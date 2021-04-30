@@ -1,9 +1,11 @@
-const EventEmitter = require('events')
-const sentryTestkit = require('../src/index')
+import { Page } from 'puppeteer-core'
+import EventEmitter from 'events'
+import sentryTestkit from '../src'
+
 const { testkit } = sentryTestkit()
 
 describe('Puppeteer testkit', () => {
-  let page
+  let page: Page
   const errorMessage = 'sentry puppeteer testkit is awesome!'
   const createSentryCaptureRequest = (baseUrl = 'https://sentry.io') => ({
     url: () => `${baseUrl}/api/1234567/store`,
@@ -24,15 +26,15 @@ describe('Puppeteer testkit', () => {
 
   beforeEach(() => {
     testkit.reset()
-    page = new EventEmitter()
+    page = (new EventEmitter() as unknown) as Page
   })
 
   test('should report to testkit', () => {
     testkit.puppeteer.startListening(page)
     page.emit('request', createSentryCaptureRequest())
     expect(testkit.reports()).toHaveLength(1)
-    const { message } = testkit.getExceptionAt(0)
-    expect(message).toEqual(errorMessage)
+    const exception = testkit.getExceptionAt(0)
+    expect(exception?.message).toEqual(errorMessage)
   })
 
   test('should collect performance transactions', () => {

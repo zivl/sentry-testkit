@@ -1,91 +1,102 @@
-const waitForExpect = require('wait-for-expect')
-const { Severity } = require('@sentry/browser')
+import waitForExpect from 'wait-for-expect'
+import * as SentryBrowser from '@sentry/browser'
+import { Severity } from '@sentry/browser'
+import * as SentryNode from '@sentry/node'
 
-module.exports.createCommonTests = ({ Sentry, testkit }) => {
+type SentryType = typeof SentryBrowser | typeof SentryNode
+type TestKit = ReturnType<typeof import('../src/index').default>['testkit']
+
+export const createCommonTests = ({
+  Sentry,
+  testkit,
+}: {
+  Sentry: SentryType
+  testkit: TestKit
+}) => {
   beforeEach(() => {
     Sentry.configureScope(scope => scope.clearBreadcrumbs())
   })
 
-  test('should return an empty breadcrumbs array when there are no breadcrumbs', async function() {
+  test('should return an empty breadcrumbs array when there are no breadcrumbs', async function () {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].breadcrumbs).toEqual([])
+    expect(testkit.reports()?.[0]?.breadcrumbs).toEqual([])
   })
 
-  test('should return a breadcrumbs array', async function() {
+  test('should return a breadcrumbs array', async function () {
     const breadcrumb = { message: 'breadcrumb' }
     Sentry.addBreadcrumb(breadcrumb)
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].breadcrumbs).toMatchObject([breadcrumb])
+    expect(testkit.reports()?.[0]?.breadcrumbs).toMatchObject([breadcrumb])
   })
 
-  test('should return report.message when using captureMessage', async function() {
+  test('should return report.message when using captureMessage', async function () {
     const message = 'sentry test kit is awesome!'
     Sentry.captureMessage(message)
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].message).toEqual(message)
+    expect(testkit.reports()?.[0]?.message).toEqual(message)
   })
 
-  test('should return report.level "error" when a level is not provided', async function() {
+  test('should return report.level "error" when a level is not provided', async function () {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].level).toEqual('error')
+    expect(testkit.reports()?.[0]?.level).toEqual('error')
   })
 
-  test('should return the provided level', async function() {
-    Sentry.configureScope(scope => {
+  test('should return the provided level', async function () {
+    Sentry.configureScope((scope) => {
       scope.setLevel(Severity.Warning)
       Sentry.captureException(new Error('sentry test kit is awesome!'))
     })
 
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].level).toEqual(Severity.Warning)
+    expect(testkit.reports()?.[0]?.level).toEqual(Severity.Warning)
   })
 
-  test('should return an empty tags object when there are no tags', async function() {
+  test('should return an empty tags object when there are no tags', async function () {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].tags).toEqual({})
+    expect(testkit.reports()?.[0]?.tags).toEqual({})
   })
 
-  test('should return the original report', async function() {
+  test('should return the original report', async function () {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].originalReport).toBeDefined()
-    expect(testkit.reports()[0].originalReport).toHaveProperty(
+    expect(testkit.reports()?.[0]?.originalReport).toBeDefined()
+    expect(testkit.reports()?.[0]?.originalReport).toHaveProperty(
       'event_id',
       expect.any(String)
     )
   })
 
-  test('should be properly initialized with empty reports', function() {
+  test('should be properly initialized with empty reports', function () {
     expect(testkit).toBeDefined()
     expect(testkit.reports()).toHaveLength(0)
   })
 
-  test('should report to test kit instead of sending http request', async function() {
+  test('should report to test kit instead of sending http request', async function () {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
   })
 
-  test('should have an error object with the captured exception', async function() {
+  test('should have an error object with the captured exception', async function () {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].error).toMatchObject({
+    expect(testkit.reports()?.[0]?.error).toMatchObject({
       name: 'Error',
       message: 'sentry test kit is awesome!',
     })
   })
 
-  test('should have release data on the report as given in Sentry.init', async function() {
+  test('should have release data on the report as given in Sentry.init', async function () {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     const report = testkit.reports()[0]
     expect(report).toHaveProperty('release', 'test')
   })
 
-  test("should not harm Sentry event's reporting life-cycle - return eventId", async function() {
+  test("should not harm Sentry event's reporting life-cycle - return eventId", async function () {
     const eventId = Sentry.captureException(
       new Error('sentry test kit is awesome!')
     )
@@ -93,22 +104,22 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     expect(eventId).toEqual(expect.anything())
   })
 
-  test("should not harm Sentry event's reporting life-cycle - call beforeSend hook with extra data", async function() {
+  test("should not harm Sentry event's reporting life-cycle - call beforeSend hook with extra data", async function () {
     Sentry.captureException(new Error('Sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    const report = testkit.reports()[0]
-    expect(report.extra).toMatchObject({ os: 'mac-os' })
+    expect(testkit.reports()?.[0]?.extra).toMatchObject({ os: 'mac-os' })
   })
 
-  test('should extract the exception out of the report at specific index', async function() {
+  test('should extract the exception out of the report at specific index', async function () {
     Sentry.captureException(new Error('testing get exception at index 0'))
     Sentry.captureException(new Error('testing get exception at index 1'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(2))
-    const { message } = testkit.getExceptionAt(1)
-    expect(message).toEqual('testing get exception at index 1')
+    expect(testkit.getExceptionAt(1)?.message).toEqual(
+      'testing get exception at index 1'
+    )
   })
 
-  test('should find the report with a specific error', async function() {
+  test('should find the report with a specific error', async function () {
     const err = new Error('error to look for')
     Sentry.captureException(err)
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
@@ -116,14 +127,14 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     expect(report).toBeDefined()
   })
 
-  test('should not find the report with a specific error', async function() {
+  test('should not find the report with a specific error', async function () {
     Sentry.captureException(new Error('simple error'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     const report = testkit.findReport(new Error('error to look for'))
     expect(report).toBeUndefined()
   })
 
-  test('should reset and empty the reports log', async function() {
+  test('should reset and empty the reports log', async function () {
     Sentry.captureException(new Error('Sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     expect(testkit.reports()).toHaveLength(1)
@@ -131,13 +142,13 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     expect(testkit.reports()).toHaveLength(0)
   })
 
-  test('isExist returns true if the report with a specific error has been reported', async function() {
+  test('isExist returns true if the report with a specific error has been reported', async function () {
     Sentry.captureException(new Error('simple error'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     expect(testkit.isExist(new Error('error to look for'))).toBe(false)
   })
 
-  test('isExist returns false if the report with a specific error has not been reported', async function() {
+  test('isExist returns false if the report with a specific error has not been reported', async function () {
     const err = new Error('error to look for')
     Sentry.captureException(err)
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))

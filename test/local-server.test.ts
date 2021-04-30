@@ -1,30 +1,30 @@
-const path = require('path')
-const execa = require('execa')
-const waitForExpect = require('wait-for-expect')
-const sentryTestkit = require('../src/index')
+import path from 'path'
+import execa from 'execa'
+import waitForExpect from 'wait-for-expect'
+import sentryTestkit from '../src'
 
 const { testkit, localServer } = sentryTestkit()
 const DUMMY_DSN = 'http://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
 
-describe('sentry test-kit test suite - local server', function() {
+describe('sentry test-kit test suite - local server', function () {
   beforeAll(() => localServer.start(DUMMY_DSN))
 
   afterAll(() => localServer.stop())
 
   beforeEach(() => testkit.reset())
 
-  test('should report to test kit from an external process', async function() {
-    const dsn = localServer.getDsn()
+  test('should report to test kit from an external process', async function () {
+    const dsn = localServer.getDsn() as string
     const errorMessage = 'sentry test kit is awesome!'
     execa
       .node(path.join(__dirname, './fixtures/external-app.js'), [
         dsn,
         errorMessage,
       ])
-      .stdout.pipe(process.stdout)
+      ?.stdout?.pipe(process.stdout)
 
     await waitForExpect(() => {
-      expect(testkit.reports()[0].error).toMatchObject({
+      expect(testkit.reports()?.[0]?.error).toMatchObject({
         name: 'Error',
         message: errorMessage,
       })

@@ -1,9 +1,12 @@
 {
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 2017
+      "sourceType": "module",
+      "ecmaVersion": 2017
     },
     "plugins": [
-        "prettier"
+      "prettier",
+      "@typescript-eslint"
     ],
     "rules": {
         "prettier/prettier": "error"

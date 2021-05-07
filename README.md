@@ -38,8 +38,8 @@ Sentry.init({
 
 test('something', function () {
   // run any scenario that eventually calls Sentry.captureException(...)
-  expect(testKit.reports()).toHaveLength(1)
-  const report = testKit.reports()[0]
+  expect(testkit.reports()).toHaveLength(1)
+  const report = testkit.reports()[0]
   expect(report).toHaveProperty(...)
 });
 ```

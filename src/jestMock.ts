@@ -1,17 +1,16 @@
-import * as Sentry from '@sentry/browser'
-import { BrowserOptions } from '@sentry/browser'
-import sentryTestkit from './index'
+const Sentry = require('@sentry/browser')
+const sentryTestkit = require('./index')
 
-const sentryTestkitInstance = sentryTestkit()
+const { testkit, sentryTransport } = sentryTestkit()
 
-jest.mock('@sentry/browser', () => {
-  return Object.assign({}, Sentry, {
-    init: (options: BrowserOptions) =>
+jest.mock('@sentry/browser', () =>
+  Object.assign({}, Sentry, {
+    init: (options: import('@sentry/browser').BrowserOptions) =>
       Sentry.init({
         ...options,
-        transport: sentryTestkitInstance.sentryTransport,
+        transport: sentryTransport,
       }),
   })
-})
+)
 
-export const testkit = sentryTestkitInstance.testkit
+module.exports.testkit = testkit

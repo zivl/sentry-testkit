@@ -35,16 +35,15 @@ class SentryTestkit {
     }
 
     return class SentryTestkitTransport implements Transport {
-      // captureEvent(event: SentryEvent): Promise<SentryResponse>;
+      // support for v4 API
       captureEvent(event: Event) {
         return sendEvent(event)
-      } // support for v4 API
+      }
       // support for v5 API
       sendEvent(event: Event): Promise<Response> {
         return sendEvent(event)
       }
 
-      // close(timeout?: number): Promise<boolean>;
       close(_timeout?: number): Promise<boolean> {
         return Promise.resolve(true)
       }

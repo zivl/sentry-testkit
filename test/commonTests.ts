@@ -1,10 +1,10 @@
-import waitForExpect from 'wait-for-expect'
-import * as SentryBrowser from '@sentry/browser'
-import { Severity } from '@sentry/browser'
-import * as SentryNode from '@sentry/node'
+const waitForExpect = require('wait-for-expect')
+const { Severity } = require('@sentry/browser')
 
-type SentryType = typeof SentryBrowser | typeof SentryNode
-type TestKit = ReturnType<typeof import('../src/index').default>['testkit']
+type SentryType =
+  | typeof import('@sentry/browser')
+  | typeof import('@sentry/node')
+type TestKit = ReturnType<typeof import('../src/index')>['testkit']
 
 export const createCommonTests = ({
   Sentry,

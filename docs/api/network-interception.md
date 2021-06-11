@@ -11,16 +11,26 @@ const { testkit, initNetworkInterceptor } = sentryTestkit()
 
 beforeAll(() => {
     const myAppDSN = '<your DSN goes here>'
-    initNetworkInterceptor(myAppDSN, (baseUrl, handleRequestBody) => {
+    initNetworkInterceptor(myAppDSN, (baseUrl, handleRequestBody, handlePerfRequestBody) => {
       // This callback is where we init our interceptor.
       // The interceptor should intercept requests from `baseUrl` and pass the
       // request body (as json) to the `handleRequestBody` function.
+      // For performance events, we use the emitted request event,
+      // since in a reply function nock automatically tries to parse the body as json,
+      // and fails since Sentry are using a non-standard json with a json request header
       nock(baseUrl)
         .persist()
-        .post(/.*/)
-        .reply(200, (_, requestBody) => {
-          handleRequestBody(requestBody)
-        })
+        .post(/\/api\/.*\/store/)
+          .reply(200, (_, requestBody) => {
+            handleRequestBody(requestBody)
+          })
+          .post(/\/api\/.*\/envelope/)
+          .reply(200)
+          .on('request', (_, interceptor, body) => {
+            if (interceptor.uri.test('/api/000000/envelope')) {
+              handlePerfRequestBody(body)
+            }
+          })
     })
 })
 

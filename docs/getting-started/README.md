@@ -18,11 +18,17 @@ Sentry.init({
     //... other configurations
 })
 
-test('something', function () {
+test('collect error events', function () {
   // run any scenario that eventually calls Sentry.captureException(...)
   expect(testKit.reports()).toHaveLength(1)
   const report = testKit.reports()[0]
   expect(report).toHaveProperty(...)
+});
+
+// Similarly for performance events
+test('collect performance events', function () {
+  // run any scenario that eventually calls Sentry.startTransaction(...)
+  expect(testKit.transactions()).toHaveLength(1)
 });
 ```
 

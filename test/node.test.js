@@ -10,6 +10,7 @@ describe('sentry test-kit test suite - @sentry/node', function() {
     Sentry.init({
       dsn: DUMMY_DSN,
       release: 'test',
+      tracesSampleRate: 1,
       transport: sentryTransport,
       beforeSend(event) {
         event.extra = { os: 'mac-os' }

@@ -30,6 +30,27 @@ describe('sentry test-kit test suite - local server', function() {
       })
     })
   })
+
+  test('should collect performance transactions', async function() {
+    const dsn = localServer.getDsn()
+    execa
+      .node(path.join(__dirname, './fixtures/external-app-perf.js'), [dsn])
+      .stdout.pipe(process.stdout)
+
+    await waitForExpect(() => {
+      expect(testkit.transactions()[0]).toMatchObject({
+        name: 'transaction-name',
+        traceId: expect.any(String),
+        spans: [
+          {
+            id: expect.any(String),
+            op: 'child-span',
+            description: 'child-description',
+          },
+        ],
+      })
+    })
+  })
 })
 
 describe('local server testkit error cases', () => {

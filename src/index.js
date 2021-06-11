@@ -33,8 +33,29 @@ function transformReport(report) {
   }
 }
 
+function parsePerfRequest(reqBody) {
+  return JSON.parse(reqBody.split('\n')[2])
+}
+
+function transformTransaction(item) {
+  return {
+    name: item.transaction,
+    traceId: item.contexts.trace.trace_id,
+    release: item.release,
+    tags: item.tags || {},
+    extra: item.extra,
+    spans: item.spans.map(span => ({
+      id: span.span_id || span.spanId,
+      op: span.op,
+      parentSpanId: span.parent_span_id || span.parentSpanId,
+      description: span.description,
+    })),
+  }
+}
+
 module.exports = () => {
   let reports = []
+  let transactions = []
 
   let puppeteerHandler = null
   const createPuppeteerHandler = baseUrl => request => {
@@ -45,6 +66,10 @@ module.exports = () => {
     const path = url.substring(baseUrl.length)
     if (/\/api\/[0-9]*\/store/.test(path)) {
       reports.push(transformReport(JSON.parse(request.postData())))
+    }
+    if (/\/api\/[0-9]*\/envelope/.test(path)) {
+      const json = parsePerfRequest(request.postData())
+      transactions.push(transformTransaction(json))
     }
   }
 
@@ -59,9 +84,16 @@ module.exports = () => {
 
       const { project } = parseDsn(userDsn)
       const app = express()
-      app.use(bodyParser.json())
+      // the performance endpoint uses a custom non-json payload so
+      // we can't use bodyParser.json() directly
+      app.use(bodyParser.text({ type: 'application/json' }))
       app.post(`/api/${project}/store/`, (req, res) => {
-        reports.push(transformReport(req.body))
+        reports.push(transformReport(JSON.parse(req.body)))
+        res.sendStatus(200)
+      })
+      app.post(`/api/${project}/envelope/`, (req, res) => {
+        const json = parsePerfRequest(req.body)
+        transactions.push(transformTransaction(json))
         res.sendStatus(200)
       })
       runningServer = http.createServer(app)
@@ -104,11 +136,16 @@ module.exports = () => {
 
   return {
     sentryTransport: function(options) {
-      const sendEvent = function(report) {
-        reports.push(transformReport(report))
+      const sendEvent = function(event) {
+        if (event.type === 'transaction') {
+          transactions.push(transformTransaction(event))
+        } else {
+          reports.push(transformReport(event))
+        }
+
         return Promise.resolve({
           status: 'success',
-          event: report,
+          event,
         })
       }
 
@@ -130,8 +167,10 @@ module.exports = () => {
       const baseUrl = `${protocol}://${host}`
       const handleRequestBody = requestBody =>
         reports.push(transformReport(requestBody))
+      const handlePerfRequestBody = requestBody =>
+        transactions.push(transformTransaction(parsePerfRequest(requestBody)))
 
-      return cb(baseUrl, handleRequestBody)
+      return cb(baseUrl, handleRequestBody, handlePerfRequestBody)
     },
     localServer: createLocalServerApi(),
     testkit: {
@@ -150,8 +189,13 @@ module.exports = () => {
         return reports
       },
 
+      transactions() {
+        return transactions
+      },
+
       reset() {
         reports = []
+        transactions = []
       },
 
       getExceptionAt(index) {

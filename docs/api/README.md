@@ -4,6 +4,7 @@ Sentry testkit consists of a very simple and strait-forward API using the follow
 * [getExceptionAt](/api/getExceptionAt.md)
 * [isExist](/api/isExist.md)
 * [reports](/api/reports.md)
+* [transactions](/api/transactions.md)
 * [reset](/api/reset.md)
 
 ### What About Nodejs?

@@ -2,6 +2,10 @@ const waitForExpect = require('wait-for-expect')
 const { Severity } = require('@sentry/browser')
 
 module.exports.createCommonTests = ({ Sentry, testkit }) => {
+  beforeEach(() => {
+    Sentry.configureScope(scope => scope.clearBreadcrumbs())
+  })
+
   test('should return an empty breadcrumbs array when there are no breadcrumbs', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))

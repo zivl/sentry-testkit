@@ -141,9 +141,9 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
   })
 
   test('should allow flush be called', async function() {
-    const err = new Error('error to look for');
-    Sentry.captureException(err);
-    await waitForExpect(() => expect(testkit.reports()).toHaveLength(1));
-    expect(() => Sentry.flush()).not.toThrow();
-  });
+    const err = new Error('error to look for')
+    Sentry.captureException(err)
+    await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
+    expect(() => Sentry.flush()).not.toThrow()
+  })
 }

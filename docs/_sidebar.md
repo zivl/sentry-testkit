@@ -8,6 +8,7 @@
         * [getExceptionAt](/api/getExceptionAt.md)
         * [isExist](/api/isExist.md)
         * [reports](/api/reports.md)
+        * [transactions](/api/transactions.md)
         * [reset](/api/reset.md)
     * Types
         * [Report](/api/report.md)

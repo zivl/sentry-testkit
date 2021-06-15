@@ -1,4 +1,5 @@
 const BrowserSentry = require('@sentry/browser')
+require('@sentry/tracing')
 const sentryTestkit = require('../src/index')
 const { createCommonTests } = require('./commonTests')
 
@@ -10,6 +11,7 @@ describe('sentry test-kit test suite - @sentry/browser', function() {
     Sentry.init({
       dsn: DUMMY_DSN,
       release: 'test',
+      tracesSampleRate: 1,
       transport: sentryTransport,
       beforeSend(event) {
         event.extra = { os: 'mac-os' }

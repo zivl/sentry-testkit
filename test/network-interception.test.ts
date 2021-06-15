@@ -12,7 +12,11 @@ describe('sentry test-kit test suite - network interception', function () {
 
     initNetworkInterceptor(
       DUMMY_DSN,
-      (baseUrl: string, handleRequestBody: (requestBody: unknown) => void, handlePerfRequestBody: : (requestBody: unknown) => void) => {
+      (
+        baseUrl: string,
+        handleRequestBody: (requestBody: unknown) => void,
+        handlePerfRequestBody: (requestBody: unknown) => void
+      ) => {
         nock(baseUrl)
           .persist()
           .post(/\/api\/000001\/store/)

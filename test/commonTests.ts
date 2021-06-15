@@ -14,7 +14,7 @@ export const createCommonTests = ({
   testkit: TestKit
 }) => {
   beforeEach(() => {
-    Sentry.configureScope(scope => scope.clearBreadcrumbs())
+    Sentry.configureScope((scope) => scope.clearBreadcrumbs())
   })
 
   test('should return an empty breadcrumbs array when there are no breadcrumbs', async function () {
@@ -155,7 +155,7 @@ export const createCommonTests = ({
     expect(testkit.isExist(err)).toBe(true)
   })
 
-  test('should allow flush be called', async function() {
+  test('should allow flush be called', async function () {
     const err = new Error('error to look for')
     Sentry.captureException(err)
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
@@ -163,28 +163,28 @@ export const createCommonTests = ({
   })
 
   describe('performance', () => {
-    test('should collect transactions', async function() {
+    test('should collect transactions', async function () {
       Sentry.startTransaction({
         op: 'transaction',
         name: 'transaction-name',
       }).finish()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].name).toEqual('transaction-name')
-      expect(testkit.transactions()[0].release).toEqual('test')
+      expect(testkit.transactions()?.[0]?.name).toEqual('transaction-name')
+      expect(testkit.transactions()?.[0]?.release).toEqual('test')
     })
 
-    test('should support tags', async function() {
+    test('should support tags', async function () {
       Sentry.startTransaction({
         op: 'transaction',
         name: 'transaction-name',
         tags: { a: 1, b: 2 },
       }).finish()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].tags).toEqual({ a: 1, b: 2 })
+      expect(testkit.transactions()?.[0]?.tags).toEqual({ a: 1, b: 2 })
     })
 
-    test('should support extra data', async function() {
-      Sentry.withScope(scope => {
+    test('should support extra data', async function () {
+      Sentry.withScope((scope) => {
         scope.setExtra('hello', 'world')
         Sentry.startTransaction({
           op: 'transaction',
@@ -192,10 +192,10 @@ export const createCommonTests = ({
         }).finish()
       })
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].extra).toEqual({ hello: 'world' })
+      expect(testkit.transactions()?.[0]?.extra).toEqual({ hello: 'world' })
     })
 
-    test('should collect child spans', async function() {
+    test('should collect child spans', async function () {
       const transaction = Sentry.startTransaction({
         op: 'transaction',
         name: 'transaction-name',
@@ -207,7 +207,7 @@ export const createCommonTests = ({
       child.finish()
       transaction.finish()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].spans[0]).toEqual({
+      expect(testkit.transactions()?.[0]?.spans?.[0]).toEqual({
         id: child.spanId,
         op: 'child',
         description: 'child-description',

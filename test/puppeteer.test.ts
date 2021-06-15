@@ -41,7 +41,7 @@ describe('Puppeteer testkit', () => {
     testkit.puppeteer.startListening(page)
     page.emit('request', createSentryPerfRequest())
     expect(testkit.transactions()).toHaveLength(1)
-    expect(testkit.transactions()[0].name).toEqual('transaction-name')
+    expect(testkit.transactions()?.[0]?.name).toEqual('transaction-name')
   })
 
   test('should stop listening after calling stopListening', () => {

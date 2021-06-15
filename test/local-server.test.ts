@@ -31,11 +31,13 @@ describe('sentry test-kit test suite - local server', function () {
     })
   })
 
-  test('should collect performance transactions', async function() {
-    const dsn = localServer.getDsn()
+  test('should collect performance transactions', async function () {
+    const dsn = localServer.getDsn() as string
+
     execa
       .node(path.join(__dirname, './fixtures/external-app-perf.js'), [dsn])
-      .stdout.pipe(process.stdout)
+      ?.stdout
+      ?.pipe(process.stdout)
 
     await waitForExpect(() => {
       expect(testkit.transactions()[0]).toMatchObject({

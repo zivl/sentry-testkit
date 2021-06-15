@@ -1,4 +1,4 @@
-import { Report } from './types'
+import { Report, Transaction } from './types'
 import { Handler, HTTPRequest, Page } from 'puppeteer-core'
 import http from 'http'
 import { parseDsn } from './parseDsn'
@@ -8,11 +8,17 @@ import { AddressInfo } from 'net'
 
 import { Event } from '@sentry/browser'
 import { Transport } from '@sentry/types'
-import { getException, transformReport } from './utils'
+import {
+  getException,
+  parsePerfRequest,
+  transformReport,
+  transformTransaction,
+} from './utils'
 import { Response } from '@sentry/types/dist/response'
 
 class SentryTestkit {
   private reportsList: Report[] = []
+  private transactionsList: Transaction[] = []
   private puppeteerHandler: Handler<HTTPRequest> | null = null
 
   localServer: {
@@ -27,7 +33,12 @@ class SentryTestkit {
 
   get sentryTransport() {
     const sendEvent = (event: Event) => {
-      this.reportsList.push(transformReport(event))
+      if (event.type === 'transaction') {
+        this.transactionsList.push(transformTransaction(event))
+      } else {
+        this.reportsList.push(transformReport(event))
+      }
+
       return Promise.resolve({
         status: 'success',
         event,
@@ -52,14 +63,27 @@ class SentryTestkit {
 
   initNetworkInterceptor = (
     dsn: string,
-    cb: (baseUrl: string, requestBody: any) => void
+    cb: (
+      baseUrl: string,
+      handleRequestBody: any,
+      handlePerfRequestBody: any
+    ) => void
   ) => {
     const { protocol, host } = parseDsn(dsn)
     const baseUrl = `${protocol}://${host}`
-    const handleRequestBody = (requestBody: Event) =>
-      this.reportsList.push(transformReport(requestBody))
+    const handleRequestBody = (requestBody: string) => {
+      return this.reportsList.push(
+        transformReport(JSON.parse(requestBody) as Event)
+      )
+    }
 
-    return cb(baseUrl, handleRequestBody)
+    const handlePerfRequestBody = (requestBody: string) => {
+      return this.transactionsList.push(
+        transformTransaction(parsePerfRequest(requestBody))
+      )
+    }
+
+    return cb(baseUrl, handleRequestBody, handlePerfRequestBody)
   }
 
   get testkit() {
@@ -81,8 +105,13 @@ class SentryTestkit {
         return this.reportsList
       },
 
+      transactions: () => {
+        return this.transactionsList
+      },
+
       reset: () => {
         this.reportsList = [] as Report[]
+        this.transactionsList = [] as Transaction[]
       },
 
       getExceptionAt: (index: number) => {
@@ -124,6 +153,17 @@ class SentryTestkit {
 
       this.reportsList.push(transformReport(JSON.parse(requestPostData)))
     }
+
+    if (/\/api\/[0-9]*\/envelope/.test(path)) {
+      const requestPostData = request.postData()
+
+      if (!requestPostData) {
+        return
+      }
+
+      const json = parsePerfRequest(requestPostData)
+      this.transactionsList.push(transformTransaction(json))
+    }
   }
 
   private createLocalServerApi = () => {
@@ -137,9 +177,22 @@ class SentryTestkit {
 
       const { project } = parseDsn(userDsn)
       const app = express()
-      app.use(bodyParser.json())
+      if (runningServer !== null) {
+        throw new Error('Local server is already running')
+      }
+
+      // the performance endpoint uses a custom non-json payload so
+      // we can't use bodyParser.json() directly
+      app.use(bodyParser.text({ type: 'application/json' }))
+
       app.post(`/api/${project}/store/`, (req, res) => {
-        this.reportsList.push(transformReport(req.body))
+        this.reportsList.push(transformReport(JSON.parse(req.body)))
+        res.sendStatus(200)
+      })
+
+      app.post(`/api/${project}/envelope/`, (req, res) => {
+        const json = parsePerfRequest(req.body)
+        this.transactionsList.push(transformTransaction(json))
         res.sendStatus(200)
       })
       runningServer = http.createServer(app)

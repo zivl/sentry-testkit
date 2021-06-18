@@ -28,12 +28,29 @@ declare namespace sentryTestkit {
     originalReport: Event
   }
 
+  interface Span {
+    id: string
+    op?: string
+    description?: string
+    parentSpanId: string
+  }
+  
+  interface Transaction {
+    name: string
+    traceId: string
+    release?: string
+    extra?: Record<string, unknown>
+    tags: Record<string, unknown>
+    spans: Span[]
+  }
+
   export interface Testkit {
     puppeteer: {
       startListening(page: Page, baseUrl?: String): void;
       stopListening(page: Page): void;
     };
     reports(): Report[];
+    transactions(): Transaction[];
     reset(): void;
     getExceptionAt(index: number): ReportError;
     findReport(e: Error): Report;

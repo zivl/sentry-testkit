@@ -41,10 +41,6 @@ function parseEnvelopeRequest(reqBody) {
   }
 }
 
-function parsePerfRequest(reqBody) {
-  return JSON.parse(reqBody.split('\n')[2])
-}
-
 function transformTransaction(item) {
   return {
     name: item.transaction,
@@ -96,14 +92,20 @@ module.exports = () => {
       const app = express()
       // the performance endpoint uses a custom non-json payload so
       // we can't use bodyParser.json() directly
-      app.use(bodyParser.text({ type: 'application/json' }))
+      app.use(
+        bodyParser.text({
+          type: ['application/json', 'application/x-sentry-envelope'],
+        })
+      )
       app.post(`/api/${project}/store/`, (req, res) => {
         reports.push(transformReport(JSON.parse(req.body)))
         res.sendStatus(200)
       })
       app.post(`/api/${project}/envelope/`, (req, res) => {
-        const json = parsePerfRequest(req.body)
-        transactions.push(transformTransaction(json))
+        const { type, payload } = parseEnvelopeRequest(req.body)
+        if (type === 'transaction') {
+          transactions.push(transformTransaction(payload))
+        }
         res.sendStatus(200)
       })
       runningServer = http.createServer(app)

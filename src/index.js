@@ -33,6 +33,14 @@ function transformReport(report) {
   }
 }
 
+function parseEnvelopeRequest(reqBody) {
+  const [_header, itemHeader, itemPayload] = reqBody.split('\n')
+  return {
+    type: JSON.parse(itemHeader).type,
+    payload: JSON.parse(itemPayload),
+  }
+}
+
 function parsePerfRequest(reqBody) {
   return JSON.parse(reqBody.split('\n')[2])
 }
@@ -68,8 +76,10 @@ module.exports = () => {
       reports.push(transformReport(JSON.parse(request.postData())))
     }
     if (/\/api\/[0-9]*\/envelope/.test(path)) {
-      const json = parsePerfRequest(request.postData())
-      transactions.push(transformTransaction(json))
+      const { type, payload } = parseEnvelopeRequest(request.postData())
+      if (type === 'transaction') {
+        transactions.push(transformTransaction(payload))
+      }
     }
   }
 

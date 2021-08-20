@@ -177,10 +177,14 @@ module.exports = () => {
       const baseUrl = `${protocol}://${host}`
       const handleRequestBody = requestBody =>
         reports.push(transformReport(requestBody))
-      const handlePerfRequestBody = requestBody =>
-        transactions.push(transformTransaction(parsePerfRequest(requestBody)))
+      const handleEnvelopeRequestBody = requestBody => {
+        const { type, payload } = parseEnvelopeRequest(requestBody)
+        if (type === 'transaction') {
+          transactions.push(transformTransaction(payload))
+        }
+      }
 
-      return cb(baseUrl, handleRequestBody, handlePerfRequestBody)
+      return cb(baseUrl, handleRequestBody, handleEnvelopeRequestBody)
     },
     localServer: createLocalServerApi(),
     testkit: {

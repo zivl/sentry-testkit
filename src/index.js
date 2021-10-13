@@ -33,8 +33,12 @@ function transformReport(report) {
   }
 }
 
-function parsePerfRequest(reqBody) {
-  return JSON.parse(reqBody.split('\n')[2])
+function parseEnvelopeRequest(reqBody) {
+  const [_header, itemHeader, itemPayload] = reqBody.split('\n')
+  return {
+    type: JSON.parse(itemHeader).type,
+    payload: JSON.parse(itemPayload),
+  }
 }
 
 function transformTransaction(item) {
@@ -68,8 +72,10 @@ module.exports = () => {
       reports.push(transformReport(JSON.parse(request.postData())))
     }
     if (/\/api\/[0-9]*\/envelope/.test(path)) {
-      const json = parsePerfRequest(request.postData())
-      transactions.push(transformTransaction(json))
+      const { type, payload } = parseEnvelopeRequest(request.postData())
+      if (type === 'transaction') {
+        transactions.push(transformTransaction(payload))
+      }
     }
   }
 
@@ -86,14 +92,20 @@ module.exports = () => {
       const app = express()
       // the performance endpoint uses a custom non-json payload so
       // we can't use bodyParser.json() directly
-      app.use(bodyParser.text({ type: 'application/json' }))
+      app.use(
+        bodyParser.text({
+          type: ['application/json', 'application/x-sentry-envelope'],
+        })
+      )
       app.post(`/api/${project}/store/`, (req, res) => {
         reports.push(transformReport(JSON.parse(req.body)))
         res.sendStatus(200)
       })
       app.post(`/api/${project}/envelope/`, (req, res) => {
-        const json = parsePerfRequest(req.body)
-        transactions.push(transformTransaction(json))
+        const { type, payload } = parseEnvelopeRequest(req.body)
+        if (type === 'transaction') {
+          transactions.push(transformTransaction(payload))
+        }
         res.sendStatus(200)
       })
       runningServer = http.createServer(app)
@@ -167,10 +179,14 @@ module.exports = () => {
       const baseUrl = `${protocol}://${host}`
       const handleRequestBody = requestBody =>
         reports.push(transformReport(requestBody))
-      const handlePerfRequestBody = requestBody =>
-        transactions.push(transformTransaction(parsePerfRequest(requestBody)))
+      const handleEnvelopeRequestBody = requestBody => {
+        const { type, payload } = parseEnvelopeRequest(requestBody)
+        if (type === 'transaction') {
+          transactions.push(transformTransaction(payload))
+        }
+      }
 
-      return cb(baseUrl, handleRequestBody, handlePerfRequestBody)
+      return cb(baseUrl, handleRequestBody, handleEnvelopeRequestBody)
     },
     localServer: createLocalServerApi(),
     testkit: {

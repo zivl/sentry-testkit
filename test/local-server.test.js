@@ -1,10 +1,12 @@
 const path = require('path')
 const execa = require('execa')
+const fetch = require('node-fetch')
 const waitForExpect = require('wait-for-expect')
 const sentryTestkit = require('../src/index')
 
 const { testkit, localServer } = sentryTestkit()
-const DUMMY_DSN = 'http://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
+const PROJECT_ID = '000001'
+const DUMMY_DSN = `http://acacaeaccacacacabcaacdacdacadaca@sentry.io/${PROJECT_ID}`
 
 describe('sentry test-kit test suite - local server', function() {
   beforeAll(() => localServer.start(DUMMY_DSN))
@@ -50,6 +52,21 @@ describe('sentry test-kit test suite - local server', function() {
         ],
       })
     })
+  })
+
+  test('should handle session items in an envelope request', async function() {
+    const dsn = localServer.getDsn().replace(`/${PROJECT_ID}`, '')
+    const sessionEnvelopeBody =
+      `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.react","version":"6.11.0"}}\n` +
+      `{"type":"session"}\n` +
+      `{"sid":"<removed>","init":false,"started":"2021-08-17T14:27:11.361Z","timestamp":"2021-08-17T14:27:12.489Z","status":"ok","errors":1,"attrs":{"release":"<removed>","environment":"<removed>","user_agent":"<removed>"}}`
+
+    const response = await fetch(`${dsn}/api/${PROJECT_ID}/envelope/`, {
+      method: 'POST',
+      body: sessionEnvelopeBody,
+      headers: { 'Content-Type': 'application/x-sentry-envelope' },
+    })
+    expect(response.ok).toBe(true)
   })
 })
 

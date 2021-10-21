@@ -1,0 +1,4 @@
+{
+  "main": "../dist/browser.js",
+  "sideEffects": false
+}

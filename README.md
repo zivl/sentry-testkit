@@ -126,3 +126,12 @@ See full API description and documentation here: https://wix.github.io/sentry-te
 
 ## Raven-Testkit
 The good old legacy `raven-testkit` documentation can be found [here](LEGACY_API.md). It it still there to serve `Raven` which is the old legacy SDK of *Sentry* for JavaScript/Node.js platforms
+
+## Running in browser
+`sentry-testkit` relies on `express` and `http` packages from NodeJS. We have separated entry `sentry-testkit/browser` where we not include any NodeJS-related code.
+```javascript
+const sentryTestkit = require('sentry-testkit/browser');
+
+const {testkit} = sentryTestkit()
+// Your code for browser
+```

@@ -17,4 +17,13 @@ const parseDsn = dsn => {
   return { protocol, project, host }
 }
 
+const parseEnvelopeRequest = reqBody => {
+  const [_header, itemHeader, itemPayload] = reqBody.split('\n')
+  return {
+    type: JSON.parse(itemHeader).type,
+    payload: JSON.parse(itemPayload),
+  }
+}
+
 module.exports.parseDsn = parseDsn
+module.exports.parseEnvelopeRequest = parseEnvelopeRequest

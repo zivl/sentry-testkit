@@ -1,0 +1,5 @@
+{
+  "main": "../dist/browser.js",
+  "types": "../browser.d.ts",
+  "sideEffects": false
+}

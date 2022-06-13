@@ -30,11 +30,34 @@ const createLocalServerApi = testkit => {
       res.sendStatus(200)
     })
     app.post(`/api/${project}/envelope/`, (req, res) => {
-      const { type, payload } = parseEnvelopeRequest(req.body)
-      if (type === 'transaction') {
-        testkit.transactions().push(transformTransaction(payload))
+      if (req.headers['transfer-encoding'] === 'chunked') {
+        let rawData = ''
+
+        req.on('data', chunk => {
+          rawData += chunk
+        })
+        req.on('end', () => {
+          const { type, payload } = parseEnvelopeRequest(rawData)
+
+          if (type === 'transaction') {
+            testkit.transactions().push(transformTransaction(payload))
+          }
+
+          if (type === 'event') {
+            testkit.reports().push(transformReport(payload))
+          }
+
+          res.sendStatus(200)
+        })
+      } else {
+        const { type, payload } = parseEnvelopeRequest(req.body)
+
+        if (type === 'transaction') {
+          testkit.transactions().push(transformTransaction(payload))
+        }
+
+        res.sendStatus(200)
       }
-      res.sendStatus(200)
     })
     runningServer = http.createServer(app)
 

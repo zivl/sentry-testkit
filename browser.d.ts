@@ -1,13 +1,20 @@
-import { Event, Breadcrumb, User, Severity, StackFrame, Transport, TransportOptions } from '@sentry/types';
+import {
+  Event,
+  Breadcrumb,
+  User,
+  SeverityLevel,
+  StackFrame,
+  Transport,
+} from '@sentry/types'
 
-export = sentryTestkit;
+export = sentryTestkit
 
-declare function sentryTestkit(): sentryTestkit.TestkitResult;
+declare function sentryTestkit(): sentryTestkit.TestkitResult
 
 declare namespace sentryTestkit {
   interface Page {
-    on(event: string, handler: (...args: any[]) => any): void;
-    removeListener(event: string, handler: (...args: any[]) => any): void;
+    on(event: string, handler: (...args: any[]) => any): void
+    removeListener(event: string, handler: (...args: any[]) => any): void
   }
 
   interface ReportError {
@@ -21,7 +28,7 @@ declare namespace sentryTestkit {
     error?: ReportError
     message?: string
     extra?: { [key: string]: any }
-    level: Severity
+    level: SeverityLevel
     release?: string
     user?: User
     tags: { [key: string]: string }
@@ -34,7 +41,7 @@ declare namespace sentryTestkit {
     description?: string
     parentSpanId: string
   }
-  
+
   interface Transaction {
     name: string
     traceId: string
@@ -46,22 +53,28 @@ declare namespace sentryTestkit {
 
   export interface Testkit {
     puppeteer: {
-      startListening(page: Page, baseUrl?: String): void;
-      stopListening(page: Page): void;
-    };
-    reports(): Report[];
-    transactions(): Transaction[];
-    reset(): void;
-    getExceptionAt(index: number): ReportError;
-    findReport(e: Error): Report;
-    isExist(e: Error): boolean;
+      startListening(page: Page, baseUrl?: String): void
+      stopListening(page: Page): void
+    }
+    reports(): Report[]
+    transactions(): Transaction[]
+    reset(): void
+    getExceptionAt(index: number): ReportError
+    findReport(e: Error): Report
+    isExist(e: Error): boolean
   }
 
   export interface TestkitResult {
-    testkit: Testkit;
+    testkit: Testkit
     sentryTransport: {
-      new (options: TransportOptions): Transport;
-    };
-    initNetworkInterceptor<T>(dsn: string, initCallback: (baseUrl: string, handleRequestBody: (requestBody: { [key: string]: any }) => void) => T): T;
+      new (): Transport
+    }
+    initNetworkInterceptor<T>(
+      dsn: string,
+      initCallback: (
+        baseUrl: string,
+        handleRequestBody: (requestBody: { [key: string]: any }) => void
+      ) => T
+    ): T
   }
 }

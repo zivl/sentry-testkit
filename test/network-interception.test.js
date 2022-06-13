@@ -3,6 +3,8 @@ const nock = require('nock')
 const sentryTestkit = require('../src/index')
 const { createCommonTests } = require('./commonTests')
 
+require('@sentry/tracing')
+
 const { testkit, initNetworkInterceptor } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
 describe('sentry test-kit test suite - network interception', function() {

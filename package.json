@@ -45,8 +45,10 @@
   "devDependencies": {
     "@babel/cli": "^7.15.7",
     "@babel/preset-env": "^7.15.8",
-    "@sentry/browser": "^6.13.3",
-    "@sentry/node": "^6.13.3",
+    "@sentry/browser": "^7.5.0",
+    "@sentry/node": "^7.5.0",
+    "@sentry/tracing": "^7.5.0",
+    "@sentry/types": "^7.5.0",
     "docsify-cli": "^4.4.3",
     "eslint": "^8.0.1",
     "eslint-plugin-prettier": "^3.4.1",

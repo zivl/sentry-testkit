@@ -20,15 +20,15 @@ Sentry.init({
 
 test('collect error events', function () {
   // run any scenario that eventually calls Sentry.captureException(...)
-  expect(testKit.reports()).toHaveLength(1)
-  const report = testKit.reports()[0]
+  expect(testkit.reports()).toHaveLength(1)
+  const report = testkit.reports()[0]
   expect(report).toHaveProperty(...)
 });
 
 // Similarly for performance events
 test('collect performance events', function () {
   // run any scenario that eventually calls Sentry.startTransaction(...)
-  expect(testKit.transactions()).toHaveLength(1)
+  expect(testkit.transactions()).toHaveLength(1)
 });
 ```
 
@@ -62,8 +62,9 @@ testkit.puppeteer.startListening(page);
 // Run any scenario that will call Sentry.captureException(...), for example:
 await page.addScriptTag({ content: `throw new Error('An error');` });
 
-expect(testKit.reports()).toHaveLength(1)
-const report = testKit.reports()[0]
+expect(testkit.reports()).toHaveLength(1)
+
+const report = testkit.reports()[0]
 expect(report).toHaveProperty(...)
 
 testkit.puppeteer.stopListening(page);

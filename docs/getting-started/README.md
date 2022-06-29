@@ -63,6 +63,7 @@ testkit.puppeteer.startListening(page);
 await page.addScriptTag({ content: `throw new Error('An error');` });
 
 expect(testkit.reports()).toHaveLength(1)
+
 const report = testkit.reports()[0]
 expect(report).toHaveProperty(...)
 

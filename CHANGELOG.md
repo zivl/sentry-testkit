@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/wix/sentry-testkit/compare/v3.3.8...v4.0.0) (2022-07-07)
+
+
+### Features
+
+* add support for API v7 ([#109](https://github.com/wix/sentry-testkit/issues/109)) ([07e6d02](https://github.com/wix/sentry-testkit/commit/07e6d02ac713bfc886623737791da129fc1ee18e))
+
 ### [3.3.8](https://github.com/wix/sentry-testkit/compare/v3.3.7...v3.3.8) (2022-06-29)
 
 ### [3.3.7](https://github.com/wix/sentry-testkit/compare/v3.3.6...v3.3.7) (2021-10-27)

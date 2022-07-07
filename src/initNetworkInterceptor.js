@@ -11,8 +11,13 @@ const createInitNetworkInterceptor = testkit => {
       testkit.reports().push(transformReport(requestBody))
     const handleEnvelopeRequestBody = requestBody => {
       const { type, payload } = parseEnvelopeRequest(requestBody)
+
       if (type === 'transaction') {
         testkit.transactions().push(transformTransaction(payload))
+      }
+
+      if (type === 'event') {
+        testkit.reports().push(transformReport(payload))
       }
     }
 

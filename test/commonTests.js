@@ -1,5 +1,4 @@
 const waitForExpect = require('wait-for-expect')
-const { Severity } = require('@sentry/browser')
 
 module.exports.createCommonTests = ({ Sentry, testkit }) => {
   beforeEach(() => {
@@ -35,12 +34,12 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
 
   test('should return the provided level', async function() {
     Sentry.configureScope(scope => {
-      scope.setLevel(Severity.Warning)
+      scope.setLevel('warning')
       Sentry.captureException(new Error('sentry test kit is awesome!'))
     })
 
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].level).toEqual(Severity.Warning)
+    expect(testkit.reports()[0].level).toEqual('warning')
   })
 
   test('should return an empty tags object when there are no tags', async function() {

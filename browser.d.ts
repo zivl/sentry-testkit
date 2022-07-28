@@ -64,11 +64,15 @@ declare namespace sentryTestkit {
     isExist(e: Error): boolean
   }
 
-  export interface TestkitResult {
+  type V6TransportClass = {
+    new(): Transport
+  }
+
+  type V7TransportFunction = () => Transport
+
+  export interface TestkitResult<Transport extends V6TransportClass | V7TransportFunction> {
     testkit: Testkit
-    sentryTransport: {
-      new (): Transport
-    }
+    sentryTransport: Transport
     initNetworkInterceptor<T>(
       dsn: string,
       initCallback: (

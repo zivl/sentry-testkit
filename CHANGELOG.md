@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.2](https://github.com/wix/sentry-testkit/compare/v4.0.1...v4.0.2) (2022-07-28)
+
+
+### Bug Fixes
+
+* **types:** Update to support new V7 transport style ([#116](https://github.com/wix/sentry-testkit/issues/116)) ([ebdb751](https://github.com/wix/sentry-testkit/commit/ebdb751e9fce446b46f8a55fc76e627df2834b8d))
+
 ### [4.0.1](https://github.com/wix/sentry-testkit/compare/v4.0.0...v4.0.1) (2022-07-07)
 
 ## [4.0.0](https://github.com/wix/sentry-testkit/compare/v3.3.8...v4.0.0) (2022-07-07)

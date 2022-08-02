@@ -22,7 +22,11 @@ const createLocalServerApi = testkit => {
     // we can't use bodyParser.json() directly
     app.use(
       bodyParser.text({
-        type: ['application/json', 'application/x-sentry-envelope'],
+        type: [
+          'application/json',
+          'application/x-sentry-envelope',
+          'text/plain',
+        ],
       })
     )
     app.post(`/api/${project}/store/`, (req, res) => {

@@ -9,7 +9,7 @@ import {
 
 export = sentryTestkit
 
-declare function sentryTestkit(): sentryTestkit.TestkitResult
+declare function sentryTestkit<T extends sentryTestkit.V6TransportClass | sentryTestkit.V7TransportFunction>(): sentryTestkit.TestkitResult<T>
 
 declare namespace sentryTestkit {
   interface Page {

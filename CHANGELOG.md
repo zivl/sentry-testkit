@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.3](https://github.com/wix/sentry-testkit/compare/v4.0.2...v4.0.3) (2022-08-03)
+
+
+### Bug Fixes
+
+* accept text/plain data ([#119](https://github.com/wix/sentry-testkit/issues/119)) ([b491bcb](https://github.com/wix/sentry-testkit/commit/b491bcb03760dd3af1085736973a2bed97755b36)), closes [#104](https://github.com/wix/sentry-testkit/issues/104)
+* **types:** Add missing generic type arg to default export ([#118](https://github.com/wix/sentry-testkit/issues/118)) ([08648ab](https://github.com/wix/sentry-testkit/commit/08648ab87e4ebe15ef0bfb88536eed5585ccbc30))
+
 ### [4.0.2](https://github.com/wix/sentry-testkit/compare/v4.0.1...v4.0.2) (2022-07-28)
 
 

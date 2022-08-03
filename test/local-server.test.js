@@ -68,6 +68,21 @@ describe('sentry test-kit test suite - local server', function() {
     })
     expect(response.ok).toBe(true)
   })
+
+  test('should handle text/plain encoded items in an envelope request', async function() {
+    const dsn = localServer.getDsn().replace(`/${PROJECT_ID}`, '')
+    const sessionEnvelopeBody =
+      `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.react","version":"6.11.0"}}\n` +
+      `{"type":"session"}\n` +
+      `{"sid":"<removed>","init":false,"started":"2021-08-17T14:27:11.361Z","timestamp":"2021-08-17T14:27:12.489Z","status":"ok","errors":1,"attrs":{"release":"<removed>","environment":"<removed>","user_agent":"<removed>"}}`
+
+    const response = await fetch(`${dsn}/api/${PROJECT_ID}/envelope/`, {
+      method: 'POST',
+      body: sessionEnvelopeBody,
+      headers: { 'Content-Type': 'text/plain' },
+    })
+    expect(response.ok).toBe(true)
+  })
 })
 
 describe('local server testkit error cases', () => {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/wix/sentry-testkit/compare/v4.0.3...v4.1.0) (2022-09-30)
+
+
+### Features
+
+* allow CORS requests ([#121](https://github.com/wix/sentry-testkit/issues/121)) ([29720b5](https://github.com/wix/sentry-testkit/commit/29720b5632a60f56459fa39ed8d79b23f4012d5f))
+
 ### [4.0.3](https://github.com/wix/sentry-testkit/compare/v4.0.2...v4.0.3) (2022-08-03)
 
 

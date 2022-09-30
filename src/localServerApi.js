@@ -18,6 +18,10 @@ const createLocalServerApi = testkit => {
 
     const { project } = parseDsn(userDsn)
     const app = express()
+    app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*')
+      next()
+    })
     // the performance endpoint uses a custom non-json payload so
     // we can't use bodyParser.json() directly
     app.use(

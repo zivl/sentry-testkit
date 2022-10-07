@@ -1,7 +1,12 @@
 
 ## Installation
+**npm:**
 ```
 npm install sentry-testkit --save-dev
+```
+**yarn:** 
+```
+yarn install sentry-testkit --dev
 ```
 
 ## Usage

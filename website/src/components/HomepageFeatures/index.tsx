@@ -24,7 +24,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'From Unit Tests to E2E Testing',
-    Svg: require('@site/static/img/e2e-testing.svg').default,
+    Svg: require('@site/static/img/e2e-testing2.svg').default,
     height: '180px',
     width: '180px',
     description: (

@@ -63,6 +63,12 @@ const config = {
             label: 'Docs',
           },
           {
+            to: 'help',
+            docId: 'help',
+            position: 'right',
+            label: 'Help',
+          },
+          {
             href: 'https://github.com/wix/sentry-testkit',
             position: 'right',
             className: 'header-github-link',
@@ -118,6 +124,10 @@ const config = {
               {
                 label: 'GitHub repo',
                 href: 'https://github.com/wix/sentry-testkit',
+              },
+              {
+                label: 'Help',
+                to: '/help',
               },
             ],
           },

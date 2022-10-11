@@ -6,7 +6,7 @@ npm install sentry-testkit --save-dev
 ```
 **yarn:** 
 ```
-yarn install sentry-testkit --dev
+yarn add sentry-testkit --dev
 ```
 
 ## Usage

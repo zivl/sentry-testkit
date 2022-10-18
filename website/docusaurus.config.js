@@ -58,7 +58,7 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'intro',
+            docId: 'getting-started',
             position: 'left',
             label: 'Docs',
           },
@@ -84,19 +84,19 @@ const config = {
             items: [
               {
                 label: 'Getting Started',
-                to: '/docs/intro',
+                to: '/docs/getting-started',
               },
               {
                 label: 'API Reference',
-                to: '/docs/intro',
+                to: '/docs/getting-started',
               },
               {
                 label: 'Migration from v4 to v5',
-                to: '/docs/intro',
+                to: '/docs/getting-started',
               },
               {
                 label: 'Raven-Testkit (Legacy Support)',
-                to: '/docs/intro',
+                to: '/docs/getting-started',
               },
             ],
           },

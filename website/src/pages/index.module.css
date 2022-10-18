@@ -21,3 +21,13 @@
   align-items: center;
   justify-content: center;
 }
+
+.gettingReady {
+  font-size: larger;
+  text-align: center;
+}
+
+.getStartedButtons {
+  display: flex;
+  gap: 24px;
+}

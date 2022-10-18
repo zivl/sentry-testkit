@@ -63,6 +63,12 @@ const config = {
             label: 'Docs',
           },
           {
+            type: 'doc',
+            docId: 'api/README',
+            position: 'left',
+            label: 'API Reference',
+          },
+          {
             to: 'help',
             docId: 'help',
             position: 'right',
@@ -88,15 +94,15 @@ const config = {
               },
               {
                 label: 'API Reference',
-                to: '/docs/getting-started',
+                to: '/docs/api',
               },
               {
-                label: 'Migration from v4 to v5',
-                to: '/docs/getting-started',
+                label: 'Migration Guides',
+                to: '/docs/category/migration',
               },
               {
                 label: 'Raven-Testkit (Legacy Support)',
-                to: '/docs/getting-started',
+                to: '/docs/raven-testkit-legacy',
               },
             ],
           },

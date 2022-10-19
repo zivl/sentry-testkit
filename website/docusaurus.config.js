@@ -46,6 +46,10 @@ const config = {
         sitemap: {
           changefreq: 'monthly',
         },
+        googleAnalytics: {
+          trackingID: 'UA-186083338-2',
+          anonymizeIP: true,
+        }
       }),
     ],
   ],

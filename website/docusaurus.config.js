@@ -9,7 +9,7 @@ const config = {
   title: 'Sentry-Testkit',
   tagline: 'Testing your reports made easy',
   url: 'https://wix.github.io/',
-  baseUrl: '/',
+  baseUrl: '/sentry-testkit/',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',

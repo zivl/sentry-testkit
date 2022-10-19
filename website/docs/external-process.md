@@ -1,4 +1,6 @@
 ---
+title: External Process
+description: How to use external process error reports interception with Sentry Testkit
 sidebar_position: 4
 ---
 

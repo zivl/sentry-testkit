@@ -1,4 +1,6 @@
 ---
+title: Network Interception
+description: How to intercept network requests related to Sentry with Sentry Testkit
 sidebar_position: 3
 ---
 

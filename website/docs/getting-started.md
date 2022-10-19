@@ -1,4 +1,6 @@
 ---
+title: Getting Started
+description: Getting started with Sentry Testkit
 sidebar_position: 1
 ---
 

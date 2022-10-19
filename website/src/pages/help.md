@@ -1,5 +1,6 @@
 ---
 title: Help
+description: Get help with Sentry Testkit
 ---
 
 # Need help?
@@ -13,7 +14,7 @@ Find what you're looking for in our detailed documentation and guides.
  - Learn how to [get started](/docs/getting-started) with Jest.
  <!-- - [Troubleshoot](/docs/troubleshooting) problems with Jest. -->
  - Look at the full [API Reference](/docs/api).
- - Learn how to [intercept network requests](/docs/network-intercept).
+ - Learn how to [intercept network requests](/docs/network-interception).
 
 ### Join the community
 Ask questions and find answers from other sentry-testkit users like you.

@@ -1,4 +1,6 @@
 ---
+title: API Reference
+description: Sentry Testkit API Reference documentation.
 sidebar_position: 2
 ---
 

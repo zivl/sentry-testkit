@@ -19,7 +19,7 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 Sentry Testkit has full support in both `@sentry/browser` and `@sentry/node` (as well as other `@sentry/<what-ever>` clients) since they have the same API and lifecycle under the hood.
 
 :::note Raven-Testkit
-The good old legacy `raven-testkit` documentation can be found [here](../raven-testkit-legacy). It it still there to serve `Raven` which is the old legacy SDK of *Sentry* for JavaScript/Node.js platforms
+The good old legacy `raven-testkit` documentation can be found [here](/docs/raven-testkit-legacy). It it still there to serve `Raven` which is the old legacy SDK of *Sentry* for JavaScript/Node.js platforms
 :::
 
 ## Reference
@@ -28,7 +28,7 @@ Gets all existing reports.
 
 **Returns**: <code>Array</code> - where each member of the array consists of *Sentry's* <code>Report</code> type.
 
-**See**: You may refer to the definition of [<code>Report</code>](./types#report) for further explanation and details.
+**See**: You may refer to the definition of [<code>Report</code>](./api/types#report) for further explanation and details.
 
 For example
 ```javascript
@@ -57,7 +57,7 @@ Uses [Array.prototype.find](https://developer.mozilla.org/en-US/docs/Web/JavaScr
 
 **Returns**: <code>Report</code> \| <code>undefined</code> - the report object if one found. `undefined` otherwise.
 
-**See**: You may refer to the definition of [<code>Report</code>](./types#report) for further explanation and details.
+**See**: You may refer to the definition of [<code>Report</code>](./api/types#report) for further explanation and details.
 
 For example
 ```javascript
@@ -97,7 +97,7 @@ Extracts the exception object of a report in a specific position.
 
 **Returns**: `ReportError`.
 
-**See**: You may refer to the definition of [<code>ReportError</code>](./types#reporterror) for further explanation and details.
+**See**: You may refer to the definition of [<code>ReportError</code>](./api/types#reporterror) for further explanation and details.
 
 For example
 ```javascript
@@ -115,7 +115,7 @@ Gets all existing transactions.
 
 **Returns**: <code>Array</code> - where each member of the array consists of a <code>Transaction</code> type.
 
-**See**: You may refer to the definition of [<code>Transaction</code>](./types#transaction) for further explanation and details.
+**See**: You may refer to the definition of [<code>Transaction</code>](./api/types#transaction) for further explanation and details.
 
 For example
 ```javascript

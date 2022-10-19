@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="500" version="1.1" viewBox="0 0 500.00001 500.00001" xmlns="http://www.w3.org/2000/svg">
+ <rect x="75.66" y="133.92" width="362.75" height="246.07" ry="20" fill="#f4f4f4"/>
+ <path d="m95.66 113.92c-11.08 0-20 8.92-20 20v23.84h362.75v-23.84c0-11.08-8.92-20-20-20h-322.75z" fill="#ff4a4a"/>
+ <g transform="matrix(1.2412 0 0 1 -21.47 -1.4877)" fill="#b1b1b1">
+  <rect x="88.998" y="191.6" width="89.803" height="10.056" ry="5.0282"/>
+  <rect x="88.998" y="212.26" width="89.803" height="10.056" ry="5.0282"/>
+  <rect x="88.998" y="232.92" width="89.803" height="10.056" ry="5.0282"/>
+ </g>
+ <rect x="224.5" y="171.1" width="200.57" height="89.402" fill="#d2d2d2"/>
+ <rect x="228.04" y="174.28" width="193.5" height="83.038" fill="#b1b1b1"/>
+ <rect x="224.5" y="284.15" width="189.53" height="5.0563" ry="2.5282" fill="#b1b1b1"/>
+ <rect x="224.5" y="299.64" width="189.18" height="5.0563" ry="2.5282" fill="#b1b1b1"/>
+ <rect x="224.5" y="315.13" width="146.04" height="5.0563" ry="2.5282" fill="#b1b1b1"/>
+ <rect x="224.5" y="330.62" width="138.97" height="5.0563" ry="2.5282" fill="#b1b1b1"/>
+ <rect x="224.5" y="346.11" width="147.81" height="5.0563" ry="2.5282" fill="#b1b1b1"/>
+ <rect x="224.5" y="361.6" width="158.77" height="5.0563" ry="2.5282" fill="#b1b1b1"/>
+ <rect x="224.5" y="268.66" width="189.53" height="5.0563" ry="2.5282" fill="#b1b1b1"/>
+ <rect x="88.998" y="275.85" width="111.47" height="90.808" ry="5.0282" fill="#b1b1b1"/>
+ <circle cx="416.49" cy="135.84" r="10.509" fill="#f4f4f4"/>
+ <circle cx="384.96" cy="135.84" r="10.509" fill="#d2d2d2"/>
+</svg>

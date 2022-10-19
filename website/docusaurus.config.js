@@ -10,8 +10,8 @@ const config = {
   tagline: 'Testing your reports made easy',
   url: 'https://wix.github.io/',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
   // GitHub pages deployment config.

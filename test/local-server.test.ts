@@ -1,8 +1,8 @@
-const path = require('path')
-const execa = require('execa')
-const fetch = require('node-fetch')
-const waitForExpect = require('wait-for-expect')
-const sentryTestkit = require('../src/index')
+import path from 'path'
+import execa from 'execa'
+import fetch from 'node-fetch'
+import waitForExpect from 'wait-for-expect'
+import sentryTestkit from '../src/index'
 
 const { testkit, localServer } = sentryTestkit()
 const PROJECT_ID = '000001'
@@ -16,17 +16,18 @@ describe('sentry test-kit test suite - local server', function() {
   beforeEach(() => testkit.reset())
 
   test('should report to test kit from an external process', async function() {
-    const dsn = localServer.getDsn()
-    const errorMessage = 'sentry test kit is awesome!'
+    const dsn = localServer.getDsn() as string
+    const errorMessage = 'sentry testkit is awesome!'
     execa
       .node(path.join(__dirname, './fixtures/external-app.js'), [
         dsn,
         errorMessage,
       ])
-      .stdout.pipe(process.stdout)
+      ?.stdout?.pipe(process.stdout)
 
     await waitForExpect(() => {
-      expect(testkit.reports()[0].error).toMatchObject({
+      expect(testkit.reports()[0]).toBeDefined()
+      expect(testkit.reports()[0]!.error).toMatchObject({
         name: 'Error',
         message: errorMessage,
       })
@@ -34,10 +35,10 @@ describe('sentry test-kit test suite - local server', function() {
   })
 
   test('should collect performance transactions', async function() {
-    const dsn = localServer.getDsn()
+    const dsn = localServer.getDsn() as string
     execa
       .node(path.join(__dirname, './fixtures/external-app-perf.js'), [dsn])
-      .stdout.pipe(process.stdout)
+      ?.stdout?.pipe(process.stdout)
 
     await waitForExpect(() => {
       expect(testkit.transactions()[0]).toMatchObject({
@@ -55,7 +56,7 @@ describe('sentry test-kit test suite - local server', function() {
   })
 
   test('should handle session items in an envelope request', async function() {
-    const dsn = localServer.getDsn().replace(`/${PROJECT_ID}`, '')
+    const dsn = localServer.getDsn()?.replace(`/${PROJECT_ID}`, '')
     const sessionEnvelopeBody =
       `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.react","version":"6.11.0"}}\n` +
       `{"type":"session"}\n` +
@@ -70,7 +71,7 @@ describe('sentry test-kit test suite - local server', function() {
   })
 
   test('should handle text/plain encoded items in an envelope request', async function() {
-    const dsn = localServer.getDsn().replace(`/${PROJECT_ID}`, '')
+    const dsn = localServer.getDsn()?.replace(`/${PROJECT_ID}`, '')
     const sessionEnvelopeBody =
       `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.react","version":"6.11.0"}}\n` +
       `{"type":"session"}\n` +
@@ -85,7 +86,7 @@ describe('sentry test-kit test suite - local server', function() {
   })
 
   test('responds with Access-Control-Allow-Origin header', async function() {
-    const dsn = localServer.getDsn().replace(`/${PROJECT_ID}`, '')
+    const dsn = localServer.getDsn()?.replace(`/${PROJECT_ID}`, '')
     const sessionEnvelopeBody =
       `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.react","version":"6.11.0"}}\n` +
       `{"type":"session"}\n` +

@@ -1,18 +1,17 @@
-'use strict'
+import { parseEnvelopeRequest } from './parsers'
+import { transformReport, transformTransaction } from './transformers'
+import { Report, ReportError, Testkit, Transaction } from './types'
 
-const { parseEnvelopeRequest } = require('./parsers')
-const { transformReport, transformTransaction } = require('./transformers')
-
-function getException(report) {
+function getException(report: Report) {
   return report.error
 }
 
-module.exports.createTestkit = () => {
-  let reports = []
-  let transactions = []
+export function createTestkit(): Testkit {
+  let reports: Report[] = []
+  let transactions: Transaction[] = []
 
-  let puppeteerHandler = null
-  const createPuppeteerHandler = baseUrl => request => {
+  let puppeteerHandler: any = null
+  const createPuppeteerHandler = (baseUrl: string) => (request: any) => {
     const url = request.url()
     if (!url.startsWith(baseUrl)) {
       return
@@ -31,12 +30,12 @@ module.exports.createTestkit = () => {
 
   return {
     puppeteer: {
-      startListening: (page, baseUrl = 'https://sentry.io') => {
+      startListening: (page: any, baseUrl: string = 'https://sentry.io') => {
         puppeteerHandler = createPuppeteerHandler(baseUrl)
         page.on('request', puppeteerHandler)
       },
 
-      stopListening: page => {
+      stopListening: (page: any) => {
         page.removeListener('request', puppeteerHandler)
       },
     },
@@ -54,18 +53,22 @@ module.exports.createTestkit = () => {
       transactions = []
     },
 
-    getExceptionAt(index) {
-      return getException(reports[index])
+    getExceptionAt(index: number) {
+      if (reports[index]) {
+        return getException(reports[index]!)
+      } else {
+        throw new Error(`There's not report at index ${index}`)
+      }
     },
 
-    findReport(e) {
+    findReport(e: ReportError) {
       return reports.find(r => {
         const err = getException(r)
-        return err.name === e.name && err.message === e.message
+        return err && err.name === e.name && err.message === e.message
       })
     },
 
-    isExist(e) {
+    isExist(e: ReportError) {
       return this.findReport(e) !== undefined
     },
   }

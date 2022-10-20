@@ -1,7 +1,7 @@
-const { testkit } = require('../src/jestMock')
-const Sentry = require('@sentry/browser')
-require('@sentry/tracing')
-const { createCommonTests } = require('./commonTests')
+import testkit from '../src/jestMock'
+import * as Sentry from '@sentry/browser'
+import '@sentry/tracing'
+import { createCommonTests } from './commonTests'
 
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
 

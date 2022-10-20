@@ -1,9 +1,10 @@
-const EventEmitter = require('events')
-const sentryTestkit = require('../src/index')
+import EventEmitter from 'events'
+import sentryTestkit from '../src/index'
+
 const { testkit } = sentryTestkit()
 
 describe('Puppeteer testkit', () => {
-  let page
+  let page: EventEmitter
   const errorMessage = 'sentry puppeteer testkit is awesome!'
   const createSentryCaptureRequest = (baseUrl = 'https://sentry.io') => ({
     url: () => `${baseUrl}/api/1234567/store`,
@@ -37,7 +38,7 @@ describe('Puppeteer testkit', () => {
     testkit.puppeteer.startListening(page)
     page.emit('request', createSentryCaptureRequest())
     expect(testkit.reports()).toHaveLength(1)
-    const { message } = testkit.getExceptionAt(0)
+    const { message } = testkit.getExceptionAt(0)!
     expect(message).toEqual(errorMessage)
   })
 
@@ -45,7 +46,7 @@ describe('Puppeteer testkit', () => {
     testkit.puppeteer.startListening(page)
     page.emit('request', createSentryPerfRequest())
     expect(testkit.transactions()).toHaveLength(1)
-    expect(testkit.transactions()[0].name).toEqual('transaction-name')
+    expect(testkit.transactions()[0]!.name).toEqual('transaction-name')
   })
 
   test('should handle session items in an envelope request', () => {

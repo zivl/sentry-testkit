@@ -1,9 +1,10 @@
-'use strict'
+import { Span } from '@sentry/types'
+import { Report, ReportError, Transaction } from './types'
 
-function transformReport(report) {
+export function transformReport(report: any): Report {
   const exception =
     report.exception && report.exception.values && report.exception.values[0]
-  const error = exception
+  const error: ReportError | undefined = exception
     ? {
         name: exception.type,
         message: exception.value,
@@ -24,21 +25,20 @@ function transformReport(report) {
   }
 }
 
-function transformTransaction(item) {
+export function transformTransaction(item: any): Transaction {
   return {
     name: item.transaction,
     traceId: item.contexts.trace.trace_id,
     release: item.release,
     tags: item.tags || {},
     extra: item.extra,
-    spans: item.spans.map(span => ({
+    spans: item.spans.map((span: Span) => ({
+      // @ts-expect-error
       id: span.span_id || span.spanId,
       op: span.op,
+      // @ts-expect-error
       parentSpanId: span.parent_span_id || span.parentSpanId,
       description: span.description,
     })),
   }
 }
-
-module.exports.transformReport = transformReport
-module.exports.transformTransaction = transformTransaction

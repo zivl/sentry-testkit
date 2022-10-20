@@ -1,11 +1,11 @@
-'use strict'
+import { Event } from '@sentry/types'
+import { transformReport, transformTransaction } from './transformers'
+import { Testkit } from './types'
 
-const { transformReport, transformTransaction } = require('./transformers')
-
-const createSentryTransport = testkit => {
+export function createSentryTransport(testkit: Testkit) {
   return function() {
     // Send transport for API < v7
-    const sendEvent = function(event) {
+    const sendEvent = function(event: Event) {
       if (event.type === 'transaction') {
         testkit.transactions().push(transformTransaction(event))
       } else {
@@ -19,10 +19,11 @@ const createSentryTransport = testkit => {
     }
 
     // Send transport for API v7
-    const send = function(envelope) {
+    const send = function(envelope: any) {
       const [, items] = envelope
 
-      items.forEach(([headers, data], index) => {
+      // @ts-expect-error
+      items.forEach(([headers, data]) => {
         if (headers.type === 'transaction') {
           testkit.transactions().push(transformTransaction(data))
         } else if (headers.type === 'event') {
@@ -49,5 +50,3 @@ const createSentryTransport = testkit => {
     }
   }
 }
-
-module.exports.createSentryTransport = createSentryTransport

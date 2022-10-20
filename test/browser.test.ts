@@ -1,8 +1,9 @@
-const BrowserSentry = require('@sentry/browser')
-const sentryTestkit = require('../src/index')
-const { createCommonTests } = require('./commonTests')
+import { Event } from '@sentry/types'
+import * as BrowserSentry from '@sentry/browser'
+import sentryTestkit from '../src'
+import { createCommonTests } from './commonTests'
 
-require('@sentry/tracing')
+import '@sentry/tracing'
 
 const { testkit, sentryTransport } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
@@ -15,7 +16,7 @@ describe('sentry test-kit test suite - @sentry/browser', function() {
       release: 'test',
       tracesSampleRate: 1,
       transport: sentryTransport,
-      beforeSend(event) {
+      beforeSend(event: Event) {
         event.extra = { os: 'mac-os' }
         return event
       },

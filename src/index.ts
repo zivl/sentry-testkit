@@ -1,11 +1,9 @@
-'use strict'
+import { createTestkit } from './testkit'
+import { createLocalServerApi } from './localServerApi'
+import { createInitNetworkInterceptor } from './initNetworkInterceptor'
+import { createSentryTransport } from './sentryTransport'
 
-const { createTestkit } = require('./testkit')
-const { createLocalServerApi } = require('./localServerApi')
-const { createInitNetworkInterceptor } = require('./initNetworkInterceptor')
-const { createSentryTransport } = require('./sentryTransport')
-
-module.exports = () => {
+export default () => {
   const testkit = createTestkit()
   const sentryTransport = createSentryTransport(testkit)
   const initNetworkInterceptor = createInitNetworkInterceptor(testkit)

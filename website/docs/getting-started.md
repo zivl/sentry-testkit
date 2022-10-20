@@ -44,25 +44,6 @@ test('collect performance events', function () {
 });
 ```
 
-### Working with [Jest](https://jestjs.io/en/)
-We've added a new option to integrate `sentry-testkit` with `jest`'s mocking mechanism. Detailed implementation can be seen [here](https://github.com/wix/sentry-testkit/blob/master/src/jestMock.js).
-
-At the moment it is available only to `@sentry/browser` package but we will expand to more packages as we should figure out how to do it right for all Sentry's client packages.
-
-If you're using `Jest` for testing, all you have to do in your `spec.js` file is to import the Jest mock.
-```javascript
-// some.spec.js
-import { testkit } from 'sentry-testkit/dist/jestMock';
-
-test('something', function () {
-    // click
-    // clack
-    // BOOM!
-    expect(testkit.reports().length).toBeGreaterThan(0);
-});
-```
-> Make sure to put your `import` statement before all other imports.
-
 ### Using with [Puppeteer](https://pptr.dev/)
 ```javascript
 const sentryTestkit = require('sentry-testkit')

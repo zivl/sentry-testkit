@@ -1,14 +1,14 @@
-const Sentry = require('@sentry/node')
-const nock = require('nock')
-const sentryTestkit = require('../src/index')
-const { createCommonTests } = require('./commonTests')
+import * as Sentry from '@sentry/node'
+import nock from 'nock'
+import sentryTestkit from '../src/index'
+import { createCommonTests } from './commonTests'
 
 require('@sentry/tracing')
 
 const { testkit, initNetworkInterceptor } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
 describe('sentry test-kit test suite - network interception', function() {
-  let envelopeRequestHandler
+  let envelopeRequestHandler: (body: any) => void
 
   beforeAll(() => {
     nock.cleanAll()
@@ -21,7 +21,7 @@ describe('sentry test-kit test suite - network interception', function() {
         nock(baseUrl)
           .persist()
           .post(/\/api\/000001\/store/)
-          .reply(200, (_, requestBody) => {
+          .reply(200, (_: any, requestBody: any) => {
             handleRequestBody(requestBody)
           })
           .post(/\/api\/000001\/envelope/)

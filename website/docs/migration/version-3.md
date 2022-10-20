@@ -1,3 +1,5 @@
+# Version 3 Migration Guide
+
 ## Breaking Changes
 
 * The report object has changed from Sentry's report to our own format.

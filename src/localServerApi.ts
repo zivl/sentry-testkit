@@ -1,17 +1,15 @@
-'use strict'
+import express from 'express'
+import bodyParser from 'body-parser'
+import http from 'http'
+import { parseDsn, parseEnvelopeRequest } from './parsers'
+import { transformReport, transformTransaction } from './transformers'
+import { Testkit } from './types'
 
-const express = require('express')
-const bodyParser = require('body-parser')
-const http = require('http')
+export function createLocalServerApi(testkit: Testkit) {
+  let runningServer: http.Server | null = null
+  let localDsn: string | null = null
 
-const { parseDsn, parseEnvelopeRequest } = require('./parsers')
-const { transformReport, transformTransaction } = require('./transformers')
-
-const createLocalServerApi = testkit => {
-  let runningServer = null
-  let localDsn = null
-
-  const start = userDsn => {
+  const start = (userDsn: string) => {
     if (runningServer !== null) {
       throw new Error('Local server is already running')
     }
@@ -70,11 +68,16 @@ const createLocalServerApi = testkit => {
     runningServer = http.createServer(app)
 
     return new Promise(resolve => {
-      runningServer.listen(() => {
-        const port = runningServer.address().port
-        localDsn = `http://acacaeaccacacacabcaacdacdacadaca@localhost:${port}/${project}`
-        resolve()
-      })
+      if (runningServer) {
+        runningServer.listen(() => {
+          // @ts-expect-error
+          const port = runningServer.address().port
+          localDsn = `http://acacaeaccacacacabcaacdacdacadaca@localhost:${port}/${project}`
+          resolve(undefined)
+        })
+      } else {
+        throw new Error('Local server is not running')
+      }
     })
   }
 
@@ -84,7 +87,9 @@ const createLocalServerApi = testkit => {
     }
 
     return new Promise((resolve, reject) => {
-      runningServer.close(error => (error ? reject(error) : resolve()))
+      runningServer!.close(error =>
+        error ? reject(error) : resolve(undefined)
+      )
       runningServer = null
       localDsn = null
     })
@@ -104,5 +109,3 @@ const createLocalServerApi = testkit => {
     getDsn,
   }
 }
-
-module.exports.createLocalServerApi = createLocalServerApi

@@ -1,6 +1,15 @@
-const waitForExpect = require('wait-for-expect')
+import * as NodeSentry from '@sentry/node'
+import * as BrowserSentry from '@sentry/browser'
+import waitForExpect from 'wait-for-expect'
+import { Testkit } from '../src/types'
 
-module.exports.createCommonTests = ({ Sentry, testkit }) => {
+export function createCommonTests({
+  Sentry,
+  testkit,
+}: {
+  Sentry: typeof NodeSentry | typeof BrowserSentry
+  testkit: Testkit
+}) {
   beforeEach(() => {
     Sentry.configureScope(scope => scope.clearBreadcrumbs())
   })
@@ -8,7 +17,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
   test('should return an empty breadcrumbs array when there are no breadcrumbs', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].breadcrumbs).toEqual([])
+    expect(testkit.reports()[0]!.breadcrumbs).toEqual([])
   })
 
   test('should return a breadcrumbs array', async function() {
@@ -16,20 +25,20 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     Sentry.addBreadcrumb(breadcrumb)
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].breadcrumbs).toMatchObject([breadcrumb])
+    expect(testkit.reports()[0]!.breadcrumbs).toMatchObject([breadcrumb])
   })
 
   test('should return report.message when using captureMessage', async function() {
     const message = 'sentry test kit is awesome!'
     Sentry.captureMessage(message)
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].message).toEqual(message)
+    expect(testkit.reports()[0]!.message).toEqual(message)
   })
 
   test('should return report.level "error" when a level is not provided', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].level).toEqual('error')
+    expect(testkit.reports()[0]!.level).toEqual('error')
   })
 
   test('should return the provided level', async function() {
@@ -39,20 +48,20 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     })
 
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].level).toEqual('warning')
+    expect(testkit.reports()[0]!.level).toEqual('warning')
   })
 
   test('should return an empty tags object when there are no tags', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].tags).toEqual({})
+    expect(testkit.reports()[0]!.tags).toEqual({})
   })
 
   test('should return the original report', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].originalReport).toBeDefined()
-    expect(testkit.reports()[0].originalReport).toHaveProperty(
+    expect(testkit.reports()[0]!.originalReport).toBeDefined()
+    expect(testkit.reports()[0]!.originalReport).toHaveProperty(
       'event_id',
       expect.any(String)
     )
@@ -71,7 +80,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
   test('should have an error object with the captured exception', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0].error).toMatchObject({
+    expect(testkit.reports()[0]!.error).toMatchObject({
       name: 'Error',
       message: 'sentry test kit is awesome!',
     })
@@ -95,7 +104,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
   test("should not harm Sentry event's reporting life-cycle - call beforeSend hook with extra data", async function() {
     Sentry.captureException(new Error('Sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    const report = testkit.reports()[0]
+    const report = testkit.reports()[0]!
     expect(report.extra).toMatchObject({ os: 'mac-os' })
   })
 
@@ -103,7 +112,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
     Sentry.captureException(new Error('testing get exception at index 0'))
     Sentry.captureException(new Error('testing get exception at index 1'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(2))
-    const { message } = testkit.getExceptionAt(1)
+    const { message } = testkit.getExceptionAt(1)!
     expect(message).toEqual('testing get exception at index 1')
   })
 
@@ -157,8 +166,8 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
         name: 'transaction-name',
       }).finish()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].name).toEqual('transaction-name')
-      expect(testkit.transactions()[0].release).toEqual('test')
+      expect(testkit.transactions()[0]!.name).toEqual('transaction-name')
+      expect(testkit.transactions()[0]!.release).toEqual('test')
     })
 
     test('should support tags', async function() {
@@ -168,7 +177,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
         tags: { a: 1, b: 2 },
       }).finish()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].tags).toEqual({ a: 1, b: 2 })
+      expect(testkit.transactions()[0]!.tags).toEqual({ a: 1, b: 2 })
     })
 
     test('should support extra data', async function() {
@@ -180,7 +189,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
         }).finish()
       })
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].extra).toEqual({ hello: 'world' })
+      expect(testkit.transactions()[0]!.extra).toEqual({ hello: 'world' })
     })
 
     test('should collect child spans', async function() {
@@ -195,7 +204,7 @@ module.exports.createCommonTests = ({ Sentry, testkit }) => {
       child.finish()
       transaction.finish()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0].spans[0]).toEqual({
+      expect(testkit.transactions()[0]!.spans[0]).toEqual({
         id: child.spanId,
         op: 'child',
         description: 'child-description',

@@ -1,6 +1,6 @@
-const NodeSentry = require('@sentry/node')
-const sentryTestkit = require('../src/index')
-const { createCommonTests } = require('./commonTests')
+import * as NodeSentry from '@sentry/node'
+import sentryTestkit from '../src/index'
+import { createCommonTests } from './commonTests'
 
 require('@sentry/tracing')
 

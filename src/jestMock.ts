@@ -1,14 +1,14 @@
-'use strict'
-const Sentry = require('@sentry/browser')
-const sentryTestkit = require('./index')
+import * as Sentry from '@sentry/browser'
+import { BrowserOptions } from '@sentry/browser'
+import sentryTestkit from './index'
 
 const { testkit, sentryTransport } = sentryTestkit()
 
 jest.mock('@sentry/browser', () =>
   Object.assign({}, Sentry, {
-    init: options =>
+    init: (options: BrowserOptions) =>
       Sentry.init(Object.assign({}, options, { transport: sentryTransport })),
   })
 )
 
-module.exports.testkit = testkit
+export default testkit

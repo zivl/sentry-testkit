@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.1](https://github.com/wix/sentry-testkit/compare/v5.0.0...v5.0.1) (2022-10-21)
+
+
+### Bug Fixes
+
+* point to correct TS types declaration file ([#139](https://github.com/wix/sentry-testkit/issues/139)) ([8eb394f](https://github.com/wix/sentry-testkit/commit/8eb394f7b2ee9de9569a3ec825398cde2cdb6b9d)), closes [#138](https://github.com/wix/sentry-testkit/issues/138)
+
 ## [5.0.0](https://github.com/wix/sentry-testkit/compare/v4.1.0...v5.0.0) (2022-10-20)
 
 

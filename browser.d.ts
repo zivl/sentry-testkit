@@ -9,7 +9,9 @@ import {
 
 export = sentryTestkit
 
-declare function sentryTestkit<T extends sentryTestkit.V6TransportClass | sentryTestkit.V7TransportFunction>(): sentryTestkit.TestkitResult<T>
+declare function sentryTestkit<
+  T extends sentryTestkit.V6TransportClass | sentryTestkit.V7TransportFunction
+>(): sentryTestkit.TestkitResult<T>
 
 declare namespace sentryTestkit {
   interface Page {
@@ -65,12 +67,14 @@ declare namespace sentryTestkit {
   }
 
   type V6TransportClass = {
-    new(): Transport
+    new (): Transport
   }
 
   type V7TransportFunction = () => Transport
 
-  export interface TestkitResult<Transport extends V6TransportClass | V7TransportFunction> {
+  export interface TestkitResult<
+    Transport extends V6TransportClass | V7TransportFunction
+  > {
     testkit: Testkit
     sentryTransport: Transport
     initNetworkInterceptor<T>(

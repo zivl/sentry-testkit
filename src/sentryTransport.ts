@@ -2,7 +2,7 @@ import { Event } from '@sentry/types'
 import { transformReport, transformTransaction } from './transformers'
 import { Testkit } from './types'
 
-export function createSentryTransport(testkit: Testkit) {
+export function createSentryTransport(testkit: Testkit): any {
   return function() {
     // Send transport for API < v7
     const sendEvent = function(event: Event) {

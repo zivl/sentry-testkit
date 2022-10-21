@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.3](https://github.com/wix/sentry-testkit/compare/v5.0.2...v5.0.3) (2022-10-21)
+
+
+### Bug Fixes
+
+* SentryTransport factory function return "any" until TS issue will be fixed ([#141](https://github.com/wix/sentry-testkit/issues/141)) ([a1d07ca](https://github.com/wix/sentry-testkit/commit/a1d07ca56b3c672968c9a1e119d25137f6122194)), closes [#138](https://github.com/wix/sentry-testkit/issues/138)
+
 ### [5.0.2](https://github.com/wix/sentry-testkit/compare/v5.0.1...v5.0.2) (2022-10-21)
 
 

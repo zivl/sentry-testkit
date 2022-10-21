@@ -5,11 +5,9 @@
   "main": "dist/index",
   "types": "dist/index",
   "files": [
-    "dist",
-    "index.d.ts"
+    "dist"
   ],
   "scripts": {
-    "start": "docsify serve ./docs",
     "build": "tsc",
     "test": "jest --config jest.config.json",
     "lint": "eslint --ext .js,.ts --fix",

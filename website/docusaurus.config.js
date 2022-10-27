@@ -49,7 +49,7 @@ const config = {
         googleAnalytics: {
           trackingID: 'UA-186083338-2',
           anonymizeIP: true,
-        }
+        },
       }),
     ],
   ],
@@ -64,6 +64,10 @@ const config = {
           src: 'img/logo/logo_only.png',
         },
         items: [
+          {
+            type: 'search',
+            position: 'right',
+          },
           {
             type: 'doc',
             docId: 'getting-started',
@@ -151,6 +155,15 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+      },
+      algolia: {
+        appId: 'L7GY2W3YC6',
+        apiKey: 'aa3a74bf7f3516d815614bd43753a7cb',
+        indexName: 'sentry-testkit',
+        contextualSearch: true,
+
+        // Optional: path for search page that enabled by default (`false` to disable it)
+        searchPagePath: 'search',
       },
     }),
 }

@@ -3,7 +3,7 @@ import { createLocalServerApi } from './localServerApi'
 import { createInitNetworkInterceptor } from './initNetworkInterceptor'
 import { createSentryTransport } from './sentryTransport'
 
-export default () => {
+export = () => {
   const testkit = createTestkit()
   const sentryTransport = createSentryTransport(testkit)
   const initNetworkInterceptor = createInitNetworkInterceptor(testkit)

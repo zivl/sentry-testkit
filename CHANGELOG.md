@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.4](https://github.com/wix/sentry-testkit/compare/v5.0.3...v5.0.4) (2022-12-04)
+
+
+### Bug Fixes
+
+* default export when importing in pure node ESM ([#145](https://github.com/wix/sentry-testkit/issues/145)) ([42aa0cc](https://github.com/wix/sentry-testkit/commit/42aa0cc49f85aca17708a9fc8e10cd590240b348))
+
 ### [5.0.3](https://github.com/wix/sentry-testkit/compare/v5.0.2...v5.0.3) (2022-10-21)
 
 

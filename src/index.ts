@@ -3,7 +3,7 @@ import { createLocalServerApi } from './localServerApi'
 import { createInitNetworkInterceptor } from './initNetworkInterceptor'
 import { createSentryTransport } from './sentryTransport'
 
-export default () => {
+function create() {
   const testkit = createTestkit()
   const sentryTransport = createSentryTransport(testkit)
   const initNetworkInterceptor = createInitNetworkInterceptor(testkit)
@@ -16,3 +16,6 @@ export default () => {
     localServer,
   }
 }
+
+create.default = create
+export = create

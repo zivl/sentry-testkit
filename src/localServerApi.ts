@@ -1,8 +1,8 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import http from 'http'
-import { parseDsn, parseEnvelopeRequest } from './parsers'
-import { transformReport, transformTransaction } from './transformers'
+import { parseDsn, handleEnvelopeRequestData } from './parsers'
+import { transformReport } from './transformers'
 import { Testkit } from './types'
 
 export function createLocalServerApi(testkit: Testkit) {
@@ -43,25 +43,11 @@ export function createLocalServerApi(testkit: Testkit) {
           rawData += chunk
         })
         req.on('end', () => {
-          const { type, payload } = parseEnvelopeRequest(rawData)
-
-          if (type === 'transaction') {
-            testkit.transactions().push(transformTransaction(payload))
-          }
-
-          if (type === 'event') {
-            testkit.reports().push(transformReport(payload))
-          }
-
+          handleEnvelopeRequestData(rawData, testkit)
           res.sendStatus(200)
         })
       } else {
-        const { type, payload } = parseEnvelopeRequest(req.body)
-
-        if (type === 'transaction') {
-          testkit.transactions().push(transformTransaction(payload))
-        }
-
+        handleEnvelopeRequestData(req.body, testkit)
         res.sendStatus(200)
       }
     })

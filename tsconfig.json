@@ -23,5 +23,4 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"]
-  // "files": ["./test/**/*.ts"]
 }

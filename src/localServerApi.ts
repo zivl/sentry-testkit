@@ -1,8 +1,8 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import http from 'http'
-import { parseDsn, parseEnvelopeRequest } from './parsers'
-import { transformReport, transformTransaction } from './transformers'
+import { parseDsn, handleEnvelopeRequestData } from './parsers'
+import { transformReport } from './transformers'
 import { Testkit } from './types'
 
 export function createLocalServerApi(testkit: Testkit) {
@@ -20,50 +20,16 @@ export function createLocalServerApi(testkit: Testkit) {
       res.header('Access-Control-Allow-Origin', '*')
       next()
     })
-    // the performance endpoint uses a custom non-json payload so
-    // we can't use bodyParser.json() directly
-    app.use(
-      bodyParser.text({
-        type: [
-          'application/json',
-          'application/x-sentry-envelope',
-          'text/plain',
-        ],
-      })
-    )
+    // We accept any content-type as requests come in a variety of
+    // kinds (with content-type and without, compressed and not, ...).
+    app.use(bodyParser.text({ type: () => true }))
     app.post(`/api/${project}/store/`, (req, res) => {
       testkit.reports().push(transformReport(JSON.parse(req.body)))
       res.sendStatus(200)
     })
     app.post(`/api/${project}/envelope/`, (req, res) => {
-      if (req.headers['transfer-encoding'] === 'chunked') {
-        let rawData = ''
-
-        req.on('data', chunk => {
-          rawData += chunk
-        })
-        req.on('end', () => {
-          const { type, payload } = parseEnvelopeRequest(rawData)
-
-          if (type === 'transaction') {
-            testkit.transactions().push(transformTransaction(payload))
-          }
-
-          if (type === 'event') {
-            testkit.reports().push(transformReport(payload))
-          }
-
-          res.sendStatus(200)
-        })
-      } else {
-        const { type, payload } = parseEnvelopeRequest(req.body)
-
-        if (type === 'transaction') {
-          testkit.transactions().push(transformTransaction(payload))
-        }
-
-        res.sendStatus(200)
-      }
+      handleEnvelopeRequestData(req.body, testkit)
+      res.sendStatus(200)
     })
     runningServer = http.createServer(app)
 

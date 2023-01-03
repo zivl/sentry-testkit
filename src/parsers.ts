@@ -1,6 +1,3 @@
-import { transformReport, transformTransaction } from './transformers'
-import { Testkit } from './types'
-
 const dsnKeys = 'source protocol user pass host port path'.split(' ')
 const dsnPattern = /^(?:(\w+):)?\/\/(?:(\w+)(:\w+)?@)?([\w\.-]+)(?::(\d+))?(\/.*)/ //eslint-disable-line no-useless-escape
 
@@ -31,18 +28,5 @@ export function parseEnvelopeRequest(reqBody: string) {
   return {
     type: JSON.parse(itemHeader!).type,
     payload: JSON.parse(itemPayload!),
-  }
-}
-
-export function handleEnvelopeRequestData(
-  requestBody: any,
-  testkit: Testkit
-): void {
-  const { type, payload } = parseEnvelopeRequest(requestBody)
-
-  if (type === 'transaction') {
-    testkit.transactions().push(transformTransaction(payload))
-  } else if (type === 'event') {
-    testkit.reports().push(transformReport(payload))
   }
 }

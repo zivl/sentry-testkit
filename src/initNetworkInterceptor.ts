@@ -1,5 +1,5 @@
-import { handleEnvelopeRequestData, parseDsn } from './parsers'
-import { transformReport } from './transformers'
+import { parseDsn, parseEnvelopeRequest } from './parsers'
+import { transformReport, transformTransaction } from './transformers'
 import { Testkit } from './types'
 
 export type InterceptorCallback = (
@@ -15,7 +15,15 @@ export function createInitNetworkInterceptor(testkit: Testkit) {
     const handleRequestBody = (requestBody: any) =>
       testkit.reports().push(transformReport(requestBody))
     const handleEnvelopeRequestBody = (requestBody: any) => {
-      handleEnvelopeRequestData(requestBody, testkit)
+      const { type, payload } = parseEnvelopeRequest(requestBody)
+
+      if (type === 'transaction') {
+        testkit.transactions().push(transformTransaction(payload))
+      }
+
+      if (type === 'event') {
+        testkit.reports().push(transformReport(payload))
+      }
     }
 
     return cb(baseUrl, handleRequestBody, handleEnvelopeRequestBody)

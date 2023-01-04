@@ -8,7 +8,7 @@ We refactored our entire code base to support TypeScript language. We have done 
 * By having type safe functionality, we beleive it will encourage more deveopers to understand the code and be able to contribute more features and bug fixes.
 * Using TypeScript also helps code editors (IDEs) to provide better code-auto-completion functionality as well as self-documenting function parameters and etc.
 
-## (Maybe) Breaking Changes
+## (Maybe) Breaking Changes [UPDATE: Fixed!]
 Unfortunately, due to some race condition or wrong definition, we can't get to run out tests on the built-in `jest-mock` functionality.
 To remind, it was possible if you're using `Jest` for testing, all you have to do in your `***.spec.js` file is to import the Jest mock as follows:
 ```javascript
@@ -29,3 +29,5 @@ But we're having issue with that:
 You may refer to the source code of [`jestMock.ts`](https://github.com/wix/sentry-testkit/blob/master/src/jestMock.ts) and we'll be happy for your help and suggestions.
 
 For further details and discussion, please follow [issue #136](https://github.com/wix/sentry-testkit/issues/136)
+
+**[UPDATE]**: Thanks to [@liamjones](https://github.com/liamjones)'s contribution, this issue is no longer exists and you maybe upgrade your `sentry-testkit` versions safely!

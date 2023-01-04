@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.5](https://github.com/wix/sentry-testkit/compare/v5.0.4...v5.0.5) (2023-01-04)
+
+
+### Bug Fixes
+
+* local server not capturing error events from the browser ([#152](https://github.com/wix/sentry-testkit/issues/152)) ([6e43809](https://github.com/wix/sentry-testkit/commit/6e438099872e0bd5402bb5235cea8969091bd857))
+* support all content types in local server endpoints ([#153](https://github.com/wix/sentry-testkit/issues/153)) ([063a538](https://github.com/wix/sentry-testkit/commit/063a538ab657a9674ac42fa7588cf02564ea6cf8))
+* support all content types in local server endpoints ([#161](https://github.com/wix/sentry-testkit/issues/161)) ([d5d0685](https://github.com/wix/sentry-testkit/commit/d5d0685e561f7bd3ed387c745365ef64593eb36b))
+
 ### [5.0.4](https://github.com/wix/sentry-testkit/compare/v5.0.3...v5.0.4) (2022-12-04)
 
 

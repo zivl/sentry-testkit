@@ -73,7 +73,7 @@ test('collect performance events', function () {
 
 ## Testkit API
 
-See full API description and documentation here: https://wix.github.io/sentry-testkit/
+See full API description and documentation here: https://zivl.github.io/sentry-testkit/
 
 ## Running in browser
 

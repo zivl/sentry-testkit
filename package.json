@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix/sentry-testkit.git"
+    "url": "git@github.com:zivl/sentry-testkit.git"
   },
   "keywords": [
     "raven-test-kit",
@@ -38,9 +38,9 @@
   "author": "Ziv Levy (zivl@wix.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wix/sentry-testkit/issues"
+    "url": "https://github.com/zivl/sentry-testkit/issues"
   },
-  "homepage": "https://wix.github.io/sentry-testkit",
+  "homepage": "https://zivl.github.io/sentry-testkit",
   "dependencies": {
     "body-parser": "^1.20.1",
     "express": "^4.18.2"

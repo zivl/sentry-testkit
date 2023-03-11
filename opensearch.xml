@@ -4,8 +4,8 @@
   <ShortName>Sentry-Testkit</ShortName>
   <Description>Search Sentry-Testkit</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://wix.github.io/sentry-testkit/img/favicon.ico</Image>
-  <Url type="text/html" method="get" template="https://wix.github.io/sentry-testkit/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://wix.github.io/sentry-testkit/opensearch.xml" />
-  <moz:SearchForm>https://wix.github.io/sentry-testkit/</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://zivl.github.io/sentry-testkit/img/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://zivl.github.io/sentry-testkit/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://zivl.github.io/sentry-testkit/opensearch.xml" />
+  <moz:SearchForm>https://zivl.github.io/sentry-testkit/</moz:SearchForm>
 </OpenSearchDescription>

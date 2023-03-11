@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 const config = {
   title: 'Sentry-Testkit',
   tagline: 'Testing your reports made easy',
-  url: 'https://wix.github.io/',
+  url: 'https://zivl.github.io/',
   baseUrl: '/sentry-testkit/',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
@@ -16,7 +16,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'wix', // Usually your GitHub org/user name.
+  organizationName: 'zivl', // Usually your GitHub org/user name.
   projectName: 'sentry-testkit', // Usually your repo name.
   trailingSlash: false,
 
@@ -38,7 +38,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/wix/sentry-testkit/blob/master/website/docs',
+            'https://github.com/zivl/sentry-testkit/blob/master/website/docs',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -87,7 +87,7 @@ const config = {
             label: 'Help',
           },
           {
-            href: 'https://github.com/wix/sentry-testkit',
+            href: 'https://github.com/zivl/sentry-testkit',
             position: 'right',
             className: 'header-github-link',
             'aria-label': 'GitHub repository',
@@ -123,7 +123,7 @@ const config = {
             items: [
               {
                 label: 'Github Issues',
-                href: 'https://github.com/wix/sentry-testkit/issues',
+                href: 'https://github.com/zivl/sentry-testkit/issues',
               },
               {
                 label: 'Stack Overflow',
@@ -141,7 +141,7 @@ const config = {
             items: [
               {
                 label: 'GitHub repo',
-                href: 'https://github.com/wix/sentry-testkit',
+                href: 'https://github.com/zivl/sentry-testkit',
               },
               {
                 label: 'Help',

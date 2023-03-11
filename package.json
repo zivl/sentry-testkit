@@ -35,7 +35,7 @@
     "sentry-plugin",
     "sentry-client"
   ],
-  "author": "Ziv Levy (zivl@wix.com)",
+  "author": "Ziv Levy (levi.ziv@gmail.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zivl/sentry-testkit/issues"

@@ -23,11 +23,11 @@ test('something', function () {
 });
 ```
 But we're having issue with that:
-1. We're getting errors `Sentry is not defined` and `Maximum call stack size exceeded` (looks like circular dep): https://github.com/wix/sentry-testkit/runs/2477315004
-3. re-declaring block-scope variables (looks like es imports helps with this, but then we got into first problem): https://github.com/wix/sentry-testkit/pull/78/checks?check_run_id=2826583066
+1. We're getting errors `Sentry is not defined` and `Maximum call stack size exceeded` (looks like circular dep): https://github.com/zivl/sentry-testkit/runs/2477315004
+3. re-declaring block-scope variables (looks like es imports helps with this, but then we got into first problem): https://github.com/zivl/sentry-testkit/pull/78/checks?check_run_id=2826583066
 
-You may refer to the source code of [`jestMock.ts`](https://github.com/wix/sentry-testkit/blob/master/src/jestMock.ts) and we'll be happy for your help and suggestions.
+You may refer to the source code of [`jestMock.ts`](https://github.com/zivl/sentry-testkit/blob/master/src/jestMock.ts) and we'll be happy for your help and suggestions.
 
-For further details and discussion, please follow [issue #136](https://github.com/wix/sentry-testkit/issues/136)
+For further details and discussion, please follow [issue #136](https://github.com/zivl/sentry-testkit/issues/136)
 
 **[UPDATE]**: Thanks to [@liamjones](https://github.com/liamjones)'s contribution, this issue is no longer exists and you maybe upgrade your `sentry-testkit` versions safely!

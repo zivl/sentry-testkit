@@ -57,7 +57,7 @@ export default function Home(): JSX.Element {
           />
           <img
             alt="sentry-teskit-tests"
-            src="https://github.com/wix/sentry-testkit/workflows/Test/badge.svg"
+            src="https://github.com/zivl/sentry-testkit/workflows/Test/badge.svg"
           />
           <img
             alt="sentry-teskit-v6"

@@ -4,7 +4,7 @@
 ```
 npm install sentry-testkit --save-dev
 ```
-**yarn:** 
+**yarn:**
 ```
 yarn add sentry-testkit --dev
 ```
@@ -38,7 +38,7 @@ test('collect performance events', function () {
 ```
 
 ### Working with []() [Jest](https://jestjs.io/en/)
-We've added a new option to integrate `sentry-testkit` with `jest`'s mocking mechanism. Detailed implementation can be seen [here](https://github.com/wix/sentry-testkit/blob/master/src/jestMock.js).
+We've added a new option to integrate `sentry-testkit` with `jest`'s mocking mechanism. Detailed implementation can be seen [here](https://github.com/zivl/sentry-testkit/blob/master/src/jestMock.js).
 
 At the moment it is available only to `@sentry/browser` package but we will expand to more packages as we should figure out how to do it right for all Sentry's client packages.
 
@@ -96,7 +96,7 @@ beforeAll(function(){
 })
 ```
 
-You may see more usage examples in the [testing section](https://github.com/wix/sentry-testkit/tree/master/test) of `sentry-testkit` repository as well
+You may see more usage examples in the [testing section](https://github.com/zivl/sentry-testkit/tree/master/test) of `sentry-testkit` repository as well
 
 > [!TIP]
 > Pay attention that Sentry reports the events asynchronously.

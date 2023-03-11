@@ -84,7 +84,7 @@ beforeAll(function(){
 })
 ```
 
-You may see more usage examples in the [testing section](https://github.com/wix/sentry-testkit/tree/master/test) of `sentry-testkit` repository as well
+You may see more usage examples in the [testing section](https://github.com/zivl/sentry-testkit/tree/master/test) of `sentry-testkit` repository as well
 
 :::tip
 Pay attention that Sentry reports the events asynchronously.

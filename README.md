@@ -5,8 +5,8 @@
 <a href="https://npmjs.org/package/sentry-testkit">
     <img src="https://img.shields.io/npm/dm/sentry-testkit.svg" alt="npm downloads">
   </a>
-<a href="https://github.com/wix/sentry-testkit/actions">
-    <img src="https://github.com/wix/sentry-testkit/workflows/Test/badge.svg" alt="Test">
+<a href="https://github.com/zivl/sentry-testkit/actions">
+    <img src="https://github.com/zivl/sentry-testkit/workflows/Test/badge.svg" alt="Test">
   </a>
 </p>
 <p align="center">
@@ -19,7 +19,7 @@
 </p>
 </p>
 <p align="center">
-<a href="https://wix.github.io/sentry-testkit/">
+<a href="https://zivl.github.io/sentry-testkit/">
     <img alt="sentry-teskit" src="./docs/logo/Sentry_github.svg" height="132">
     </a>
 </p>

@@ -15,7 +15,7 @@ function HomepageHeader() {
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
         <img
-          alt="sentry-teskit"
+          alt="sentry-testkit"
           src="img/logo/Sentry_github.svg"
           style={{ height: '140px' }}
         />
@@ -48,23 +48,23 @@ export default function Home(): JSX.Element {
           }}
         >
           <img
-            alt="sentry-teskit-npm"
+            alt="sentry-testkit-npm"
             src="https://img.shields.io/npm/v/sentry-testkit.svg"
           />
           <img
-            alt="sentry-teskit-downloads"
+            alt="sentry-testkit-downloads"
             src="https://img.shields.io/npm/dm/sentry-testkit.svg"
           />
           <img
-            alt="sentry-teskit-tests"
+            alt="sentry-testkit-tests"
             src="https://github.com/zivl/sentry-testkit/workflows/Test/badge.svg"
           />
           <img
-            alt="sentry-teskit-v6"
+            alt="sentry-testkit-v6"
             src="https://img.shields.io/badge/Compatible%20with%20Sentry-v6-blue"
           />
           <img
-            alt="sentry-teskit-v7"
+            alt="sentry-testkit-v7"
             src="https://img.shields.io/badge/Compatible%20with%20Sentry-v7-blue"
           />
         </div>

@@ -49,7 +49,7 @@ Get all existing reports.
 <a name="reset"></a>
 
 ### reset() : <code>Array</code>
-Reset the teskit state and clear all existing reports.
+Reset the testkit state and clear all existing reports.
 
 **Returns**: <code>Array</code> - empty array.
 <a name="extractException"></a>

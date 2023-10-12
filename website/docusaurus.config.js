@@ -58,9 +58,9 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'sentry-teskit',
+        title: 'sentry-testkit',
         logo: {
-          alt: 'sentry-teskit',
+          alt: 'sentry-testkit',
           src: 'img/logo/logo_only.png',
         },
         items: [

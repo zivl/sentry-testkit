@@ -1,12 +1,12 @@
 <div style="text-align: center;">
-    <img alt="sentry-teskit" src="./logo/Sentry_github.svg" style="height: 140px;">
+    <img alt="sentry-testkit" src="./logo/Sentry_github.svg" style="height: 140px;">
 </div>
 <div style="text-align: center;">
-    <img alt="sentry-teskit-npm" src="https://img.shields.io/npm/v/sentry-testkit.svg">
-    <img alt="sentry-teskit-downloads" src="https://img.shields.io/npm/dm/sentry-testkit.svg">
-    <img alt="sentry-teskit-tests" src="https://github.com/zivl/sentry-testkit/workflows/Test/badge.svg">
-    <img alt="sentry-teskit-v6" src="https://img.shields.io/badge/Compatible%20with%20Sentry-v6-blue">
-    <img alt="sentry-teskit-v7" src="https://img.shields.io/badge/Compatible%20with%20Sentry-v7-blue">
+    <img alt="sentry-testkit-npm" src="https://img.shields.io/npm/v/sentry-testkit.svg">
+    <img alt="sentry-testkit-downloads" src="https://img.shields.io/npm/dm/sentry-testkit.svg">
+    <img alt="sentry-testkit-tests" src="https://github.com/zivl/sentry-testkit/workflows/Test/badge.svg">
+    <img alt="sentry-testkit-v6" src="https://img.shields.io/badge/Compatible%20with%20Sentry-v6-blue">
+    <img alt="sentry-testkit-v7" src="https://img.shields.io/badge/Compatible%20with%20Sentry-v7-blue">
 </div>
 
 

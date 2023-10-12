@@ -20,7 +20,7 @@
 </p>
 <p align="center">
 <a href="https://zivl.github.io/sentry-testkit/">
-    <img alt="sentry-teskit" src="./docs/logo/Sentry_github.svg" height="132">
+    <img alt="sentry-testkit" src="./docs/logo/Sentry_github.svg" height="132">
     </a>
 </p>
 

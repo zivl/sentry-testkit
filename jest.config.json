@@ -1,12 +1,5 @@
 {
-  "preset": "ts-jest",
-  "testMatch": ["**/test/*test.(j|t)s"],
-  "transform": {
-    "<rootDir>/.+\\.ts?$": "ts-jest"
-  },
-  "reporters": [
-    "default"
-  ],
+  "testMatch": ["**/?(*.)+(spec|test).[jt]s?(x)"],
   "modulePathIgnorePatterns": ["dist"],
   "testEnvironment": "node",
   "resetMocks": true

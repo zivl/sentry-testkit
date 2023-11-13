@@ -1,4 +1,4 @@
-import testkit from '../src/jestMock'
+import '../src/jestMock'
 import * as Sentry from '@sentry/browser'
 import '@sentry/tracing'
 import { createCommonTests } from './commonTests'
@@ -18,7 +18,7 @@ describe('jest mock integration tests', function() {
     })
   )
 
-  beforeEach(() => testkit.reset())
+  beforeEach(() => global.testkit.reset())
 
-  createCommonTests({ Sentry, testkit })
+  createCommonTests({ Sentry, testkit: global.testkit })
 })

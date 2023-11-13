@@ -11,7 +11,7 @@ The `@sentry/react` library exposes a `<Sentry.ErrorBoundary>` React component t
 However, the `<Sentry.ErrorBoundary>` component causes Sentry to send multiple events due to the way it works under the hood. This is because it catches errors in the `componentDidCatch` lifecycle method, and then re-throws them, which causes Sentry to send another event. This is not a problem in production, but it can be a problem when testing.
 
 ## 3 Errors are sent to Sentry
-When using `sentry-testkit` to test Sentry reports, the `testkit.reports()` call will return the following 3 total errors:
+When using `sentry-testkit` to test Sentry reports, the `testkit.reports()` call will return the following 3 total errors, as explained in [Sentry's issue #9514](https://github.com/getsentry/sentry-javascript/issues/9514#issuecomment-1805723611):
 
 1. The original error that is captured by the error boundary
 2. The original error captured by global event listener. This only occurs in in dev mode, because error boundaries rethrow the errors that they catch and those errors bubble up to the global event listener where it is captured again.

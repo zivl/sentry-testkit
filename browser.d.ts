@@ -3,7 +3,7 @@ import {
   Breadcrumb,
   User,
   SeverityLevel,
-  StackFrame,
+  Stacktrace,
   Transport,
 } from '@sentry/types'
 
@@ -22,7 +22,7 @@ declare namespace sentryTestkit {
   interface ReportError {
     name: string
     message: string
-    stacktrace: StackFrame[]
+    stacktrace: Stacktrace
   }
 
   interface Report {

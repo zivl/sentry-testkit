@@ -77,12 +77,15 @@ export function createCommonTests({
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
   })
 
-  test('should have an error object with the captured exception', async function() {
+  test('should have an error object with the captured exception and stacktrace', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     expect(testkit.reports()[0]!.error).toMatchObject({
       name: 'Error',
       message: 'sentry test kit is awesome!',
+      stacktrace: {
+        frames: expect.any(Array),
+      },
     })
   })
 

@@ -13,10 +13,10 @@ Represents a report error object. The object has the following keys:
     //The error message
     message: string
     // The error stacktrace as individual frames
-    stacktrace: StackFrame[]
+    stacktrace: Stacktrace
   }
 ```
-**See:** [StackFrame](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/stackframe.ts)
+**See:** [Stacktrace](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/stacktrace.ts)
 
 ### `Report`
 

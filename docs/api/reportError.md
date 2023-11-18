@@ -6,5 +6,5 @@ The error name
 #### `message` [string]
 The error message
 
-#### `stacktrace` [[StackFrame[]](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/stackframe.ts)]
+#### `stacktrace` [[Stacktrace[]](https://github.com/getsentry/sentry-javascript/blob/master/packages/types/src/stacktrace.ts)]
 The error stacktrace as individual frames

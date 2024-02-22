@@ -16,7 +16,7 @@ declare function sentryTestkit<
 declare namespace sentryTestkit {
   interface Page {
     on(event: string, handler: (...args: any[]) => any): void
-    removeListener(event: string, handler: (...args: any[]) => any): void
+    off(event: string, handler: (...args: any[]) => any): void
   }
 
   interface ReportError {

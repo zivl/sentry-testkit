@@ -36,7 +36,7 @@ export function createTestkit(): Testkit {
       },
 
       stopListening: (page: any) => {
-        page.removeListener('request', puppeteerHandler)
+        page.off('request', puppeteerHandler)
       },
     },
 

@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.10](https://github.com/zivl/sentry-testkit/compare/v5.0.9...v5.0.10) (2025-02-26)
+
 ### [5.0.9](https://github.com/zivl/sentry-testkit/compare/v5.0.8...v5.0.9) (2024-03-01)
 
 ### [5.0.8](https://github.com/zivl/sentry-testkit/compare/v5.0.7...v5.0.8) (2023-11-21)

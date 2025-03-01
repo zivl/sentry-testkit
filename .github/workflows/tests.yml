@@ -24,11 +24,11 @@ jobs:
 
       - name: Install Sentry packages
         run: |
-          npm install @sentry/browser@${{ matrix.sentry-version }}
-          npm install @sentry/node@${{ matrix.sentry-version }}
-          npm install @sentry/react@${{ matrix.sentry-version }}
-          npm install @sentry/tracing@${{ matrix.sentry-version }}
-          npm install @sentry/types@${{ matrix.sentry-version }}
+          npm install @sentry/browser@${{ matrix.sentry-version }} --no-save
+          npm install @sentry/node@${{ matrix.sentry-version }} --no-save
+          npm install @sentry/react@${{ matrix.sentry-version }} --no-save
+          npm install @sentry/tracing@${{ matrix.sentry-version }} --no-save
+          npm install @sentry/types@${{ matrix.sentry-version }} --no-save
 
       - run: npm run build
       - run: npm test

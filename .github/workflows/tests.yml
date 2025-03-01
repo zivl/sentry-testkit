@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+        sentry-version: [7.x, 8.x, 9.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -20,5 +21,14 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+
+      - name: Install Sentry packages
+        run: |
+          npm install @sentry/browser@${{ matrix.sentry-version }}
+          npm install @sentry/node@${{ matrix.sentry-version }}
+          npm install @sentry/react@${{ matrix.sentry-version }}
+          npm install @sentry/tracing@${{ matrix.sentry-version }}
+          npm install @sentry/types@${{ matrix.sentry-version }}
+
       - run: npm run build
       - run: npm test

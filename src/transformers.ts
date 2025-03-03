@@ -29,6 +29,11 @@ export function transformTransaction(item: any): Transaction {
   return {
     name: item.transaction,
     traceId: item.contexts.trace.trace_id,
+    spanId: item.contexts.trace.span_id,
+    status: item.contexts.trace.status,
+    data: item.contexts.trace?.data ?? {},
+    op: item.contexts.trace?.op ?? null,
+    parentSpanId: item.contexts.trace?.parent_span_id ?? null,
     release: item.release,
     tags: item.tags || {},
     extra: item.extra,

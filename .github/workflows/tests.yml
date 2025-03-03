@@ -12,8 +12,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-        sentry-version: [^7.0.0, ^8.0.0, ^9.0.0]
-        sentry-tracing-version: [^7.0.0]
+        sentry-version: [^7.0.0]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -28,7 +27,6 @@ jobs:
           npm install @sentry/browser@${{ matrix.sentry-version }} --no-save
           npm install @sentry/node@${{ matrix.sentry-version }} --no-save
           npm install @sentry/react@${{ matrix.sentry-version }} --no-save
-          npm install @sentry/tracing@${{ matrix.sentry-tracing-version }} --no-save
           npm install @sentry/types@${{ matrix.sentry-version }} --no-save
 
       - run: npm run build

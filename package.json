@@ -54,7 +54,7 @@
     "@sentry/browser": "^7.120.3",
     "@sentry/node": "^7.77.0",
     "@sentry/react": "^7.120.3",
-    "@sentry/tracing": "^7.77.0",
+    "@sentry/tracing": "^7.120.3",
     "@sentry/types": "^7.77.0",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.0",

@@ -47,15 +47,20 @@ declare namespace sentryTestkit {
   interface Transaction {
     name: string
     traceId: string
+    spanId: string
+    parentSpanId?: string | null
+    data?: Record<string, any>
+    status?: string | null
+    op?: string | null
     release?: string
-    extra?: Record<string, unknown>
-    tags: Record<string, unknown>
+    extra?: Record<string, any>
+    tags: Record<string, any>
     spans: Span[]
   }
 
   export interface Testkit {
     puppeteer: {
-      startListening(page: Page, baseUrl?: String): void
+      startListening(page: Page, baseUrl?: string): void
       stopListening(page: Page): void
     }
     reports(): Report[]

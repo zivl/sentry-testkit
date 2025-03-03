@@ -1,9 +1,9 @@
 import path from 'path'
 import execa from 'execa'
-import fetch from 'node-fetch'
 import waitForExpect from 'wait-for-expect'
 import sentryTestkit from '../src/index'
 
+const fetch = require('node-fetch')
 const { testkit, localServer } = sentryTestkit()
 const PROJECT_ID = '000001'
 const DUMMY_DSN = `http://acacaeaccacacacabcaacdacdacadaca@sentry.io/${PROJECT_ID}`

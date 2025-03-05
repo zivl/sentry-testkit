@@ -1,9 +1,7 @@
-import { Event } from '@sentry/types'
+import { Event, ErrorEvent } from '@sentry/core'
 import * as BrowserSentry from '@sentry/browser'
 import sentryTestkit from '../src'
 import { createCommonTests } from './commonTests'
-
-import '@sentry/tracing'
 
 const { testkit, sentryTransport } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
@@ -18,7 +16,7 @@ describe('sentry test-kit test suite - @sentry/browser', function() {
       transport: sentryTransport,
       beforeSend(event: Event) {
         event.extra = { os: 'mac-os' }
-        return event
+        return event as ErrorEvent
       },
     })
   )

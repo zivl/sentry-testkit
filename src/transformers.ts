@@ -1,4 +1,3 @@
-import { Span } from '@sentry/types'
 import { Report, ReportError, Transaction } from './types'
 
 export function transformReport(report: any): Report {
@@ -34,16 +33,10 @@ export function transformTransaction(item: any): Transaction {
     data: item.contexts.trace?.data ?? {},
     op: item.contexts.trace?.op ?? null,
     parentSpanId: item.contexts.trace?.parent_span_id ?? null,
+    attributes: item.contexts.trace?.attributes ?? {},
     release: item.release,
     tags: item.tags || {},
     extra: item.extra,
-    spans: item.spans.map((span: Span) => ({
-      // @ts-expect-error
-      id: span.span_id || span.spanId,
-      op: span.op,
-      // @ts-expect-error
-      parentSpanId: span.parent_span_id || span.parentSpanId,
-      description: span.description,
-    })),
+    spans: item.spans,
   }
 }

@@ -3,8 +3,6 @@ import nock from 'nock'
 import sentryTestkit from '../src/index'
 import { createCommonTests } from './commonTests'
 
-require('@sentry/tracing')
-
 const { testkit, initNetworkInterceptor } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
 describe('sentry test-kit test suite - network interception', function() {

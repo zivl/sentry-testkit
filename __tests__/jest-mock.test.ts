@@ -1,6 +1,5 @@
 import '../src/jestMock'
 import * as Sentry from '@sentry/browser'
-import '@sentry/tracing'
 import { createCommonTests } from './commonTests'
 
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'

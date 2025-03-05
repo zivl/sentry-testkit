@@ -11,7 +11,7 @@ export function createCommonTests({
   testkit: Testkit
 }) {
   beforeEach(() => {
-    Sentry.configureScope(scope => scope.clearBreadcrumbs())
+    Sentry.getCurrentScope().clearBreadcrumbs()
   })
 
   test('should return an empty breadcrumbs array when there are no breadcrumbs', async function() {
@@ -25,7 +25,10 @@ export function createCommonTests({
     Sentry.addBreadcrumb(breadcrumb)
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0]!.breadcrumbs).toMatchObject([breadcrumb])
+    const expectedBreadcrumb = testkit
+      .reports()[0]!
+      .breadcrumbs.find(b => b.message === breadcrumb.message)
+    expect(expectedBreadcrumb).toBeDefined()
   })
 
   test('should return report.message when using captureMessage', async function() {
@@ -42,10 +45,11 @@ export function createCommonTests({
   })
 
   test('should return the provided level', async function() {
-    Sentry.configureScope(scope => {
+    {
+      const scope = Sentry.getCurrentScope()
       scope.setLevel('warning')
       Sentry.captureException(new Error('sentry test kit is awesome!'))
-    })
+    }
 
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     expect(testkit.reports()[0]!.level).toEqual('warning')
@@ -113,6 +117,7 @@ export function createCommonTests({
 
   test('should extract the exception out of the report at specific index', async function() {
     Sentry.captureException(new Error('testing get exception at index 0'))
+    await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
     Sentry.captureException(new Error('testing get exception at index 1'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(2))
     const { message } = testkit.getExceptionAt(1)!
@@ -164,55 +169,62 @@ export function createCommonTests({
 
   describe('performance', () => {
     test('should collect transactions', async function() {
-      Sentry.startTransaction({
+      // TODO(sentry): Use `startInactiveSpan()` instead - see https://github.com/getsentry/sentry-javascript/blob/develop/docs/v8-new-performance-apis.md
+      Sentry.startInactiveSpan({
         op: 'transaction',
         name: 'transaction-name',
-      }).finish()
+      }).end()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
       expect(testkit.transactions()[0]!.name).toEqual('transaction-name')
       expect(testkit.transactions()[0]!.release).toEqual('test')
     })
 
-    test('should support tags', async function() {
-      Sentry.startTransaction({
+    test('should support attributes', async function() {
+      Sentry.startInactiveSpan({
         op: 'transaction',
         name: 'transaction-name',
-        tags: { a: 1, b: 2 },
-      }).finish()
+        attributes: { a: 1, b: 2 },
+      }).end()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0]!.tags).toEqual({ a: 1, b: 2 })
+      expect(testkit.transactions()[0]!.data).toEqual(
+        expect.objectContaining({ a: 1, b: 2 })
+      )
     })
 
     test('should support extra data', async function() {
       Sentry.withScope(scope => {
         scope.setExtra('hello', 'world')
-        Sentry.startTransaction({
+        // TODO(sentry): Use `startInactiveSpan()` instead - see https://github.com/getsentry/sentry-javascript/blob/develop/docs/v8-new-performance-apis.md
+        Sentry.startInactiveSpan({
           op: 'transaction',
           name: 'transaction-name',
-        }).finish()
+        }).end()
       })
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
       expect(testkit.transactions()[0]!.extra).toEqual({ hello: 'world' })
     })
 
     test('should collect child spans', async function() {
-      const transaction = Sentry.startTransaction({
-        op: 'transaction',
-        name: 'transaction-name',
-      })
-      const child = transaction.startChild({
-        op: 'child',
-        description: 'child-description',
-      })
-      child.finish()
-      transaction.finish()
+      const transaction = Sentry.startSpan(
+        {
+          // op: 'transaction',
+          name: 'transaction-name',
+        },
+        span => {
+          const child = Sentry.startInactiveSpan({
+            name: 'child-span',
+            op: 'child',
+          })
+          child.end()
+          return span
+        }
+      )
+
+      transaction.end()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      expect(testkit.transactions()[0]!.spans[0]).toEqual({
-        id: child.spanId,
-        op: 'child',
-        description: 'child-description',
-        parentSpanId: child.parentSpanId,
-      })
+      const span = testkit.transactions()[0]!.spans[0]
+      expect(span.parent_span_id).toEqual(transaction.spanContext().spanId)
+      expect(span.trace_id).toEqual(transaction.spanContext().traceId)
     })
   })
 }

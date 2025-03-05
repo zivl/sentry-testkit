@@ -1,7 +1,5 @@
 const Sentry = require('@sentry/node')
 
-require('@sentry/tracing')
-
 const dsn = process.argv[2]
 Sentry.init({
   dsn,
@@ -10,11 +8,14 @@ Sentry.init({
   transport: Sentry.makeNodeTransport,
   stackParser: Sentry.defaultStackParser,
 })
-const transaction = Sentry.startTransaction({
+// TODO(sentry): Use `startInactiveSpan()` instead - see https://github.com/getsentry/sentry-javascript/blob/develop/docs/v8-new-performance-apis.md
+const transaction = Sentry.startInactiveSpan({
   op: 'transaction',
   name: 'transaction-name',
 })
-transaction
-  .startChild({ op: 'child-span', description: 'child-description' })
-  .finish()
+const childSpan = transaction.startChild({
+  op: 'child-span',
+  description: 'child-description',
+})
+childSpan.finish()
 transaction.finish()

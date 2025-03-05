@@ -2,8 +2,6 @@ import * as NodeSentry from '@sentry/node'
 import sentryTestkit from '../src/index'
 import { createCommonTests } from './commonTests'
 
-require('@sentry/tracing')
-
 const { testkit, sentryTransport } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'
 const Sentry = NodeSentry

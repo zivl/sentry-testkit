@@ -5,7 +5,8 @@ import {
   SeverityLevel,
   Stacktrace,
   Transport,
-} from '@sentry/types'
+  SpanAttributes,
+} from '@sentry/core'
 
 export = sentryTestkit
 
@@ -39,9 +40,12 @@ declare namespace sentryTestkit {
 
   interface Span {
     id: string
+    span_id: string
     op?: string
     description?: string
     parentSpanId: string
+    parent_span_id?: string
+    trace_id?: string
   }
 
   interface Transaction {
@@ -55,6 +59,7 @@ declare namespace sentryTestkit {
     release?: string
     extra?: Record<string, any>
     tags: Record<string, any>
+    attributes: SpanAttributes
     spans: Span[]
   }
 

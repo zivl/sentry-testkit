@@ -3,15 +3,22 @@
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 ## [6.1.0](https://github.com/zivl/sentry-testkit/compare/v5.0.10...v6.1.0) (2025-03-06)
+Please take a look at the [migration guide for version 6](https://zivl.github.io/sentry-testkit/docs/migration/version-6) to check out latest additions and breaking changes.
 
-
+### BREAKING CHANGES: 
+* change support for nodejs versions [#222](https://github.com/zivl/sentry-testkit/pull/222)
 ### Features
 
-* adding support for sentry@8 and sentry@9 packages for node, react and browser ([65a9191](https://github.com/zivl/sentry-testkit/commit/65a91912d1ec6fcb9da08aae59f01800eaa47d3c)), closes [#200](https://github.com/zivl/sentry-testkit/issues/200)
+* adding support for sentry@8 and sentry@9 packages for node, react and browser [#224](https://github.com/zivl/sentry-testkit/pull/224), closes [#200](https://github.com/zivl/sentry-testkit/issues/200)
+* ci: add multiple sentry versions and testing environments [#221](https://github.com/zivl/sentry-testkit/pull/221)
+* chore: add spanId and parentSpanId [#223](https://github.com/zivl/sentry-testkit/pull/223) closes [#216](https://github.com/zivl/sentry-testkit/issues/216)
 * bump major version to 6.0.0 ([a2e62f2](https://github.com/zivl/sentry-testkit/commit/a2e62f2f5edc481d9edcfedb95aecd0b20883086))
 
-## [5.1.0](https://github.com/zivl/sentry-testkit/compare/v5.0.10...v5.1.0) (2025-03-06)
+### Docs
+* docs: upgrade docs engine and add migration guide from 5-to-6 [#225](https://github.com/zivl/sentry-testkit/pull/225)
 
+
+## [5.1.0](https://github.com/zivl/sentry-testkit/compare/v5.0.10...v5.1.0) (2025-03-06)
 
 ### Features
 

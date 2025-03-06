@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://github.com/zivl/sentry-testkit/compare/v5.0.10...v5.1.0) (2025-03-06)
+
+
+### Features
+
+* adding support for sentry@8 and sentry@9 packages for node, react and browser ([65a9191](https://github.com/zivl/sentry-testkit/commit/65a91912d1ec6fcb9da08aae59f01800eaa47d3c)), closes [#200](https://github.com/zivl/sentry-testkit/issues/200)
+
 ### [5.0.10](https://github.com/zivl/sentry-testkit/compare/v5.0.9...v5.0.10) (2025-02-26)
 
 ### [5.0.9](https://github.com/zivl/sentry-testkit/compare/v5.0.8...v5.0.9) (2024-03-01)

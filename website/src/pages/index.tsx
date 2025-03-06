@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import clsx from 'clsx'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Link from '@docusaurus/Link'
@@ -32,7 +32,7 @@ export default function Home(): JSX.Element {
       description="Sentry Testkit enables Sentry to work natively in your application while running tests. The report is not really sent but rather logged locally into memory. In this way, the logged reports can be fetched for your own verification or any other purpose in your local development environment."
     >
       <HomepageHeader />
-      <header style={{height: 0, visibility: 'hidden'}}>
+      <header style={{ height: 0, visibility: 'hidden' }}>
         <h1>Welcome to Sentry Testkit!</h1>
       </header>
       <main>
@@ -60,12 +60,12 @@ export default function Home(): JSX.Element {
             src="https://github.com/zivl/sentry-testkit/workflows/Test/badge.svg"
           />
           <img
-            alt="sentry-testkit-v6"
-            src="https://img.shields.io/badge/Compatible%20with%20Sentry-v6-blue"
+            alt="sentry-testkit-v8"
+            src="https://img.shields.io/badge/Compatible%20with%20Sentry-v8-blue"
           />
           <img
-            alt="sentry-testkit-v7"
-            src="https://img.shields.io/badge/Compatible%20with%20Sentry-v7-blue"
+            alt="sentry-testkit-v9"
+            src="https://img.shields.io/badge/Compatible%20with%20Sentry-v9-blue"
           />
         </div>
         <div className="container">
@@ -105,8 +105,10 @@ export default function Home(): JSX.Element {
         >
           <h2>Ready to get started?</h2>
           <div className={styles.gettingReady}>
-            Testing error reporting doesn't have to be painful.<br/>
-            Setnry-Testkit will help you write less code while achieving better performance.
+            Testing error reporting doesn't have to be painful.
+            <br />
+            Setnry-Testkit will help you write less code while achieving better
+            performance.
           </div>
           <div className={styles.getStartedButtons}>
             <Highlight color="#25c2a0">

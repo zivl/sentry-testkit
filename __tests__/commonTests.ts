@@ -58,7 +58,13 @@ export function createCommonTests({
   test('should return an empty tags object when there are no tags', async function() {
     Sentry.captureException(new Error('sentry test kit is awesome!'))
     await waitForExpect(() => expect(testkit.reports()).toHaveLength(1))
-    expect(testkit.reports()[0]!.tags).toEqual({})
+    // @ts-expect-error
+    if (Sentry.SDK_NAME === 'sentry.javascript.react-native') {
+      // React Native SDK add default tags
+      expect(testkit.reports()[0]!.tags).toEqual(expect.anything())
+    } else {
+      expect(testkit.reports()[0]!.tags).toEqual({})
+    }
   })
 
   test('should return the original report', async function() {

@@ -1,0 +1,44 @@
+name: Expo React Native Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  expo-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+        sentry-version: [^6.11.0]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # Install root project dependencies first
+      - name: Install root dependencies
+        run: npm ci
+
+      # Build the main package
+      - name: Build main package
+        run: npm run build
+
+      # Install expo app dependencies
+      - name: Install Expo app dependencies
+        working-directory: ./expo-react-native-test-app
+        run: npm ci
+
+      # Install specific Sentry React Native version
+      - name: Install Sentry React Native package
+        working-directory: ./expo-react-native-test-app
+        run: npm install @sentry/react-native@${{ matrix.sentry-version }} --no-save
+
+      # Run the Expo app tests
+      - name: Run Expo app tests
+        working-directory: ./expo-react-native-test-app
+        run: npm test

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.2.0](https://github.com/zivl/sentry-testkit/compare/v6.1.0...v6.2.0) (2025-04-27)
+
+
+### Features
+
+* initialize expo-react-native-test-app with essential configurations ([#234](https://github.com/zivl/sentry-testkit/issues/234)) ([40c0b07](https://github.com/zivl/sentry-testkit/commit/40c0b0788086e1087905389b1e0fe015bf090579))
+
 ## [6.1.0](https://github.com/zivl/sentry-testkit/compare/v5.0.10...v6.1.0) (2025-03-06)
 Please take a look at the [migration guide for version 6](https://zivl.github.io/sentry-testkit/docs/migration/version-6) to check out latest additions and breaking changes.
 

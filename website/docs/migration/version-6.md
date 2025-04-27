@@ -19,6 +19,12 @@ The following Sentry SDKs for JavaScript packages are supported:
 - `@sentry/react-native`
 - `@sentry/types`
 
+### React Native Testing Support
+
+Version 6 introduces built-in support for testing React Native applications with `sentry-testkit`. This includes compatibility with both plain React Native and Expo-based projects. With this addition, you can now test your React Native applications using the same familiar `sentry-testkit` API.
+
+For detailed information on how to use `sentry-testkit` with React Native, see the [React Native Testing](/docs/react-native) documentation.
+
 ### spanId and parentSpanId support
 
 Version 6.1.0 introduces support for `spanId` and `parentSpanId` properties in your Sentry reports. These IDs are essential for performance monitoring and distributed tracing, allowing you to track the relationships between various spans and transactions in your application.

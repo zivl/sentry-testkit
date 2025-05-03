@@ -24,6 +24,8 @@ export function createTestkit(): Testkit {
       const { type, payload } = parseEnvelopeRequest(request.postData())
       if (type === 'transaction') {
         transactions.push(transformTransaction(payload))
+      } else if (type === 'event') {
+        reports.push(transformReport(payload))
       }
     }
   }

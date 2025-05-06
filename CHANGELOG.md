@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.2.1](https://github.com/zivl/sentry-testkit/compare/v6.2.0...v6.2.1) (2025-05-06)
+
+
+### Bug Fixes
+
+* handle event type in createTestkit to push reports correctly to address Puppeteer events ([a550064](https://github.com/zivl/sentry-testkit/commit/a55006423b3f106670f757bc532944a407e30574)), closes [#193](https://github.com/zivl/sentry-testkit/issues/193)
+
 ## [6.2.0](https://github.com/zivl/sentry-testkit/compare/v6.1.0...v6.2.0) (2025-04-27)
 
 

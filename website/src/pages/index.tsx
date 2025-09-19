@@ -107,7 +107,7 @@ export default function Home(): JSX.Element {
           <div className={styles.gettingReady}>
             Testing error reporting doesn't have to be painful.
             <br />
-            Setnry-Testkit will help you write less code while achieving better
+            Sentry-Testkit will help you write less code while achieving better
             performance.
           </div>
           <div className={styles.getStartedButtons}>

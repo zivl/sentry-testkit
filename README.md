@@ -16,7 +16,9 @@
 <a href="#">
     <img src="https://img.shields.io/badge/Compatible%20with%20Sentry-v9-blue" alt="sentry version 9">
   </a>
-</p>
+<a href="#">
+    <img src="https://img.shields.io/badge/Compatible%20with%20Sentry-v10-blue" alt="sentry version 10">
+  </a>
 </p>
 <p align="center">
 <a href="https://zivl.github.io/sentry-testkit/">

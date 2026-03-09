@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.3.0](https://github.com/zivl/sentry-testkit/compare/v6.2.2...v6.3.0) (2025-03-09)
+
+### Features
+
+* add support for Sentry JavaScript SDK v10 ([migration guide](https://docs.sentry.io/platforms/javascript/migration/v9-to-v10/)) ([#240](https://github.com/zivl/sentry-testkit/issues/240))
+* CI: add Sentry ^10.0.0 to test matrix and add Expo React Native test app job
+
+### Documentation
+
+* add [Sentry v10 compatibility](/docs/migration/sentry-v10) guide in Docusaurus website
+
 ### [6.2.2](https://github.com/zivl/sentry-testkit/compare/v6.2.1...v6.2.2) (2025-05-06)
 
 ### [6.2.1](https://github.com/zivl/sentry-testkit/compare/v6.2.0...v6.2.1) (2025-05-06)

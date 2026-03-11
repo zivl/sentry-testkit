@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.2.3](https://github.com/zivl/sentry-testkit/compare/v6.2.2...v6.2.3) (2026-03-11)
+
+
+### Bug Fixes
+
+* correct typo in homepage footer ([72c8e7e](https://github.com/zivl/sentry-testkit/commit/72c8e7ec100f31b76e5e2fcc8d98c3c228e33dc0))
+
 ### [6.3.0](https://github.com/zivl/sentry-testkit/compare/v6.2.2...v6.3.0) (2025-03-09)
 
 ### Features

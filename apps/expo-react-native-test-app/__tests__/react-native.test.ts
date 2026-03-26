@@ -14,6 +14,7 @@ describe('sentry test-kit test suite - @sentry/react-native', function() {
       release: 'test',
       tracesSampleRate: 1,
       transport: sentryTransport,
+      // @ts-expect-error
       beforeSend(event: Event) {
         event.extra = { os: 'mac-os' }
         return event as ErrorEvent

@@ -15,30 +15,24 @@ jobs:
         sentry-version: [^6.11.0]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'yarn'
 
-      # Install root project dependencies first
-      - name: Install root dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: yarn install --immutable
 
-      # Build the main package
       - name: Build main package
-        run: npm run build
+        run: yarn workspace sentry-testkit build
 
-      # Install expo app dependencies
-      - name: Install Expo app dependencies
-        working-directory: ./expo-react-native-test-app
-        run: npm ci
-
-      # Install specific Sentry React Native version
       - name: Install Sentry React Native package
-        working-directory: ./expo-react-native-test-app
-        run: npm install @sentry/react-native@${{ matrix.sentry-version }} --no-save
+        working-directory: ./apps/expo-react-native-test-app
+        run: yarn add @sentry/react-native@"${{ matrix.sentry-version }}"
 
-      # Run the Expo app tests
       - name: Run Expo app tests
-        working-directory: ./expo-react-native-test-app
-        run: npm test
+        run: yarn workspace expo-react-native-test-app test

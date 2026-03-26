@@ -15,19 +15,25 @@ jobs:
         sentry-version: [^8.0.0, ^9.0.0, ^10.0.0]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'yarn'
 
-      - run: npm ci
+      - name: Install dependencies
+        run: yarn install --immutable
 
       - name: Install Sentry packages
+        working-directory: ./packages/sentry-testkit
         run: |
-          npm install @sentry/browser@${{ matrix.sentry-version }} --no-save
-          npm install @sentry/node@${{ matrix.sentry-version }} --no-save
-          npm install @sentry/react@${{ matrix.sentry-version }} --no-save
-          npm install @sentry/types@${{ matrix.sentry-version }} --no-save
+          yarn add @sentry/browser@"${{ matrix.sentry-version }}" @sentry/node@"${{ matrix.sentry-version }}" @sentry/react@"${{ matrix.sentry-version }}" @sentry/types@"${{ matrix.sentry-version }}"
 
-      - run: npm run build
-      - run: npm test
+      - name: Build
+        run: yarn workspace sentry-testkit build
+
+      - name: Test
+        run: yarn workspace sentry-testkit test

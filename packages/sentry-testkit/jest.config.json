@@ -3,8 +3,7 @@
     "**/?(*.)+(spec|test).[jt]s?(x)"
   ],
   "modulePathIgnorePatterns": [
-    "dist",
-    "expo-react-native-test-app"
+    "dist"
   ],
   "testEnvironment": "node",
   "resetMocks": true

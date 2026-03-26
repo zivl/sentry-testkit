@@ -1,9 +1,10 @@
 {
   "permissions": {
     "allow": [
+      "Bash(yarn workspace:*)",
+      "Bash(yarn install:*)",
       "Bash(git restore:*)",
       "Bash(gh pr:*)",
-      "Bash(yarn workspace:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)"

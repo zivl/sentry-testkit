@@ -11,19 +11,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@zivl'
 
-      - run: npm ci
+      - name: Install dependencies
+        run: yarn install --immutable
 
-      - run: npm run build
+      - name: Build
+        run: yarn workspace sentry-testkit build
 
-      - run: npm test
+      - name: Test
+        run: yarn workspace sentry-testkit test
 
       - name: Publish to npm
-        run: npm publish --access public
+        run: yarn workspace sentry-testkit npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,7 +1,7 @@
 import { Event, ErrorEvent } from '@sentry/core'
 import * as ReactNativeSentry from '@sentry/react-native'
-import sentryTestkit from '../../src'
-import { createCommonTests } from '../../__tests__/commonTests'
+import sentryTestkit from 'sentry-testkit'
+import { createCommonTests } from '../../../packages/sentry-testkit/__tests__/commonTests'
 
 const { testkit, sentryTransport } = sentryTestkit()
 const DUMMY_DSN = 'https://acacaeaccacacacabcaacdacdacadaca@sentry.io/000001'

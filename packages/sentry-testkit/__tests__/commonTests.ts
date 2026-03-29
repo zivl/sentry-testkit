@@ -210,6 +210,21 @@ export function createCommonTests({
       expect(testkit.transactions()[0]!.extra).toEqual({ hello: 'world' })
     })
 
+    test('should expose user on transaction', async function() {
+      Sentry.withScope(scope => {
+        scope.setUser({ id: 'user-123', email: 'test@example.com' })
+        Sentry.startInactiveSpan({
+          op: 'transaction',
+          name: 'transaction-name',
+        }).end()
+      })
+      await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
+      expect(testkit.transactions()[0]!.user).toEqual({
+        id: 'user-123',
+        email: 'test@example.com',
+      })
+    })
+
     test('should collect child spans', async function() {
       const transaction = Sentry.startSpan(
         {

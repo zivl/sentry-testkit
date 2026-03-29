@@ -61,6 +61,7 @@ declare namespace sentryTestkit {
     tags: Record<string, any>
     attributes: SpanAttributes
     spans: Span[]
+    user?: User
   }
 
   export interface Testkit {

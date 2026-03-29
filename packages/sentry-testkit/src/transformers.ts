@@ -38,5 +38,6 @@ export function transformTransaction(item: any): Transaction {
     tags: item.tags || {},
     extra: item.extra,
     spans: item.spans,
+    user: item.user,
   }
 }

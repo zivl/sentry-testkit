@@ -3,7 +3,8 @@
   "packages": {
     "packages/sentry-testkit": {
       "release-type": "node",
-      "package-name": "sentry-testkit"
+      "package-name": "sentry-testkit",
+      "changelog-path": "CHANGELOG.md"
     }
   }
 }

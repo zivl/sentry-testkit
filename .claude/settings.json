@@ -7,7 +7,11 @@
       "Bash(gh pr:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(git checkout:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh api:*)"
     ]
   }
 }

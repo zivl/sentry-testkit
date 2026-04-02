@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.4.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v6.3.1...sentry-testkit-v6.4.0) (2026-03-30)
+
+
+### Features
+
+* expose user field on transactions ([6360a46](https://github.com/zivl/sentry-testkit/commit/6360a46926dd0f72648ca463b246d2258a04f2be)), closes [#265](https://github.com/zivl/sentry-testkit/issues/265)
+
 ### [6.3.0](https://github.com/zivl/sentry-testkit/compare/v6.2.2...v6.3.0) (2025-03-09)
 
 ### Features

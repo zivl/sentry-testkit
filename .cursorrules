@@ -1,0 +1,47 @@
+# Cursor Rules — sentry-testkit
+
+## Project
+
+sentry-testkit is a Yarn 4 monorepo. The main package lives in `packages/sentry-testkit/`.
+It intercepts Sentry SDK reports during tests (storing them in memory) so tests can assert on what was captured.
+
+## Commands
+
+```bash
+yarn build          # build the package
+yarn test           # run all tests
+yarn lint           # lint
+yarn test -- <pattern>   # run specific test file (from packages/sentry-testkit/)
+```
+
+Always run `yarn test` before finishing any change to `packages/sentry-testkit/`.
+
+## Architecture at a glance
+
+- `src/index.ts` / `src/browser.ts` — entry points; export `create()`
+- `src/testkit.ts` — in-memory store and Puppeteer integration
+- `src/sentryTransport.ts` — intercepts Sentry's outgoing envelope/event
+- `src/parsers.ts` + `src/transformers.ts` — parse raw envelopes → typed `Report`/`Transaction`
+- `src/types.ts` — all public TypeScript interfaces
+- `src/localServerApi.ts` — Express server that mimics Sentry's API (for local-server mode)
+- `browser.ts` must NEVER import Node.js / Express modules
+
+## Coding style
+
+- TypeScript everywhere; no `any` unless truly unavoidable
+- `const` over `let`; no `var`
+- Minimal side effects; clear names; no unnecessary abstractions
+- Comments only for non-obvious *why*, never for *what*
+
+## Git
+
+- Rebase on `master`, never merge
+- Squash to one commit per PR
+- Conventional commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`
+- Do not edit `CHANGELOG.md` manually — release-please owns it
+
+## Hard rules
+
+- No direct pushes to `master` — always open a PR
+- No secrets or `.env` files committed
+- Do not add Node.js imports to `browser.ts`

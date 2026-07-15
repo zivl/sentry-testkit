@@ -10,6 +10,38 @@ function getException(report: Report) {
   return report.error
 }
 
+function matches(value: string | undefined, matcher: string | RegExp) {
+  return typeof matcher === 'string'
+    ? value === matcher
+    : value !== undefined && matcher.test(value)
+}
+
+function waitFor<T>(
+  kind: string,
+  getItems: () => T[],
+  count: number,
+  { timeout = 1000 }: { timeout?: number } = {}
+): Promise<T[]> {
+  return new Promise((resolve, reject) => {
+    const startedAt = Date.now()
+    const check = () => {
+      const items = getItems()
+      if (items.length >= count) {
+        resolve(items)
+      } else if (Date.now() - startedAt >= timeout) {
+        reject(
+          new Error(
+            `Expected at least ${count} ${kind} within ${timeout}ms, but only ${items.length} were captured`
+          )
+        )
+      } else {
+        setTimeout(check, 10)
+      }
+    }
+    check()
+  })
+}
+
 export function createTestkit(): Testkit {
   let reports: Report[] = []
   let transactions: Transaction[] = []
@@ -63,6 +95,18 @@ export function createTestkit(): Testkit {
       return logs
     },
 
+    waitForReports(count, options) {
+      return waitFor('reports', () => reports, count, options)
+    },
+
+    waitForTransactions(count, options) {
+      return waitFor('transactions', () => transactions, count, options)
+    },
+
+    waitForLogs(count, options) {
+      return waitFor('logs', () => logs, count, options)
+    },
+
     reset() {
       reports = []
       transactions = []
@@ -82,6 +126,28 @@ export function createTestkit(): Testkit {
         const err = getException(r)
         return err && err.name === e.name && err.message === e.message
       })
+    },
+
+    findReportByMessage(message: string | RegExp) {
+      return reports.find(
+        r => matches(r.message, message) || matches(r.error?.message, message)
+      )
+    },
+
+    findTransaction(name: string | RegExp) {
+      return transactions.find(t => matches(t.name, name))
+    },
+
+    reportsWithTag(key: string, value?: string) {
+      return reports.filter(
+        r => key in r.tags && (value === undefined || r.tags[key] === value)
+      )
+    },
+
+    transactionsWithTag(key: string, value?: any) {
+      return transactions.filter(
+        t => key in t.tags && (value === undefined || t.tags[key] === value)
+      )
     },
 
     isExist(e: ReportError) {

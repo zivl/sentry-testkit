@@ -65,6 +65,20 @@ describe('sentry test-kit test suite - structured logs', function() {
     expect(log.originalLog.level).toBe('info')
   })
 
+  test('waitForLogs resolves once the expected count is reached', async () => {
+    Sentry.logger.info('awaited log')
+    Sentry.flush()
+
+    const logs = await testkit.waitForLogs(1)
+    expect(logs[0]!.message).toBe('awaited log')
+  })
+
+  test('waitForLogs rejects with a descriptive error on timeout', async () => {
+    await expect(testkit.waitForLogs(1, { timeout: 50 })).rejects.toThrow(
+      'Expected at least 1 logs within 50ms, but only 0 were captured'
+    )
+  })
+
   test('reset() clears captured logs', async () => {
     Sentry.logger.info('to be cleared')
     await Sentry.flush()

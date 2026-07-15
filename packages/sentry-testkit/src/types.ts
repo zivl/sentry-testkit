@@ -27,6 +27,11 @@ declare namespace sentryTestkit {
     stacktrace: Stacktrace
   }
 
+  interface ReportFlag {
+    flag: string
+    result: any
+  }
+
   interface Report {
     breadcrumbs: Breadcrumb[]
     error?: ReportError
@@ -36,6 +41,7 @@ declare namespace sentryTestkit {
     release?: string
     user?: User
     tags: { [key: string]: string }
+    flags: ReportFlag[]
     originalReport: Event
   }
 
@@ -75,6 +81,10 @@ declare namespace sentryTestkit {
     originalLog: any
   }
 
+  interface WaitForOptions {
+    timeout?: number
+  }
+
   export interface Testkit {
     puppeteer: {
       startListening(page: Page, baseUrl?: string): void
@@ -83,9 +93,19 @@ declare namespace sentryTestkit {
     reports(): Report[]
     transactions(): Transaction[]
     logs(): Log[]
+    waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
+    waitForTransactions(
+      count: number,
+      options?: WaitForOptions
+    ): Promise<Transaction[]>
+    waitForLogs(count: number, options?: WaitForOptions): Promise<Log[]>
     reset(): void
     getExceptionAt(index: number): ReportError | undefined
     findReport(e: Error): Report | undefined
+    findReportByMessage(message: string | RegExp): Report | undefined
+    findTransaction(name: string | RegExp): Transaction | undefined
+    reportsWithTag(key: string, value?: string): Report[]
+    transactionsWithTag(key: string, value?: any): Transaction[]
     isExist(e: Error): boolean
   }
 

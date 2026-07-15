@@ -11,9 +11,6 @@
 </p>
 <p align="center">
 <a href="#">
-    <img src="https://img.shields.io/badge/Compatible%20with%20Sentry-v8-blue" alt="sentry version 8">
-  </a>
-<a href="#">
     <img src="https://img.shields.io/badge/Compatible%20with%20Sentry-v9-blue" alt="sentry version 9">
   </a>
 <a href="#">

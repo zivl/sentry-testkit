@@ -110,6 +110,40 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.transactions()[0]!.name).toBe('test-transaction')
   })
 
+  test('captures logs from a log container item', () => {
+    const testkit = createTestkit()
+    const logItems = JSON.stringify({
+      items: [
+        {
+          timestamp: 1717081538.235,
+          level: 'info',
+          body: 'user logged in',
+          trace_id: 'abcd1234',
+          attributes: { userId: { value: 42, type: 'integer' } },
+        },
+        {
+          timestamp: 1717081539.001,
+          level: 'error',
+          body: 'something failed',
+        },
+      ],
+    })
+    const body =
+      `${envelopeHeader}\n` +
+      `{"type":"log","item_count":2,"content_type":"application/vnd.sentry.items.log+json"}\n` +
+      `${logItems}\n` +
+      `{"type":"event"}\n${eventPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.logs()).toHaveLength(2)
+    expect(testkit.logs()[0]!.message).toBe('user logged in')
+    expect(testkit.logs()[0]!.traceId).toBe('abcd1234')
+    expect(testkit.logs()[0]!.attributes['userId']).toBe(42)
+    expect(testkit.logs()[1]!.level).toBe('error')
+    expect(testkit.reports()).toHaveLength(1)
+  })
+
   test('ignores unknown item types without throwing', () => {
     const testkit = createTestkit()
     const body = `${envelopeHeader}\n{"type":"session"}\n${sessionPayload}`

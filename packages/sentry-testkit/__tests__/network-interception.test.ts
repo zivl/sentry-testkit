@@ -47,6 +47,14 @@ describe('sentry test-kit test suite - network interception', function() {
     })
   })
 
+  afterAll(() => {
+    // Jest reuses worker processes across test files — leaving net connect
+    // disabled breaks suites that talk to a real local server afterwards
+    nock.cleanAll()
+    nock.enableNetConnect()
+    nock.restore()
+  })
+
   beforeEach(() => testkit.reset())
 
   createCommonTests({ Sentry, testkit })

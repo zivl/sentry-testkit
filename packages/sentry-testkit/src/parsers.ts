@@ -1,4 +1,8 @@
-import { transformReport, transformTransaction } from './transformers'
+import {
+  transformLog,
+  transformReport,
+  transformTransaction,
+} from './transformers'
 import { Testkit } from './types'
 
 const dsnKeys = 'source protocol user pass host port path'.split(' ')
@@ -123,6 +127,10 @@ export function handleEnvelopeRequestData(
       testkit.transactions().push(transformTransaction(payload))
     } else if (header.type === 'event') {
       testkit.reports().push(transformReport(payload))
+    } else if (header.type === 'log') {
+      // Log items are containers: their payload is { items: SerializedLog[] }
+      const logs = (payload && payload.items) || []
+      logs.forEach((log: any) => testkit.logs().push(transformLog(log)))
     }
   })
 }

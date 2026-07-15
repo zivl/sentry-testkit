@@ -27,6 +27,7 @@ If you are upgrading your application to Sentry v10, be aware of the [official m
 | sentry-testkit | Sentry JS SDK (browser / node / react) |
 |----------------|----------------------------------------|
 | 6.x            | v8, v9, v10                             |
+| 7.x            | v9, v10                                 |
 
 For React Native, use `@sentry/react-native` with a version that matches your chosen Sentry JavaScript SDK line (see [Sentry React Native docs](https://docs.sentry.io/platforms/react-native/)).
 

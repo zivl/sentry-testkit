@@ -1,4 +1,4 @@
-import { parseEnvelopeRequest } from './parsers'
+import { parseEnvelope } from './parsers'
 import { transformReport, transformTransaction } from './transformers'
 import { Report, ReportError, Testkit, Transaction } from './types'
 
@@ -21,12 +21,13 @@ export function createTestkit(): Testkit {
       reports.push(transformReport(JSON.parse(request.postData())))
     }
     if (/\/api\/[0-9]*\/envelope/.test(path)) {
-      const { type, payload } = parseEnvelopeRequest(request.postData())
-      if (type === 'transaction') {
-        transactions.push(transformTransaction(payload))
-      } else if (type === 'event') {
-        reports.push(transformReport(payload))
-      }
+      parseEnvelope(request.postData()).forEach(({ header, payload }) => {
+        if (header.type === 'transaction') {
+          transactions.push(transformTransaction(payload))
+        } else if (header.type === 'event') {
+          reports.push(transformReport(payload))
+        }
+      })
     }
   }
 

@@ -1,4 +1,4 @@
-import { Report, ReportError, Transaction } from './types'
+import { Log, Report, ReportError, Transaction } from './types'
 
 export function transformReport(report: any): Report {
   const exception =
@@ -21,6 +21,28 @@ export function transformReport(report: any): Report {
     user: report.user,
     tags: report.tags || {},
     originalReport: report,
+  }
+}
+
+export function transformLog(log: any): Log {
+  // Serialized log attributes are typed wrappers, e.g. { value: 42, type: 'integer' }
+  const attributes: { [key: string]: any } = {}
+  Object.keys(log.attributes || {}).forEach(key => {
+    const attribute = log.attributes[key]
+    attributes[key] =
+      attribute && typeof attribute === 'object' && 'value' in attribute
+        ? attribute.value
+        : attribute
+  })
+
+  return {
+    level: log.level,
+    message: log.body,
+    attributes,
+    timestamp: log.timestamp,
+    traceId: log.trace_id,
+    severityNumber: log.severity_number,
+    originalLog: log,
   }
 }
 

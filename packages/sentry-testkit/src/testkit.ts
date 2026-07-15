@@ -1,6 +1,10 @@
 import { parseEnvelope } from './parsers'
-import { transformReport, transformTransaction } from './transformers'
-import { Report, ReportError, Testkit, Transaction } from './types'
+import {
+  transformLog,
+  transformReport,
+  transformTransaction,
+} from './transformers'
+import { Log, Report, ReportError, Testkit, Transaction } from './types'
 
 function getException(report: Report) {
   return report.error
@@ -9,6 +13,7 @@ function getException(report: Report) {
 export function createTestkit(): Testkit {
   let reports: Report[] = []
   let transactions: Transaction[] = []
+  let logs: Log[] = []
 
   let puppeteerHandler: any = null
   const createPuppeteerHandler = (baseUrl: string) => (request: any) => {
@@ -26,6 +31,9 @@ export function createTestkit(): Testkit {
           transactions.push(transformTransaction(payload))
         } else if (header.type === 'event') {
           reports.push(transformReport(payload))
+        } else if (header.type === 'log') {
+          const items = (payload && payload.items) || []
+          items.forEach((log: any) => logs.push(transformLog(log)))
         }
       })
     }
@@ -51,9 +59,14 @@ export function createTestkit(): Testkit {
       return transactions
     },
 
+    logs() {
+      return logs
+    },
+
     reset() {
       reports = []
       transactions = []
+      logs = []
     },
 
     getExceptionAt(index: number) {

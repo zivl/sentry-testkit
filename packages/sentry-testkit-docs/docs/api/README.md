@@ -129,6 +129,34 @@ test('transactions example', async function() {
 })
 ```
 
+### `logs()`
+Gets all captured [structured logs](https://docs.sentry.io/platforms/javascript/logs/) (requires `enableLogs: true` in `Sentry.init`).
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>Log</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `level` | <code>string</code> | `trace` \| `debug` \| `info` \| `warn` \| `error` \| `fatal` |
+| `message` | <code>string</code> | The log body |
+| `attributes` | <code>Object</code> | Log attributes as plain values, e.g. `{ userId: 42 }` |
+| `timestamp` | <code>number</code> | Epoch time in seconds |
+| `traceId` | <code>string</code> | The trace this log belongs to, if any |
+| `severityNumber` | <code>number</code> | The numeric severity, if any |
+| `originalLog` | <code>Object</code> | The raw log item as sent by the SDK |
+
+For example
+```javascript
+test('logs example', async function() {
+    Sentry.logger.info('user logged in', { userId: 42 })
+    await Sentry.flush()
+
+    const [log] = testkit.logs()
+    expect(log.level).toEqual('info')
+    expect(log.message).toEqual('user logged in')
+    expect(log.attributes.userId).toEqual(42)
+})
+```
+
 ### `reset()`
 Resets the testkit state and clear all existing reports.
 

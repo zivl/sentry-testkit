@@ -1,5 +1,9 @@
 import { Event } from '@sentry/types'
-import { transformReport, transformTransaction } from './transformers'
+import {
+  transformLog,
+  transformReport,
+  transformTransaction,
+} from './transformers'
 import { Testkit } from './types'
 
 export function createSentryTransport(testkit: Testkit): any {
@@ -28,6 +32,10 @@ export function createSentryTransport(testkit: Testkit): any {
           testkit.transactions().push(transformTransaction(data))
         } else if (headers.type === 'event') {
           testkit.reports().push(transformReport(data))
+        } else if (headers.type === 'log') {
+          // Log items are containers: their payload is { items: SerializedLog[] }
+          const logs = (data && data.items) || []
+          logs.forEach((log: any) => testkit.logs().push(transformLog(log)))
         }
       })
 

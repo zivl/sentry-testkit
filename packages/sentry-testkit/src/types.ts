@@ -3,6 +3,7 @@ import {
   Breadcrumb,
   User,
   SeverityLevel,
+  LogSeverityLevel,
   Stacktrace,
   Transport,
   SpanAttributes,
@@ -64,6 +65,16 @@ declare namespace sentryTestkit {
     user?: User
   }
 
+  interface Log {
+    level: LogSeverityLevel
+    message: string
+    attributes: { [key: string]: any }
+    timestamp: number
+    traceId?: string
+    severityNumber?: number
+    originalLog: any
+  }
+
   export interface Testkit {
     puppeteer: {
       startListening(page: Page, baseUrl?: string): void
@@ -71,6 +82,7 @@ declare namespace sentryTestkit {
     }
     reports(): Report[]
     transactions(): Transaction[]
+    logs(): Log[]
     reset(): void
     getExceptionAt(index: number): ReportError | undefined
     findReport(e: Error): Report | undefined

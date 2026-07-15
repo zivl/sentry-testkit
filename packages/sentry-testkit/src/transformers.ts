@@ -20,6 +20,7 @@ export function transformReport(report: any): Report {
     release: report.release,
     user: report.user,
     tags: report.tags || {},
+    flags: report.contexts?.flags?.values ?? [],
     originalReport: report,
   }
 }

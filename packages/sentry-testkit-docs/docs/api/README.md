@@ -44,8 +44,35 @@ test('reports example', async function() {
 })
 ```
 :::info
-Here we use [`wait-for-expect`](https://www.npmjs.com/package/wait-for-expect) library to emphasize that sometimes we need to **wait** until the report is being sent as it is done asynchronously.
+Here we use [`wait-for-expect`](https://www.npmjs.com/package/wait-for-expect) library to emphasize that sometimes we need to **wait** until the report is being sent as it is done asynchronously. You can also use the built-in [`waitForReports`](#waitforreportscount-options) helper instead.
 :::
+
+Each report also exposes evaluated [feature flags](https://docs.sentry.io/platforms/javascript/feature-flags/) as `report.flags` — an array of `{ flag, result }` objects taken from the event's `contexts.flags`, or an empty array when no flags were attached:
+
+```javascript
+expect(testkit.reports()[0].flags).toEqual([{ flag: 'new-checkout', result: true }])
+```
+
+### `waitForReports(count, options)`
+Waits until at least `count` reports have been captured. This replaces "sleep then assert" patterns and third-party polling helpers — Sentry transports are asynchronous, so reports may not be captured yet when your assertion runs.
+
+**Arguments**
+* count: `Number` - the minimum number of reports to wait for
+* options: `Object` *(optional)* - `{ timeout: Number }`, defaults to `{ timeout: 1000 }` (milliseconds)
+
+**Returns**: <code>Promise&lt;Array&gt;</code> - resolves with the captured reports once the count is reached; rejects with a descriptive error if the timeout elapses first.
+
+For example
+```javascript
+test('waitForReports example', async function() {
+    Sentry.captureException(new Error('sentry test kit is awesome!'))
+
+    const reports = await testkit.waitForReports(1)
+    expect(reports[0].error.message).toEqual('sentry test kit is awesome!')
+})
+```
+
+Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)` and `waitForLogs(count, options)`.
 
 ### `findReport(error)`
 Finds a report by a given error.
@@ -70,6 +97,66 @@ test('findReport example', async function() {
     expect(report).toBeDefined()
 })
 ```
+
+### `findReportByMessage(message)`
+Finds a report by its message — either a `captureMessage` message or a captured error's message.
+
+**Arguments**
+* message: `String` | `RegExp` - exact message to match, or a regular expression to test against
+
+**Returns**: <code>Report</code> \| <code>undefined</code> - the first matching report. `undefined` otherwise.
+
+For example
+```javascript
+test('findReportByMessage example', async function() {
+    Sentry.captureException(new Error('failed to fetch user 42'))
+    await testkit.waitForReports(1)
+
+    expect(testkit.findReportByMessage(/user \d+/)).toBeDefined()
+})
+```
+
+### `findTransaction(name)`
+Finds a transaction by its name.
+
+**Arguments**
+* name: `String` | `RegExp` - exact transaction name to match, or a regular expression to test against
+
+**Returns**: <code>Transaction</code> \| <code>undefined</code> - the first matching transaction. `undefined` otherwise.
+
+For example
+```javascript
+test('findTransaction example', async function() {
+    Sentry.startInactiveSpan({ op: 'transaction', name: 'checkout-flow' }).end()
+    await testkit.waitForTransactions(1)
+
+    expect(testkit.findTransaction(/^checkout/)).toBeDefined()
+})
+```
+
+### `reportsWithTag(key, value)`
+Gets all reports carrying a given tag, optionally with a specific value.
+
+**Arguments**
+* key: `String` - the tag key to look for
+* value: `String` *(optional)* - when provided, only reports whose tag equals this value are returned
+
+**Returns**: <code>Array</code> - the matching reports (empty array when none match).
+
+For example
+```javascript
+test('reportsWithTag example', async function() {
+    Sentry.withScope(scope => {
+        scope.setTag('section', 'billing')
+        Sentry.captureException(new Error('tagged error'))
+    })
+    await testkit.waitForReports(1)
+
+    expect(testkit.reportsWithTag('section', 'billing')).toHaveLength(1)
+})
+```
+
+A sibling helper with the same signature exists for transactions: `transactionsWithTag(key, value)`.
 
 ### `isExist(error)`
 Checks whether a given error exist (i.e. has been reported)

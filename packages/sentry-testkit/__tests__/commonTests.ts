@@ -248,4 +248,111 @@ export function createCommonTests({
       expect(span.trace_id).toEqual(transaction.spanContext().traceId)
     })
   })
+
+  describe('waitFor helpers', () => {
+    test('waitForReports resolves once the expected count is reached', async function() {
+      Sentry.captureException(new Error('wait for me'))
+      const reports = await testkit.waitForReports(1)
+      expect(reports).toHaveLength(1)
+      expect(reports[0]!.error!.message).toEqual('wait for me')
+    })
+
+    test('waitForReports rejects with a descriptive error on timeout', async function() {
+      await expect(testkit.waitForReports(1, { timeout: 50 })).rejects.toThrow(
+        'Expected at least 1 reports within 50ms, but only 0 were captured'
+      )
+    })
+
+    test('waitForTransactions resolves once the expected count is reached', async function() {
+      Sentry.startInactiveSpan({
+        op: 'transaction',
+        name: 'wait-transaction',
+      }).end()
+      const transactions = await testkit.waitForTransactions(1)
+      expect(transactions[0]!.name).toEqual('wait-transaction')
+    })
+  })
+
+  describe('query helpers', () => {
+    test('findReportByMessage matches a captured message', async function() {
+      Sentry.captureMessage('a message to find')
+      await testkit.waitForReports(1)
+      expect(testkit.findReportByMessage('a message to find')).toBeDefined()
+      expect(testkit.findReportByMessage('no such message')).toBeUndefined()
+    })
+
+    test('findReportByMessage matches an error message by regex', async function() {
+      Sentry.captureException(new Error('failed to fetch user 42'))
+      await testkit.waitForReports(1)
+      const report = testkit.findReportByMessage(/user \d+/)
+      expect(report).toBeDefined()
+      expect(report!.error!.message).toEqual('failed to fetch user 42')
+    })
+
+    test('findTransaction matches by exact name and by regex', async function() {
+      Sentry.startInactiveSpan({
+        op: 'transaction',
+        name: 'checkout-flow',
+      }).end()
+      await testkit.waitForTransactions(1)
+      expect(testkit.findTransaction('checkout-flow')).toBeDefined()
+      expect(testkit.findTransaction(/^checkout/)).toBeDefined()
+      expect(testkit.findTransaction('no-such-transaction')).toBeUndefined()
+    })
+
+    test('reportsWithTag filters by tag key and optionally by value', async function() {
+      Sentry.withScope(scope => {
+        scope.setTag('section', 'billing')
+        Sentry.captureException(new Error('tagged error'))
+      })
+      Sentry.captureException(new Error('untagged error'))
+      await testkit.waitForReports(2)
+
+      expect(testkit.reportsWithTag('section')).toHaveLength(1)
+      expect(testkit.reportsWithTag('section', 'billing')).toHaveLength(1)
+      expect(testkit.reportsWithTag('section', 'checkout')).toHaveLength(0)
+      expect(testkit.reportsWithTag('no-such-tag')).toHaveLength(0)
+    })
+
+    test('transactionsWithTag filters by tag key and optionally by value', async function() {
+      Sentry.withScope(scope => {
+        scope.setTag('flow', 'signup')
+        Sentry.startInactiveSpan({
+          op: 'transaction',
+          name: 'tagged-transaction',
+        }).end()
+      })
+      await testkit.waitForTransactions(1)
+
+      expect(testkit.transactionsWithTag('flow')).toHaveLength(1)
+      expect(testkit.transactionsWithTag('flow', 'signup')).toHaveLength(1)
+      expect(testkit.transactionsWithTag('flow', 'login')).toHaveLength(0)
+    })
+  })
+
+  describe('feature flags', () => {
+    test('exposes evaluated flags from contexts.flags', async function() {
+      Sentry.withScope(scope => {
+        scope.setContext('flags', {
+          values: [
+            { flag: 'new-checkout', result: true },
+            { flag: 'dark-mode', result: false },
+          ],
+        })
+        Sentry.captureException(new Error('flagged error'))
+      })
+      await testkit.waitForReports(1)
+
+      expect(testkit.reports()[0]!.flags).toEqual([
+        { flag: 'new-checkout', result: true },
+        { flag: 'dark-mode', result: false },
+      ])
+    })
+
+    test('flags default to an empty array', async function() {
+      Sentry.captureException(new Error('no flags here'))
+      await testkit.waitForReports(1)
+      expect(testkit.reports()[0]!.flags).toEqual([])
+    })
+  })
 }

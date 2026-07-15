@@ -16,6 +16,7 @@ The interceptor should intercept requests from `baseUrl` and pass the request bo
 For envelope requests (such as performance events), we use the emitted request event,
 since in a reply function nock automatically tries to parse the body as json,
 and fails since Sentry are using a non-standard json with a json request header.
+Envelope requests may carry multiple items (for example an error event batched together with a session update) — the testkit parses **all** items of an envelope and captures every supported item type, regardless of its position in the envelope.
 :::info
 See https://develop.sentry.dev/sdk/envelopes/ for more information on envelope requests.
 :::

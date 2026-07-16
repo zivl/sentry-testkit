@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:zivl/sentry-testkit.git"
+    "url": "git+https://github.com/zivl/sentry-testkit.git"
   },
   "keywords": [
     "raven-test-kit",

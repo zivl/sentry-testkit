@@ -27,6 +27,9 @@ jobs:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
+    # Must match the environment configured in the npm trusted publisher
+    # settings for this package, or the OIDC token exchange is rejected
+    environment: npm_deploy
     permissions:
       contents: read
       # Required for npm trusted publishing (OIDC):

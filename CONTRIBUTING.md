@@ -48,7 +48,7 @@ Release process:
 - once the Release PR is merged, release-please creates a GitHub release and a git tag;
 - the CI workflow then builds, tests, and publishes the package to npm automatically.
 
-Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC): the workflow authenticates via a short-lived token issued to the `release-please.yml` workflow — no `NPM_TOKEN` secret is involved — and npm generates provenance attestations for every release. The trusted publisher configuration lives on npmjs.com (package settings → Trusted Publisher) and is tied to this repository and workflow filename, so renaming `release-please.yml` requires updating that configuration too.
+Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC): the workflow authenticates via a short-lived token issued to the `release-please.yml` workflow — no `NPM_TOKEN` secret is involved — and npm generates provenance attestations for every release. The trusted publisher configuration lives on npmjs.com (package settings → Trusted Publisher) and is tied to this repository, the workflow filename, and the `npm_deploy` GitHub environment — renaming `release-please.yml`, changing the publish job's `environment`, or renaming the environment requires updating that configuration too, or the OIDC token exchange is silently rejected and the publish fails with a misleading `E404`.
 
 No manual steps are required. The version bump is determined by the commit types on `master`:
 

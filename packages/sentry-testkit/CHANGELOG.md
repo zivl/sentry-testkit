@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.2](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.0.1...sentry-testkit-v7.0.2) (2026-07-16)
+
+
+### Miscellaneous Chores
+
+* trigger 7.0.2 release ([e39b4ba](https://github.com/zivl/sentry-testkit/commit/e39b4ba3b4ee0cff1eea7872a85477441d88ce9c))
+
 ## [7.0.1](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.0.0...sentry-testkit-v7.0.1) (2026-07-16)
 
 

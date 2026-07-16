@@ -27,6 +27,11 @@ jobs:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Required for npm trusted publishing (OIDC):
+      # https://docs.npmjs.com/trusted-publishers
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -36,7 +41,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Trusted publishing requires npm >= 11.5.1; Node 22 bundles npm 10
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -47,7 +56,8 @@ jobs:
       - name: Test
         run: yarn workspace sentry-testkit test
 
+      # npm CLI (not yarn) so OIDC authentication and provenance are used;
+      # no token needed — auth comes from the trusted publisher configuration
       - name: Publish to npm
-        run: yarn workspace sentry-testkit npm publish --access public
-        env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: ./packages/sentry-testkit
+        run: npm publish --access public

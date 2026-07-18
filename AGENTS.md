@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Instructions for AI coding agents (OpenAI Codex, Gemini CLI, and others) working in this repository.
+Instructions for AI coding agents (Claude Code, OpenAI Codex, Gemini CLI, and others) working in this repository. This is the **single canonical instructions file** — `CLAUDE.md` only references this one.
 
 > Also read [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions, git workflow, and release details — it takes precedence on those topics.
 
@@ -75,9 +75,9 @@ Sentry SDK call
 | `index.ts` | Main entry; exports `create()` → `{ sentryTransport, testkit, initNetworkInterceptor, localServer }` |
 | `browser.ts` | Same as index but without Node.js / Express imports |
 | `testkit.ts` | Core in-memory store + Puppeteer integration |
-| `sentryTransport.ts` | Transport adapter (supports Sentry v4–v7+ envelope format) |
-| `parsers.ts` | Parses raw Sentry envelopes |
-| `transformers.ts` | Converts parsed events into typed `Report` / `Transaction` objects |
+| `sentryTransport.ts` | Transport adapter (envelope-based; supports Sentry v9/v10) |
+| `parsers.ts` | Parses raw Sentry envelopes (multi-item, length-prefixed payloads) |
+| `transformers.ts` | Converts parsed items into typed `Report` / `Transaction` / `Log` objects |
 | `localServerApi.ts` | Express handlers for `/api/{project}/store/` and `/api/{project}/envelope/` |
 | `types.ts` | All public TypeScript interfaces (`Testkit`, `Report`, `Transaction`, `Span`, …) |
 
@@ -93,6 +93,8 @@ Sentry SDK call
 | `local-server.test.ts` | Local server integration |
 | `network-interception.test.ts` | Network interceptor |
 | `jest-mock.test.ts` | Jest mock helper |
+| `parsers.test.ts` | Envelope parser unit tests |
+| `logs.test.ts` | Structured logs capture |
 
 ---
 
@@ -112,6 +114,7 @@ Sentry SDK call
 
 - **Rebase, never merge** when integrating with `master` (`git rebase origin/master`, not `git merge`).
 - **Squash commits** — each PR should land as a single, well-formed commit on `master`.
+- **No attribution trailers** — commit messages and PR descriptions must not contain `Co-Authored-By`, "Generated with", or any other AI-attribution lines. Commits are authored solely by the repository owner.
 - Commit messages must follow **Conventional Commits**:
   ```
   <type>[optional scope]: <description>
@@ -133,6 +136,7 @@ Fully automated via [release-please-action](https://github.com/googleapis/releas
 
 ## What to Avoid
 
+- **Never use emojis.** Not in code, docs, READMEs, commit messages, PR titles/descriptions, issues, or chat responses. No exceptions.
 - Do not push directly to `master` — open a PR.
 - Do not use `yarn add` / `npm install` without confirming with the user.
 - Do not edit `CHANGELOG.md` manually.

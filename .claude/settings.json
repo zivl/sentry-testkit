@@ -1,17 +1,36 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "allow": [
-      "Bash(yarn workspace:*)",
-      "Bash(yarn install:*)",
-      "Bash(git restore:*)",
-      "Bash(gh pr:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "WebFetch(domain:github.com)",
-      "Bash(git checkout:*)",
+      "Bash(gh api:*)",
       "Bash(gh issue:*)",
-      "Bash(gh api:*)"
+      "Bash(gh pr:*)",
+      "Bash(gh release:*)",
+      "Bash(gh run:*)",
+      "Bash(git add:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(git fetch:*)",
+      "Bash(git log:*)",
+      "Bash(git pull:*)",
+      "Bash(git push:*)",
+      "Bash(git rebase:*)",
+      "Bash(git restore:*)",
+      "Bash(npm pack:*)",
+      "Bash(yarn build:*)",
+      "Bash(yarn install:*)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn test:*)",
+      "Bash(yarn workspace:*)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "WebFetch(domain:docs.npmjs.com)",
+      "WebFetch(domain:docs.sentry.io)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

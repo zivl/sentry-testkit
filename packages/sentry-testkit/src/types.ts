@@ -90,6 +90,10 @@ declare namespace sentryTestkit {
       startListening(page: Page, baseUrl?: string): void
       stopListening(page: Page): void
     }
+    playwright: {
+      startListening(page: Page, baseUrl?: string): void
+      stopListening(page: Page): void
+    }
     reports(): Report[]
     transactions(): Transaction[]
     logs(): Log[]

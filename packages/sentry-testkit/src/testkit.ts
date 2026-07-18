@@ -47,8 +47,7 @@ export function createTestkit(): Testkit {
   let transactions: Transaction[] = []
   let logs: Log[] = []
 
-  let puppeteerHandler: any = null
-  const createPuppeteerHandler = (baseUrl: string) => (request: any) => {
+  const createRequestHandler = (baseUrl: string) => (request: any) => {
     const url = request.url()
     if (!url.startsWith(baseUrl)) {
       return
@@ -71,17 +70,25 @@ export function createTestkit(): Testkit {
     }
   }
 
-  return {
-    puppeteer: {
+  // Puppeteer and Playwright expose the same request surface:
+  // page.on/off('request') with request.url() and request.postData()
+  const createPageListener = () => {
+    let handler: any = null
+    return {
       startListening: (page: any, baseUrl: string = 'https://sentry.io') => {
-        puppeteerHandler = createPuppeteerHandler(baseUrl)
-        page.on('request', puppeteerHandler)
+        handler = createRequestHandler(baseUrl)
+        page.on('request', handler)
       },
 
       stopListening: (page: any) => {
-        page.off('request', puppeteerHandler)
+        page.off('request', handler)
       },
-    },
+    }
+  }
+
+  return {
+    puppeteer: createPageListener(),
+    playwright: createPageListener(),
 
     reports() {
       return reports

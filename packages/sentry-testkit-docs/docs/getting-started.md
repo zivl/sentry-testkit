@@ -70,6 +70,30 @@ testkit.puppeteer.startListening(page, 'https://my-self-hosted-sentry.com');
 ```
 :::
 
+### Using with [Playwright](https://playwright.dev/)
+The Playwright integration mirrors the Puppeteer one — pass a Playwright `Page` and the testkit captures every Sentry request the page makes:
+```javascript
+const sentryTestkit = require('sentry-testkit')
+
+const {testkit} = sentryTestkit()
+
+testkit.playwright.startListening(page);
+
+// Run any scenario that will call Sentry.captureException(...), for example:
+await page.addScriptTag({ content: `throw new Error('An error');` });
+
+expect(testkit.reports()).toHaveLength(1)
+
+testkit.playwright.stopListening(page);
+```
+
+:::info
+As with Puppeteer, `startListening` accepts an optional `baseUrl` second parameter (defaults to 'https://sentry.io') for self-hosted Sentry:
+```javascript
+testkit.playwright.startListening(page, 'https://my-self-hosted-sentry.com');
+```
+:::
+
 ### Reset between tests
 As you might run more than one test with *Sentry* and *Sentry-Testkit*, you might want to use the `reset` function in between tests.
 Usually, your testing framework will have a hook for that kind of action. In the following example, We're using [Jest](https://jestjs.io/docs/en/api.html)'s hooks: `beforeEach`, `beforeAll`

@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.0.2...sentry-testkit-v7.1.0) (2026-07-19)
+
+
+### Features
+
+* **playwright:** add Playwright integration via testkit.playwright ([#325](https://github.com/zivl/sentry-testkit/issues/325)) ([ac1cbb1](https://github.com/zivl/sentry-testkit/commit/ac1cbb14530efa26adb4b9973f83dc22afb623c7)), closes [#312](https://github.com/zivl/sentry-testkit/issues/312)
+
 ## [7.0.2](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.0.1...sentry-testkit-v7.0.2) (2026-07-16)
 
 

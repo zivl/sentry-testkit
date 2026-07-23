@@ -44,6 +44,9 @@ target
 # Build output
 dist/
 
+# Generated at pack time by the package's prepack script (copied from the root README)
+/packages/sentry-testkit/README.md
+
 # Mac
 .DS_Store
 

@@ -19,7 +19,7 @@
 </p>
 <p align="center">
 <a href="https://zivl.github.io/sentry-testkit/">
-    <img alt="sentry-testkit" src="./packages/sentry-testkit-docs/static/img/logo/Sentry_github.svg" height="132">
+    <img alt="sentry-testkit" src="https://raw.githubusercontent.com/zivl/sentry-testkit/master/packages/sentry-testkit-docs/static/img/logo/Sentry_github.svg" height="132">
     </a>
 </p>
 
@@ -129,16 +129,16 @@ sentry-testkit is expanding to cover the full modern Sentry SDK surface — user
 
 ## Raven-Testkit
 
-The good old legacy `raven-testkit` documentation can be found [here](LEGACY_API.md). It is still there to serve `Raven`, which is the old legacy SDK of _Sentry_ for JavaScript/Node.js platforms.
+The good old legacy `raven-testkit` documentation can be found [here](https://github.com/zivl/sentry-testkit/blob/master/LEGACY_API.md). It is still there to serve `Raven`, which is the old legacy SDK of _Sentry_ for JavaScript/Node.js platforms.
 
 ## Change Log
 
-We're constantly and automatically updating our [CHANGELOG](./packages/sentry-testkit/CHANGELOG.md) file, so it's always a good spot to check out what we have been up to...
+We're constantly and automatically updating our [CHANGELOG](https://github.com/zivl/sentry-testkit/blob/master/packages/sentry-testkit/CHANGELOG.md) file, so it's always a good spot to check out what we have been up to...
 
 ## Contribution
 
-We'd love any kind of contribution to get better, improve our capabilities, fix bugs, and bring more features as Sentry expands their tools as well. Please check our [CONTRIBUTING](./CONTRIBUTING.md) guidelines for more info and how to get started.
+We'd love any kind of contribution to get better, improve our capabilities, fix bugs, and bring more features as Sentry expands their tools as well. Please check our [CONTRIBUTING](https://github.com/zivl/sentry-testkit/blob/master/CONTRIBUTING.md) guidelines for more info and how to get started.
 
 ## License
 
-Sentry Testkit is [MIT licensed](./LICENSE).
+Sentry Testkit is [MIT licensed](https://github.com/zivl/sentry-testkit/blob/master/LICENSE).

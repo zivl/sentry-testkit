@@ -60,7 +60,9 @@ jobs:
         run: yarn workspace sentry-testkit test
 
       # npm CLI (not yarn) so OIDC authentication and provenance are used;
-      # no token needed — auth comes from the trusted publisher configuration
+      # no token needed — auth comes from the trusted publisher configuration.
+      # Do not add --ignore-scripts: the package's prepack script copies the
+      # root README into the package so it ships to npm.
       - name: Publish to npm
         working-directory: ./packages/sentry-testkit
         run: npm publish --access public

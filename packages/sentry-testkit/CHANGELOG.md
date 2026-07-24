@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.2.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.1.0...sentry-testkit-v7.2.0) (2026-07-24)
+
+
+### Features
+
+* capture user feedback and cron check-ins ([#334](https://github.com/zivl/sentry-testkit/issues/334)) ([9e944cc](https://github.com/zivl/sentry-testkit/commit/9e944cccb571e6fe21a3b39ca65650061b0277e4))
+
 ## [7.1.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.0.2...sentry-testkit-v7.1.0) (2026-07-19)
 
 

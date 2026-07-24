@@ -8,11 +8,26 @@ sidebar_position: 2
 Sentry Testkit consists of a very simple and strait-forward API using the following functions
 
 ## Methods
-* [`reports()`](#reports)
+
+**Capture and assertions**
+* [`reports()`](#reports) — captured errors and messages
+* [`transactions()`](#transactions) — captured performance transactions
+* [`logs()`](#logs) — captured structured logs
+* [`feedback()`](#feedback) — captured user feedback
+* [`checkIns()`](#checkins) — captured cron monitor check-ins
+
+**Awaiting asynchronously-sent data**
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForFeedback`, `waitForCheckIns`
+
+**Finding and filtering**
 * [`findReport(error)`](#findreporterror)
+* [`findReportByMessage(message)`](#findreportbymessagemessage)
+* [`findTransaction(name)`](#findtransactionname)
+* [`reportsWithTag(key, value)`](#reportswithtagkey-value) — and `transactionsWithTag(key, value)`
 * [`isExist(error)`](#isexisterror)
 * [`getExceptionAt(index)`](#getexceptionatindex)
-* [`transactions()`](#transactions)
+
+**Utilities**
 * [`reset()`](#reset)
 
 ### What About Nodejs? - Of Course!

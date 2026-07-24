@@ -81,6 +81,30 @@ declare namespace sentryTestkit {
     originalLog: any
   }
 
+  interface FeedbackReport {
+    message: string
+    name?: string
+    contactEmail?: string
+    url?: string
+    associatedEventId?: string
+    source?: string
+    replayId?: string
+    eventId?: string
+    originalFeedback: any
+  }
+
+  type CheckInStatus = 'in_progress' | 'ok' | 'error'
+
+  interface CheckIn {
+    checkInId: string
+    monitorSlug: string
+    status: CheckInStatus
+    duration?: number
+    release?: string
+    environment?: string
+    originalCheckIn: any
+  }
+
   interface WaitForOptions {
     timeout?: number
   }
@@ -97,12 +121,19 @@ declare namespace sentryTestkit {
     reports(): Report[]
     transactions(): Transaction[]
     logs(): Log[]
+    feedback(): FeedbackReport[]
+    checkIns(): CheckIn[]
     waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
     waitForTransactions(
       count: number,
       options?: WaitForOptions
     ): Promise<Transaction[]>
     waitForLogs(count: number, options?: WaitForOptions): Promise<Log[]>
+    waitForFeedback(
+      count: number,
+      options?: WaitForOptions
+    ): Promise<FeedbackReport[]>
+    waitForCheckIns(count: number, options?: WaitForOptions): Promise<CheckIn[]>
     reset(): void
     getExceptionAt(index: number): ReportError | undefined
     findReport(e: Error): Report | undefined

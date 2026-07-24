@@ -1,4 +1,6 @@
 import {
+  transformCheckIn,
+  transformFeedback,
   transformLog,
   transformReport,
   transformTransaction,
@@ -131,6 +133,10 @@ export function handleEnvelopeRequestData(
       // Log items are containers: their payload is { items: SerializedLog[] }
       const logs = (payload && payload.items) || []
       logs.forEach((log: any) => testkit.logs().push(transformLog(log)))
+    } else if (header.type === 'feedback') {
+      testkit.feedback().push(transformFeedback(payload))
+    } else if (header.type === 'check_in') {
+      testkit.checkIns().push(transformCheckIn(payload))
     }
   })
 }

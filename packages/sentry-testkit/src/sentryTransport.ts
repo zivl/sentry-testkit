@@ -1,5 +1,7 @@
 import { Event } from '@sentry/types'
 import {
+  transformCheckIn,
+  transformFeedback,
   transformLog,
   transformReport,
   transformTransaction,
@@ -36,6 +38,10 @@ export function createSentryTransport(testkit: Testkit): any {
           // Log items are containers: their payload is { items: SerializedLog[] }
           const logs = (data && data.items) || []
           logs.forEach((log: any) => testkit.logs().push(transformLog(log)))
+        } else if (headers.type === 'feedback') {
+          testkit.feedback().push(transformFeedback(data))
+        } else if (headers.type === 'check_in') {
+          testkit.checkIns().push(transformCheckIn(data))
         }
       })
 

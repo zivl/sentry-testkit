@@ -8,11 +8,26 @@ sidebar_position: 2
 Sentry Testkit consists of a very simple and strait-forward API using the following functions
 
 ## Methods
-* [`reports()`](#reports)
+
+**Capture and assertions**
+* [`reports()`](#reports) — captured errors and messages
+* [`transactions()`](#transactions) — captured performance transactions
+* [`logs()`](#logs) — captured structured logs
+* [`feedback()`](#feedback) — captured user feedback
+* [`checkIns()`](#checkins) — captured cron monitor check-ins
+
+**Awaiting asynchronously-sent data**
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForFeedback`, `waitForCheckIns`
+
+**Finding and filtering**
 * [`findReport(error)`](#findreporterror)
+* [`findReportByMessage(message)`](#findreportbymessagemessage)
+* [`findTransaction(name)`](#findtransactionname)
+* [`reportsWithTag(key, value)`](#reportswithtagkey-value) — and `transactionsWithTag(key, value)`
 * [`isExist(error)`](#isexisterror)
 * [`getExceptionAt(index)`](#getexceptionatindex)
-* [`transactions()`](#transactions)
+
+**Utilities**
 * [`reset()`](#reset)
 
 ### What About Nodejs? - Of Course!
@@ -241,6 +256,60 @@ test('logs example', async function() {
     expect(log.level).toEqual('info')
     expect(log.message).toEqual('user logged in')
     expect(log.attributes.userId).toEqual(42)
+})
+```
+
+### `feedback()`
+Gets all captured [user feedback](https://docs.sentry.io/platforms/javascript/user-feedback/) submitted via `Sentry.captureFeedback(...)` or the feedback widget.
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>FeedbackReport</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | <code>string</code> | The feedback message |
+| `name` | <code>string</code> | The submitter's name, if provided |
+| `contactEmail` | <code>string</code> | The submitter's email, if provided |
+| `url` | <code>string</code> | The page the feedback was submitted from, if provided |
+| `associatedEventId` | <code>string</code> | The id of the error event this feedback is linked to, if any |
+| `source` | <code>string</code> | The feedback source, if provided |
+| `replayId` | <code>string</code> | The associated replay id, if any |
+| `eventId` | <code>string</code> | The feedback event's own id |
+| `originalFeedback` | <code>Object</code> | The raw feedback event as sent by the SDK |
+
+For example
+```javascript
+test('feedback example', async function() {
+    Sentry.captureFeedback({ message: 'the checkout page is confusing', email: 'jane@example.com' })
+
+    const [feedback] = await testkit.waitForFeedback(1)
+    expect(feedback.message).toEqual('the checkout page is confusing')
+    expect(feedback.contactEmail).toEqual('jane@example.com')
+})
+```
+
+### `checkIns()`
+Gets all captured [cron monitor check-ins](https://docs.sentry.io/platforms/javascript/crons/) reported via `Sentry.captureCheckIn(...)` or `Sentry.withMonitor(...)`.
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>CheckIn</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `checkInId` | <code>string</code> | The check-in id (used to correlate an `in_progress` with its `ok`/`error`) |
+| `monitorSlug` | <code>string</code> | The monitor's slug |
+| `status` | <code>string</code> | `in_progress` \| `ok` \| `error` |
+| `duration` | <code>number</code> | The check-in duration in seconds, for a finished check-in |
+| `release` | <code>string</code> | The release, if set |
+| `environment` | <code>string</code> | The environment, if set |
+| `originalCheckIn` | <code>Object</code> | The raw check-in payload as sent by the SDK |
+
+For example
+```javascript
+test('check-in example', async function() {
+    const checkInId = Sentry.captureCheckIn({ monitorSlug: 'nightly-report', status: 'in_progress' })
+    Sentry.captureCheckIn({ checkInId, monitorSlug: 'nightly-report', status: 'ok', duration: 12.5 })
+
+    const checkIns = await testkit.waitForCheckIns(2)
+    expect(checkIns.map(c => c.status)).toEqual(['in_progress', 'ok'])
 })
 ```
 

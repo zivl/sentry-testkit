@@ -44,55 +44,27 @@ test('collect performance events', function () {
 });
 ```
 
-### Using with [Puppeteer](https://pptr.dev/)
+### Beyond errors: logs, feedback and check-ins
+
+`sentry-testkit` captures more than errors and transactions. If your app uses these Sentry features, you can assert on them the same way — each has its own accessor and an awaitable `waitFor*` helper:
+
+- **[Structured logs](/docs/api#logs)** — everything sent via `Sentry.logger.*` (requires `enableLogs: true` in `Sentry.init`), via `testkit.logs()`
+- **[User feedback](/docs/api#feedback)** — submissions from `Sentry.captureFeedback(...)` or the feedback widget, via `testkit.feedback()`
+- **[Cron check-ins](/docs/api#checkins)** — monitor check-ins from `Sentry.captureCheckIn(...)` / `Sentry.withMonitor(...)`, via `testkit.checkIns()`
+
 ```javascript
-const sentryTestkit = require('sentry-testkit')
+Sentry.captureFeedback({ message: 'the checkout page is confusing' })
 
-const {testkit} = sentryTestkit()
-
-testkit.puppeteer.startListening(page);
-
-// Run any scenario that will call Sentry.captureException(...), for example:
-await page.addScriptTag({ content: `throw new Error('An error');` });
-
-expect(testkit.reports()).toHaveLength(1)
-
-const report = testkit.reports()[0]
-expect(report).toHaveProperty(...)
-
-testkit.puppeteer.stopListening(page);
+const [feedback] = await testkit.waitForFeedback(1)
+expect(feedback.message).toEqual('the checkout page is confusing')
 ```
 
-:::info
-`startListening` has an optional `baseUrl` as second parameter (it defaults to 'https://sentry.io'), so you can pass the URL of your server:
-```javascript
-testkit.puppeteer.startListening(page, 'https://my-self-hosted-sentry.com');
-```
-:::
+### End-to-end testing (Puppeteer & Playwright)
 
-### Using with [Playwright](https://playwright.dev/)
-The Playwright integration mirrors the Puppeteer one — pass a Playwright `Page` and the testkit captures every Sentry request the page makes:
-```javascript
-const sentryTestkit = require('sentry-testkit')
+For browser end-to-end tests, `sentry-testkit` can capture the Sentry requests a page makes — no change to your application's `Sentry.init` is required. See the dedicated guides:
 
-const {testkit} = sentryTestkit()
-
-testkit.playwright.startListening(page);
-
-// Run any scenario that will call Sentry.captureException(...), for example:
-await page.addScriptTag({ content: `throw new Error('An error');` });
-
-expect(testkit.reports()).toHaveLength(1)
-
-testkit.playwright.stopListening(page);
-```
-
-:::info
-As with Puppeteer, `startListening` accepts an optional `baseUrl` second parameter (defaults to 'https://sentry.io') for self-hosted Sentry:
-```javascript
-testkit.playwright.startListening(page, 'https://my-self-hosted-sentry.com');
-```
-:::
+- [Using with Puppeteer](/docs/puppeteer)
+- [Using with Playwright](/docs/playwright)
 
 ### Reset between tests
 As you might run more than one test with *Sentry* and *Sentry-Testkit*, you might want to use the `reset` function in between tests.

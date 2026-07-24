@@ -1,10 +1,20 @@
 import { parseEnvelope } from './parsers'
 import {
+  transformCheckIn,
+  transformFeedback,
   transformLog,
   transformReport,
   transformTransaction,
 } from './transformers'
-import { Log, Report, ReportError, Testkit, Transaction } from './types'
+import {
+  CheckIn,
+  FeedbackReport,
+  Log,
+  Report,
+  ReportError,
+  Testkit,
+  Transaction,
+} from './types'
 
 function getException(report: Report) {
   return report.error
@@ -46,6 +56,8 @@ export function createTestkit(): Testkit {
   let reports: Report[] = []
   let transactions: Transaction[] = []
   let logs: Log[] = []
+  let feedback: FeedbackReport[] = []
+  let checkIns: CheckIn[] = []
 
   const createRequestHandler = (baseUrl: string) => (request: any) => {
     const url = request.url()
@@ -65,6 +77,10 @@ export function createTestkit(): Testkit {
         } else if (header.type === 'log') {
           const items = (payload && payload.items) || []
           items.forEach((log: any) => logs.push(transformLog(log)))
+        } else if (header.type === 'feedback') {
+          feedback.push(transformFeedback(payload))
+        } else if (header.type === 'check_in') {
+          checkIns.push(transformCheckIn(payload))
         }
       })
     }
@@ -102,6 +118,14 @@ export function createTestkit(): Testkit {
       return logs
     },
 
+    feedback() {
+      return feedback
+    },
+
+    checkIns() {
+      return checkIns
+    },
+
     waitForReports(count, options) {
       return waitFor('reports', () => reports, count, options)
     },
@@ -114,10 +138,20 @@ export function createTestkit(): Testkit {
       return waitFor('logs', () => logs, count, options)
     },
 
+    waitForFeedback(count, options) {
+      return waitFor('feedback', () => feedback, count, options)
+    },
+
+    waitForCheckIns(count, options) {
+      return waitFor('check-ins', () => checkIns, count, options)
+    },
+
     reset() {
       reports = []
       transactions = []
       logs = []
+      feedback = []
+      checkIns = []
     },
 
     getExceptionAt(index: number) {

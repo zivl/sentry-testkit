@@ -144,6 +144,52 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.reports()).toHaveLength(1)
   })
 
+  test('captures a feedback item', () => {
+    const testkit = createTestkit()
+    const feedbackPayload = JSON.stringify({
+      type: 'feedback',
+      event_id: 'fb123',
+      contexts: {
+        feedback: {
+          message: 'great tool',
+          contact_email: 'jane@example.com',
+          associated_event_id: 'evt456',
+        },
+      },
+    })
+    const body = `${envelopeHeader}\n{"type":"feedback"}\n${feedbackPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.feedback()).toHaveLength(1)
+    expect(testkit.feedback()[0]!.message).toBe('great tool')
+    expect(testkit.feedback()[0]!.contactEmail).toBe('jane@example.com')
+    expect(testkit.feedback()[0]!.associatedEventId).toBe('evt456')
+    expect(testkit.feedback()[0]!.eventId).toBe('fb123')
+    expect(testkit.reports()).toHaveLength(0)
+  })
+
+  test('captures a check_in item', () => {
+    const testkit = createTestkit()
+    const checkInPayload = JSON.stringify({
+      check_in_id: 'ci789',
+      monitor_slug: 'nightly-report',
+      status: 'ok',
+      duration: 3.2,
+      release: '1.0.0',
+      environment: 'production',
+    })
+    const body = `${envelopeHeader}\n{"type":"check_in"}\n${checkInPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.checkIns()).toHaveLength(1)
+    expect(testkit.checkIns()[0]!.checkInId).toBe('ci789')
+    expect(testkit.checkIns()[0]!.monitorSlug).toBe('nightly-report')
+    expect(testkit.checkIns()[0]!.status).toBe('ok')
+    expect(testkit.checkIns()[0]!.duration).toBe(3.2)
+  })
+
   test('ignores unknown item types without throwing', () => {
     const testkit = createTestkit()
     const body = `${envelopeHeader}\n{"type":"session"}\n${sessionPayload}`

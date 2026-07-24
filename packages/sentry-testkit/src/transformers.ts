@@ -1,4 +1,11 @@
-import { Log, Report, ReportError, Transaction } from './types'
+import {
+  CheckIn,
+  FeedbackReport,
+  Log,
+  Report,
+  ReportError,
+  Transaction,
+} from './types'
 
 export function transformReport(report: any): Report {
   const exception =
@@ -44,6 +51,33 @@ export function transformLog(log: any): Log {
     traceId: log.trace_id,
     severityNumber: log.severity_number,
     originalLog: log,
+  }
+}
+
+export function transformFeedback(event: any): FeedbackReport {
+  const feedback = event.contexts?.feedback ?? {}
+  return {
+    message: feedback.message,
+    name: feedback.name,
+    contactEmail: feedback.contact_email,
+    url: feedback.url,
+    associatedEventId: feedback.associated_event_id,
+    source: feedback.source,
+    replayId: feedback.replay_id,
+    eventId: event.event_id,
+    originalFeedback: event,
+  }
+}
+
+export function transformCheckIn(checkIn: any): CheckIn {
+  return {
+    checkInId: checkIn.check_in_id,
+    monitorSlug: checkIn.monitor_slug,
+    status: checkIn.status,
+    duration: checkIn.duration,
+    release: checkIn.release,
+    environment: checkIn.environment,
+    originalCheckIn: checkIn,
   }
 }
 

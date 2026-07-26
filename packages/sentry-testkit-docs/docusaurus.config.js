@@ -82,6 +82,12 @@ const config = {
             label: 'API Reference',
           },
           {
+            type: 'doc',
+            docId: 'changelog',
+            position: 'left',
+            label: 'Changelog',
+          },
+          {
             to: 'help',
             docId: 'help',
             position: 'right',
@@ -108,6 +114,10 @@ const config = {
               {
                 label: 'API Reference',
                 to: '/docs/api',
+              },
+              {
+                label: 'Changelog',
+                to: '/docs/changelog',
               },
               {
                 label: 'Migration Guides',

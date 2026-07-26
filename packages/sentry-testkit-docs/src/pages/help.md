@@ -24,4 +24,4 @@ Ask questions and find answers from other sentry-testkit users like you.
 ### Stay up to date
 Find out what's new with sentry-testkit.
  - Follow [Ziv Levy](https://twitter.com/_zivlevy) on Twitter.
- - Look at the [changelog](https://github.com/zivl/sentry-testkit/blob/master/CHANGELOG.md).
+ - Look at the [changelog](/docs/changelog).

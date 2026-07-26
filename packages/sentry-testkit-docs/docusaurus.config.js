@@ -47,8 +47,8 @@ const config = {
         sitemap: {
           changefreq: 'monthly',
         },
-        googleAnalytics: {
-          trackingID: 'UA-186083338-2',
+        gtag: {
+          trackingID: 'G-YKGQF090V6',
           anonymizeIP: true,
         },
       }),
@@ -92,6 +92,11 @@ const config = {
             docId: 'help',
             position: 'right',
             label: 'Help',
+          },
+          {
+            to: 'privacy',
+            position: 'right',
+            label: 'Privacy',
           },
           {
             href: 'https://github.com/zivl/sentry-testkit',
@@ -157,6 +162,10 @@ const config = {
               {
                 label: 'Help',
                 to: '/help',
+              },
+              {
+                label: 'Privacy',
+                to: '/privacy',
               },
             ],
           },

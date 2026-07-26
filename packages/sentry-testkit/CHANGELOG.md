@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.2.1](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.2.0...sentry-testkit-v7.2.1) (2026-07-26)
+
+
+### Documentation
+
+* **changelog:** consolidate into one file and publish it on the docs site ([#336](https://github.com/zivl/sentry-testkit/issues/336)) ([d4e357f](https://github.com/zivl/sentry-testkit/commit/d4e357fd3c1e7035b895561d21f7f4e0336233fa))
+
 ## [7.2.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.1.0...sentry-testkit-v7.2.0) (2026-07-24)
 
 

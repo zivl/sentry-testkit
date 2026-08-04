@@ -1,4 +1,6 @@
+import { fromBytes, toBytes } from './bytes'
 import {
+  Attachment,
   CheckIn,
   FeedbackReport,
   Log,
@@ -21,7 +23,10 @@ function unwrapAttributes(rawAttributes: any): { [key: string]: any } {
   return attributes
 }
 
-export function transformReport(report: any): Report {
+export function transformReport(
+  report: any,
+  attachments: Attachment[] = []
+): Report {
   const exception =
     report.exception && report.exception.values && report.exception.values[0]
   const error: ReportError | undefined = exception
@@ -42,7 +47,22 @@ export function transformReport(report: any): Report {
     user: report.user,
     tags: report.tags || {},
     flags: report.contexts?.flags?.values ?? [],
+    attachments,
     originalReport: report,
+  }
+}
+
+export function transformAttachment(
+  header: any,
+  data: string | Uint8Array
+): Attachment {
+  const bytes = toBytes(data)
+  return {
+    filename: header.filename,
+    contentType: header.content_type,
+    attachmentType: header.attachment_type,
+    data: bytes,
+    text: fromBytes(bytes),
   }
 }
 

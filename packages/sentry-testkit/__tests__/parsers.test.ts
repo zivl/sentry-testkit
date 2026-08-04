@@ -144,6 +144,53 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.reports()).toHaveLength(1)
   })
 
+  test('captures metrics from a trace_metric container item', () => {
+    const testkit = createTestkit()
+    const metricItems = JSON.stringify({
+      items: [
+        {
+          timestamp: 1717081538.235,
+          trace_id: 'abcd1234',
+          span_id: 'ef567890',
+          name: 'api.requests',
+          type: 'counter',
+          value: 3,
+          attributes: {
+            endpoint: { value: '/api/users', type: 'string' },
+            cached: { value: false, type: 'boolean' },
+          },
+        },
+        {
+          timestamp: 1717081539.001,
+          trace_id: 'abcd1234',
+          name: 'memory.usage',
+          type: 'gauge',
+          unit: 'megabyte',
+          value: 1024,
+        },
+      ],
+    })
+    const body =
+      `${envelopeHeader}\n` +
+      `{"type":"trace_metric","item_count":2,"content_type":"application/vnd.sentry.items.trace-metric+json"}\n` +
+      `${metricItems}\n` +
+      `{"type":"event"}\n${eventPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.metrics()).toHaveLength(2)
+    expect(testkit.metrics()[0]!.name).toBe('api.requests')
+    expect(testkit.metrics()[0]!.type).toBe('counter')
+    expect(testkit.metrics()[0]!.value).toBe(3)
+    expect(testkit.metrics()[0]!.traceId).toBe('abcd1234')
+    expect(testkit.metrics()[0]!.spanId).toBe('ef567890')
+    expect(testkit.metrics()[0]!.attributes['endpoint']).toBe('/api/users')
+    expect(testkit.metrics()[0]!.attributes['cached']).toBe(false)
+    expect(testkit.metrics()[1]!.name).toBe('memory.usage')
+    expect(testkit.metrics()[1]!.unit).toBe('megabyte')
+    expect(testkit.reports()).toHaveLength(1)
+  })
+
   test('captures a feedback item', () => {
     const testkit = createTestkit()
     const feedbackPayload = JSON.stringify({

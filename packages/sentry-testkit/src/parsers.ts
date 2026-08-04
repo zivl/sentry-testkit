@@ -2,6 +2,7 @@ import {
   transformCheckIn,
   transformFeedback,
   transformLog,
+  transformMetric,
   transformReport,
   transformTransaction,
 } from './transformers'
@@ -133,6 +134,12 @@ export function handleEnvelopeRequestData(
       // Log items are containers: their payload is { items: SerializedLog[] }
       const logs = (payload && payload.items) || []
       logs.forEach((log: any) => testkit.logs().push(transformLog(log)))
+    } else if (header.type === 'trace_metric') {
+      // Metric items are containers: their payload is { items: SerializedMetric[] }
+      const metrics = (payload && payload.items) || []
+      metrics.forEach((metric: any) =>
+        testkit.metrics().push(transformMetric(metric))
+      )
     } else if (header.type === 'feedback') {
       testkit.feedback().push(transformFeedback(payload))
     } else if (header.type === 'check_in') {

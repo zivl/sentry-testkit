@@ -93,6 +93,20 @@ declare namespace sentryTestkit {
     originalFeedback: any
   }
 
+  type MetricType = 'counter' | 'gauge' | 'distribution'
+
+  interface Metric {
+    name: string
+    type: MetricType
+    value: number
+    unit?: string
+    attributes: { [key: string]: any }
+    timestamp: number
+    traceId?: string
+    spanId?: string
+    originalMetric: any
+  }
+
   type CheckInStatus = 'in_progress' | 'ok' | 'error'
 
   interface CheckIn {
@@ -121,6 +135,7 @@ declare namespace sentryTestkit {
     reports(): Report[]
     transactions(): Transaction[]
     logs(): Log[]
+    metrics(): Metric[]
     feedback(): FeedbackReport[]
     checkIns(): CheckIn[]
     waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
@@ -129,6 +144,7 @@ declare namespace sentryTestkit {
       options?: WaitForOptions
     ): Promise<Transaction[]>
     waitForLogs(count: number, options?: WaitForOptions): Promise<Log[]>
+    waitForMetrics(count: number, options?: WaitForOptions): Promise<Metric[]>
     waitForFeedback(
       count: number,
       options?: WaitForOptions

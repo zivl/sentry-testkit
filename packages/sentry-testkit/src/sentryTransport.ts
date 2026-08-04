@@ -3,6 +3,7 @@ import {
   transformCheckIn,
   transformFeedback,
   transformLog,
+  transformMetric,
   transformReport,
   transformTransaction,
 } from './transformers'
@@ -38,6 +39,12 @@ export function createSentryTransport(testkit: Testkit): any {
           // Log items are containers: their payload is { items: SerializedLog[] }
           const logs = (data && data.items) || []
           logs.forEach((log: any) => testkit.logs().push(transformLog(log)))
+        } else if (headers.type === 'trace_metric') {
+          // Metric items are containers: their payload is { items: SerializedMetric[] }
+          const metrics = (data && data.items) || []
+          metrics.forEach((metric: any) =>
+            testkit.metrics().push(transformMetric(metric))
+          )
         } else if (headers.type === 'feedback') {
           testkit.feedback().push(transformFeedback(data))
         } else if (headers.type === 'check_in') {

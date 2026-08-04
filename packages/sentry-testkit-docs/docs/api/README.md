@@ -13,11 +13,12 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 * [`reports()`](#reports) — captured errors and messages
 * [`transactions()`](#transactions) — captured performance transactions
 * [`logs()`](#logs) — captured structured logs
+* [`metrics()`](#metrics) — captured application metrics
 * [`feedback()`](#feedback) — captured user feedback
 * [`checkIns()`](#checkins) — captured cron monitor check-ins
 
 **Awaiting asynchronously-sent data**
-* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForFeedback`, `waitForCheckIns`
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForFeedback`, `waitForCheckIns`
 
 **Finding and filtering**
 * [`findReport(error)`](#findreporterror)
@@ -87,7 +88,7 @@ test('waitForReports example', async function() {
 })
 ```
 
-Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)` and `waitForLogs(count, options)`.
+Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForFeedback(count, options)` and `waitForCheckIns(count, options)`.
 
 ### `findReport(error)`
 Finds a report by a given error.
@@ -258,6 +259,41 @@ test('logs example', async function() {
     expect(log.attributes.userId).toEqual(42)
 })
 ```
+
+### `metrics()`
+Gets all captured [application metrics](https://docs.sentry.io/platforms/javascript/metrics/) emitted via `Sentry.metrics.count(...)`, `Sentry.metrics.gauge(...)` or `Sentry.metrics.distribution(...)` (Sentry SDK v10 and above).
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>Metric</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | <code>string</code> | The metric name, e.g. `api.requests` |
+| `type` | <code>string</code> | `counter` \| `gauge` \| `distribution` |
+| `value` | <code>number</code> | The reported value |
+| `unit` | <code>string</code> | The unit, e.g. `millisecond`, if provided |
+| `attributes` | <code>Object</code> | Metric attributes as plain values, e.g. `{ endpoint: '/api/users' }` |
+| `timestamp` | <code>number</code> | Epoch time in seconds |
+| `traceId` | <code>string</code> | The trace this metric belongs to, if any |
+| `spanId` | <code>string</code> | The span this metric was emitted from, if any |
+| `originalMetric` | <code>Object</code> | The raw metric item as sent by the SDK |
+
+Metrics are batched by the SDK, so flush before asserting on them.
+
+For example
+```javascript
+test('metrics example', async function() {
+    Sentry.metrics.count('api.requests', 1, { attributes: { endpoint: '/api/users' } })
+    await Sentry.flush()
+
+    const [metric] = testkit.metrics()
+    expect(metric.name).toEqual('api.requests')
+    expect(metric.type).toEqual('counter')
+    expect(metric.value).toEqual(1)
+    expect(metric.attributes.endpoint).toEqual('/api/users')
+})
+```
+
+Alongside the attributes you set, the SDK enriches every metric with its own — `sentry.release`, `sentry.environment`, `sentry.sdk.name` and more — so assert on the specific attributes you care about rather than on the whole object.
 
 ### `feedback()`
 Gets all captured [user feedback](https://docs.sentry.io/platforms/javascript/user-feedback/) submitted via `Sentry.captureFeedback(...)` or the feedback widget.

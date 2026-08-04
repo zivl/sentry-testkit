@@ -22,6 +22,12 @@ describe('Puppeteer testkit', () => {
       {"type":"transaction","sample_rates":[{"id":"client_rate","rate":1}]}
       {"contexts":{"trace":{"op":"transaction","span_id":"9ce5f4be9f39417f","trace_id":"57909d703068487a9e3cff52a6279484"}},"spans":[{"description":"child-description","op":"child-span","parent_span_id":"9ce5f4be9f39417f","span_id":"b12b5d02ec5f7b1c","start_timestamp":1623430659.9326224,"timestamp":1623430659.9327486,"trace_id":"57909d703068487a9e3cff52a6279484"}],"start_timestamp":1623430659.93125,"tags":{},"timestamp":1623430659.9330351,"transaction":"transaction-name","type":"transaction","platform":"node","event_id":"601fdd0eb40343f08274857951e483de","environment":"production","sdk":{"integrations":["InboundFilters","FunctionToString","Console","Http","OnUncaughtException","OnUnhandledRejection","LinkedErrors"],"name":"sentry.javascript.node","version":"6.6.0","packages":[{"name":"npm:@sentry/node","version":"6.6.0"}]}}`,
   })
+  const sentryMetricRequest = {
+    url: () => 'https://sentry.io/api/1234567/envelope',
+    postData: () => `{"sdk":{"name":"sentry.javascript.browser","version":"10.46.0"}}
+{"type":"trace_metric","item_count":1,"content_type":"application/vnd.sentry.items.trace-metric+json"}
+{"items":[{"timestamp":1717081538.235,"trace_id":"abcd1234","name":"api.requests","type":"counter","value":3,"unit":"none","attributes":{"endpoint":{"value":"/api/users","type":"string"}}}]}`,
+  }
   const sentrySessionRequest = {
     url: () => 'https://sentry.io/api/1234567/envelope',
     postData: () => `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.react","version":"6.11.0"}}
@@ -47,6 +53,17 @@ describe('Puppeteer testkit', () => {
     page.emit('request', createSentryPerfRequest())
     expect(testkit.transactions()).toHaveLength(1)
     expect(testkit.transactions()[0]!.name).toEqual('transaction-name')
+  })
+
+  test('should collect metrics from a trace_metric envelope item', () => {
+    testkit.puppeteer.startListening(page)
+    page.emit('request', sentryMetricRequest)
+    expect(testkit.metrics()).toHaveLength(1)
+    const metric = testkit.metrics()[0]!
+    expect(metric.name).toEqual('api.requests')
+    expect(metric.type).toEqual('counter')
+    expect(metric.value).toEqual(3)
+    expect(metric.attributes['endpoint']).toEqual('/api/users')
   })
 
   test('should handle session items in an envelope request', () => {

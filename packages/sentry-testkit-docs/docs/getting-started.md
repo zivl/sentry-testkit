@@ -44,11 +44,12 @@ test('collect performance events', function () {
 });
 ```
 
-### Beyond errors: logs, feedback and check-ins
+### Beyond errors: logs, metrics, feedback and check-ins
 
 `sentry-testkit` captures more than errors and transactions. If your app uses these Sentry features, you can assert on them the same way — each has its own accessor and an awaitable `waitFor*` helper:
 
 - **[Structured logs](/docs/api#logs)** — everything sent via `Sentry.logger.*` (requires `enableLogs: true` in `Sentry.init`), via `testkit.logs()`
+- **[Application metrics](/docs/api#metrics)** — counters, gauges and distributions from `Sentry.metrics.*` (Sentry SDK v10 and above), via `testkit.metrics()`
 - **[User feedback](/docs/api#feedback)** — submissions from `Sentry.captureFeedback(...)` or the feedback widget, via `testkit.feedback()`
 - **[Cron check-ins](/docs/api#checkins)** — monitor check-ins from `Sentry.captureCheckIn(...)` / `Sentry.withMonitor(...)`, via `testkit.checkIns()`
 

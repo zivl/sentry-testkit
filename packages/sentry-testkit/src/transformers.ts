@@ -2,10 +2,24 @@ import {
   CheckIn,
   FeedbackReport,
   Log,
+  Metric,
   Report,
   ReportError,
   Transaction,
 } from './types'
+
+// Serialized attributes are typed wrappers, e.g. { value: 42, type: 'integer' }
+function unwrapAttributes(rawAttributes: any): { [key: string]: any } {
+  const attributes: { [key: string]: any } = {}
+  Object.keys(rawAttributes || {}).forEach(key => {
+    const attribute = rawAttributes[key]
+    attributes[key] =
+      attribute && typeof attribute === 'object' && 'value' in attribute
+        ? attribute.value
+        : attribute
+  })
+  return attributes
+}
 
 export function transformReport(report: any): Report {
   const exception =
@@ -33,24 +47,28 @@ export function transformReport(report: any): Report {
 }
 
 export function transformLog(log: any): Log {
-  // Serialized log attributes are typed wrappers, e.g. { value: 42, type: 'integer' }
-  const attributes: { [key: string]: any } = {}
-  Object.keys(log.attributes || {}).forEach(key => {
-    const attribute = log.attributes[key]
-    attributes[key] =
-      attribute && typeof attribute === 'object' && 'value' in attribute
-        ? attribute.value
-        : attribute
-  })
-
   return {
     level: log.level,
     message: log.body,
-    attributes,
+    attributes: unwrapAttributes(log.attributes),
     timestamp: log.timestamp,
     traceId: log.trace_id,
     severityNumber: log.severity_number,
     originalLog: log,
+  }
+}
+
+export function transformMetric(metric: any): Metric {
+  return {
+    name: metric.name,
+    type: metric.type,
+    value: metric.value,
+    unit: metric.unit,
+    attributes: unwrapAttributes(metric.attributes),
+    timestamp: metric.timestamp,
+    traceId: metric.trace_id,
+    spanId: metric.span_id,
+    originalMetric: metric,
   }
 }
 

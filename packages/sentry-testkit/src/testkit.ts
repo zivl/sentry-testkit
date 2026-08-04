@@ -3,6 +3,7 @@ import {
   transformCheckIn,
   transformFeedback,
   transformLog,
+  transformMetric,
   transformReport,
   transformTransaction,
 } from './transformers'
@@ -10,6 +11,7 @@ import {
   CheckIn,
   FeedbackReport,
   Log,
+  Metric,
   Report,
   ReportError,
   Testkit,
@@ -56,6 +58,7 @@ export function createTestkit(): Testkit {
   let reports: Report[] = []
   let transactions: Transaction[] = []
   let logs: Log[] = []
+  let metrics: Metric[] = []
   let feedback: FeedbackReport[] = []
   let checkIns: CheckIn[] = []
 
@@ -77,6 +80,9 @@ export function createTestkit(): Testkit {
         } else if (header.type === 'log') {
           const items = (payload && payload.items) || []
           items.forEach((log: any) => logs.push(transformLog(log)))
+        } else if (header.type === 'trace_metric') {
+          const items = (payload && payload.items) || []
+          items.forEach((metric: any) => metrics.push(transformMetric(metric)))
         } else if (header.type === 'feedback') {
           feedback.push(transformFeedback(payload))
         } else if (header.type === 'check_in') {
@@ -118,6 +124,10 @@ export function createTestkit(): Testkit {
       return logs
     },
 
+    metrics() {
+      return metrics
+    },
+
     feedback() {
       return feedback
     },
@@ -138,6 +148,10 @@ export function createTestkit(): Testkit {
       return waitFor('logs', () => logs, count, options)
     },
 
+    waitForMetrics(count, options) {
+      return waitFor('metrics', () => metrics, count, options)
+    },
+
     waitForFeedback(count, options) {
       return waitFor('feedback', () => feedback, count, options)
     },
@@ -150,6 +164,7 @@ export function createTestkit(): Testkit {
       reports = []
       transactions = []
       logs = []
+      metrics = []
       feedback = []
       checkIns = []
     },

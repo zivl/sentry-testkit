@@ -1,5 +1,11 @@
 # Cursor Rules — sentry-testkit
 
+> The canonical instructions live in [AGENTS.md](AGENTS.md), with detailed task-scoped
+> guidance in [skills/](skills/). Read the skill matching your task before starting:
+> [code-writing](skills/code-writing.md), [code-quality](skills/code-quality.md),
+> [testing](skills/testing.md), [docs-writing](skills/docs-writing.md),
+> [code-review](skills/code-review.md). This file is a summary only.
+
 ## Project
 
 sentry-testkit is a Yarn 4 monorepo. The main package lives in `packages/sentry-testkit/`.
@@ -25,6 +31,9 @@ Always run `yarn test` before finishing any change to `packages/sentry-testkit/`
 - `src/types.ts` — all public TypeScript interfaces
 - `src/localServerApi.ts` — Express server that mimics Sentry's API (for local-server mode)
 - `browser.ts` must NEVER import Node.js / Express modules
+- New envelope item types must be handled in **all three** dispatch sites:
+  `parsers.ts` (`handleEnvelopeRequestData`), `testkit.ts` (`createRequestHandler`),
+  `sentryTransport.ts` (`send`) — otherwise that mode silently drops the data
 
 ## Coding style
 

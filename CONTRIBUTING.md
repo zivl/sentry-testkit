@@ -1,5 +1,19 @@
 # Contribution Guide
 
+## Skills
+
+Task-scoped guides live in [`skills/`](skills/) and cover the whole change lifecycle. They apply to human contributors and AI coding agents alike — read the one matching what you are doing:
+
+| Skill | Read it when |
+|-------|--------------|
+| [Code Writing](skills/code-writing.md) | Implementing a feature or fix |
+| [Code Quality](skills/code-quality.md) | Before opening a PR: lint, types, build, semver |
+| [Testing](skills/testing.md) | Adding or changing tests |
+| [Docs Writing](skills/docs-writing.md) | The public API or the docs site changed |
+| [Code Review](skills/code-review.md) | Reviewing a PR, or self-reviewing your diff |
+
+The [pull request template](.github/PULL_REQUEST_TEMPLATE.md) checklist maps onto these one-to-one.
+
 ## Commit Message Guidelines
 
 We use [conventionalcommits](https://conventionalcommits.org) to format our commit messages. This leads to **more
@@ -26,11 +40,19 @@ More info about message format and list of types could be found [here](https://c
 
 ## Writing Code
 
+See [skills/code-writing.md](skills/code-writing.md) for the full guide with good/bad examples. In short:
+
 - Make sure to write functions with minimal side effects.
 - We always prefer `const` on `let`.
 - Make up clear and readable variable names and function names.
 - Update documentation in case you add/modify/remove any kind of behaviour.
 - Test any code that you push in.
+
+Before opening a PR, all three must pass:
+
+```bash
+yarn lint && yarn build && yarn test
+```
 
 ## Git Stuff
 

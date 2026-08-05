@@ -1,5 +1,6 @@
 import { Event } from '@sentry/types'
 import {
+  transformAttachment,
   transformCheckIn,
   transformFeedback,
   transformLog,
@@ -7,7 +8,7 @@ import {
   transformReport,
   transformTransaction,
 } from './transformers'
-import { Testkit } from './types'
+import { Attachment, Testkit } from './types'
 
 export function createSentryTransport(testkit: Testkit): any {
   return function() {
@@ -27,14 +28,21 @@ export function createSentryTransport(testkit: Testkit): any {
 
     // Send transport for API v7
     const send = function(envelope: any) {
-      const [, items] = envelope
+      const [, envelopeItems] = envelope
+      const items: [any, any][] = envelopeItems
 
-      // @ts-expect-error
+      // Attachments ride in the same envelope as the event they belong to, so
+      // they are collected up front and handed to every report from it
+      const attachments: Attachment[] = items
+        .filter(([headers]) => headers.type === 'attachment')
+        .map(([headers, data]) => transformAttachment(headers, data))
+      attachments.forEach(attachment => testkit.attachments().push(attachment))
+
       items.forEach(([headers, data]) => {
         if (headers.type === 'transaction') {
           testkit.transactions().push(transformTransaction(data))
         } else if (headers.type === 'event') {
-          testkit.reports().push(transformReport(data))
+          testkit.reports().push(transformReport(data, attachments))
         } else if (headers.type === 'log') {
           // Log items are containers: their payload is { items: SerializedLog[] }
           const logs = (data && data.items) || []

@@ -14,11 +14,12 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 * [`transactions()`](#transactions) — captured performance transactions
 * [`logs()`](#logs) — captured structured logs
 * [`metrics()`](#metrics) — captured application metrics
+* [`attachments()`](#attachments) — captured event attachments
 * [`feedback()`](#feedback) — captured user feedback
 * [`checkIns()`](#checkins) — captured cron monitor check-ins
 
 **Awaiting asynchronously-sent data**
-* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForFeedback`, `waitForCheckIns`
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`
 
 **Finding and filtering**
 * [`findReport(error)`](#findreporterror)
@@ -69,6 +70,8 @@ Each report also exposes evaluated [feature flags](https://docs.sentry.io/platfo
 expect(testkit.reports()[0].flags).toEqual([{ flag: 'new-checkout', result: true }])
 ```
 
+Files sent with the event are exposed as `report.attachments` — see [`attachments()`](#attachments) — and the array is empty when the event carried none.
+
 ### `waitForReports(count, options)`
 Waits until at least `count` reports have been captured. This replaces "sleep then assert" patterns and third-party polling helpers — Sentry transports are asynchronous, so reports may not be captured yet when your assertion runs.
 
@@ -88,7 +91,7 @@ test('waitForReports example', async function() {
 })
 ```
 
-Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForFeedback(count, options)` and `waitForCheckIns(count, options)`.
+Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForAttachments(count, options)`, `waitForFeedback(count, options)` and `waitForCheckIns(count, options)`.
 
 ### `findReport(error)`
 Finds a report by a given error.
@@ -294,6 +297,52 @@ test('metrics example', async function() {
 ```
 
 Alongside the attributes you set, the SDK enriches every metric with its own — `sentry.release`, `sentry.environment`, `sentry.sdk.name` and more — so assert on the specific attributes you care about rather than on the whole object.
+
+### `attachments()`
+Gets all captured [attachments](https://docs.sentry.io/platforms/javascript/enriching-events/attachments/) — files sent with an event via `scope.addAttachment(...)` or the `attachments` capture option.
+
+**Returns**: <code>Array</code> - where each member of the array consists of an <code>Attachment</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `filename` | <code>string</code> | The attachment's filename |
+| `contentType` | <code>string</code> | The declared content type, if any |
+| `attachmentType` | <code>string</code> | The Sentry attachment type, e.g. `event.attachment`, if any |
+| `data` | <code>Uint8Array</code> | The attachment bytes, exactly as sent |
+| `text` | <code>string</code> | The bytes decoded as UTF-8, for asserting on text attachments |
+
+Attachments travel in the same envelope as the event they belong to, so they are also exposed on that report as `report.attachments`:
+
+```javascript
+test('attachments example', async function() {
+    Sentry.captureException(new Error('import failed'), {
+        attachments: [{ filename: 'import.csv', data: 'id,name\n1,jane', contentType: 'text/csv' }],
+    })
+
+    const [report] = await testkit.waitForReports(1)
+    expect(report.attachments).toHaveLength(1)
+    expect(report.attachments[0].filename).toEqual('import.csv')
+    expect(report.attachments[0].text).toEqual('id,name\n1,jane')
+})
+```
+
+Use `testkit.attachments()` when you do not care which event an attachment belongs to:
+
+```javascript
+test('scope attachment example', async function() {
+    Sentry.withScope(scope => {
+        scope.addAttachment({ filename: 'state.json', data: JSON.stringify({ cart: ['sku-1'] }) })
+        Sentry.captureException(new Error('checkout failed'))
+    })
+
+    const [attachment] = await testkit.waitForAttachments(1)
+    expect(JSON.parse(attachment.text)).toEqual({ cart: ['sku-1'] })
+})
+```
+
+:::note Binary attachments
+`data` holds the exact bytes whenever the testkit receives them as bytes: transport mode (Node, browser and React) always does, and so does the network interceptor when your interceptor hands the request body over as a `Buffer`. The local server, Puppeteer and Playwright receive the request body as text, so a binary attachment such as a screenshot arrives UTF-8 decoded there. Assert on binary payloads in transport mode.
+:::
 
 ### `feedback()`
 Gets all captured [user feedback](https://docs.sentry.io/platforms/javascript/user-feedback/) submitted via `Sentry.captureFeedback(...)` or the feedback widget.

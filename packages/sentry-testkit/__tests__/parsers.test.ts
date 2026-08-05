@@ -72,6 +72,23 @@ describe('parseEnvelope', () => {
     expect(items[0]!.payload).toBe('plain text attachment')
   })
 
+  test('keeps the undecoded payload bytes of a binary item', () => {
+    const binaryPayload = Buffer.from([0x00, 0xff, 0x10, 0x7f])
+    const body = Buffer.concat([
+      Buffer.from(
+        `${envelopeHeader}\n` +
+          `{"type":"attachment","length":${binaryPayload.length},"filename":"blob.bin"}\n`
+      ),
+      binaryPayload,
+    ])
+
+    const items = parseEnvelope(body)
+
+    expect(Array.from(items[0]!.payloadBytes)).toEqual(
+      Array.from(binaryPayload)
+    )
+  })
+
   test('tolerates a trailing newline at the end of the envelope', () => {
     const body = `${envelopeHeader}\n{"type":"event"}\n${eventPayload}\n`
 
@@ -189,6 +206,50 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.metrics()[1]!.name).toBe('memory.usage')
     expect(testkit.metrics()[1]!.unit).toBe('megabyte')
     expect(testkit.reports()).toHaveLength(1)
+  })
+
+  test('captures attachments and links them to the event of the same envelope', () => {
+    const testkit = createTestkit()
+    const attachmentPayload = 'first line\nsecond line'
+    const body =
+      `${envelopeHeader}\n` +
+      `{"type":"attachment","length":${attachmentPayload.length},"filename":"log.txt","content_type":"text/plain"}\n` +
+      `${attachmentPayload}\n` +
+      `{"type":"event"}\n${eventPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.attachments()).toHaveLength(1)
+    const attachment = testkit.attachments()[0]!
+    expect(attachment.filename).toBe('log.txt')
+    expect(attachment.contentType).toBe('text/plain')
+    expect(attachment.text).toBe(attachmentPayload)
+
+    expect(testkit.reports()).toHaveLength(1)
+    expect(testkit.reports()[0]!.attachments).toEqual([attachment])
+  })
+
+  test('links attachments that follow the event in the envelope', () => {
+    const testkit = createTestkit()
+    const body =
+      `${envelopeHeader}\n` +
+      `{"type":"event"}\n${eventPayload}\n` +
+      `{"type":"attachment","length":5,"filename":"trailing.txt"}\n` +
+      `after`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.reports()[0]!.attachments).toHaveLength(1)
+    expect(testkit.reports()[0]!.attachments[0]!.filename).toBe('trailing.txt')
+  })
+
+  test('reports without attachments expose an empty attachments array', () => {
+    const testkit = createTestkit()
+    const body = `${envelopeHeader}\n{"type":"event"}\n${eventPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.reports()[0]!.attachments).toEqual([])
   })
 
   test('captures a feedback item', () => {

@@ -90,6 +90,31 @@ describe('sentry test-kit test suite - local server', function() {
     expect(response.ok).toBe(true)
   })
 
+  test('should capture attachments sent alongside an event', async function() {
+    const dsn = localServer.getDsn()?.replace(`/${PROJECT_ID}`, '')
+    const attachmentPayload = 'id,name\n1,jane'
+    const envelopeBody =
+      `{"event_id":"9f2f0e1a","sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.node","version":"10.46.0"}}\n` +
+      `{"type":"attachment","length":${attachmentPayload.length},"filename":"import.csv","content_type":"text/csv"}\n` +
+      `${attachmentPayload}\n` +
+      `{"type":"event"}\n` +
+      `{"exception":{"values":[{"type":"Error","value":"import failed"}]},"level":"error","tags":{}}`
+
+    const response = await fetch(`${dsn}/api/${PROJECT_ID}/envelope/`, {
+      method: 'POST',
+      body: envelopeBody,
+      headers: { 'Content-Type': 'application/x-sentry-envelope' },
+    })
+
+    expect(response.ok).toBe(true)
+    await waitForExpect(() => expect(testkit.attachments()).toHaveLength(1))
+    const attachment = testkit.attachments()[0]!
+    expect(attachment.filename).toBe('import.csv')
+    expect(attachment.contentType).toBe('text/csv')
+    expect(attachment.text).toBe(attachmentPayload)
+    expect(testkit.reports()[0]!.attachments).toEqual([attachment])
+  })
+
   test('responds with Access-Control-Allow-Origin header', async function() {
     const dsn = localServer.getDsn()?.replace(`/${PROJECT_ID}`, '')
     const sessionEnvelopeBody =

@@ -32,6 +32,14 @@ declare namespace sentryTestkit {
     result: any
   }
 
+  interface Attachment {
+    filename: string
+    contentType?: string
+    attachmentType?: string
+    data: Uint8Array
+    text: string
+  }
+
   interface Report {
     breadcrumbs: Breadcrumb[]
     error?: ReportError
@@ -42,6 +50,7 @@ declare namespace sentryTestkit {
     user?: User
     tags: { [key: string]: string }
     flags: ReportFlag[]
+    attachments: Attachment[]
     originalReport: Event
   }
 
@@ -136,6 +145,7 @@ declare namespace sentryTestkit {
     transactions(): Transaction[]
     logs(): Log[]
     metrics(): Metric[]
+    attachments(): Attachment[]
     feedback(): FeedbackReport[]
     checkIns(): CheckIn[]
     waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
@@ -145,6 +155,10 @@ declare namespace sentryTestkit {
     ): Promise<Transaction[]>
     waitForLogs(count: number, options?: WaitForOptions): Promise<Log[]>
     waitForMetrics(count: number, options?: WaitForOptions): Promise<Metric[]>
+    waitForAttachments(
+      count: number,
+      options?: WaitForOptions
+    ): Promise<Attachment[]>
     waitForFeedback(
       count: number,
       options?: WaitForOptions

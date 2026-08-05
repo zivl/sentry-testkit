@@ -28,6 +28,14 @@ describe('Puppeteer testkit', () => {
 {"type":"trace_metric","item_count":1,"content_type":"application/vnd.sentry.items.trace-metric+json"}
 {"items":[{"timestamp":1717081538.235,"trace_id":"abcd1234","name":"api.requests","type":"counter","value":3,"unit":"none","attributes":{"endpoint":{"value":"/api/users","type":"string"}}}]}`,
   }
+  const sentryAttachmentRequest = {
+    url: () => 'https://sentry.io/api/1234567/envelope',
+    postData: () => `{"event_id":"9f2f0e1a","sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.browser","version":"10.46.0"}}
+{"type":"attachment","length":26,"filename":"state.json","content_type":"application/json"}
+{"cart":["sku-1","sku-2"]}
+{"type":"event"}
+{"exception":{"values":[{"type":"Error","value":"checkout failed"}]},"level":"error","tags":{}}`,
+  }
   const sentrySessionRequest = {
     url: () => 'https://sentry.io/api/1234567/envelope',
     postData: () => `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.react","version":"6.11.0"}}
@@ -64,6 +72,18 @@ describe('Puppeteer testkit', () => {
     expect(metric.type).toEqual('counter')
     expect(metric.value).toEqual(3)
     expect(metric.attributes['endpoint']).toEqual('/api/users')
+  })
+
+  test('should collect attachments and link them to the report', () => {
+    testkit.puppeteer.startListening(page)
+    page.emit('request', sentryAttachmentRequest)
+    expect(testkit.attachments()).toHaveLength(1)
+    const attachment = testkit.attachments()[0]!
+    expect(attachment.filename).toEqual('state.json')
+    expect(attachment.contentType).toEqual('application/json')
+    expect(attachment.text).toEqual('{"cart":["sku-1","sku-2"]}')
+    expect(testkit.reports()).toHaveLength(1)
+    expect(testkit.reports()[0]!.attachments).toEqual([attachment])
   })
 
   test('should handle session items in an envelope request', () => {

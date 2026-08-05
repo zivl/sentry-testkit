@@ -1,5 +1,6 @@
 import { parseEnvelope } from './parsers'
 import {
+  transformAttachment,
   transformCheckIn,
   transformFeedback,
   transformLog,
@@ -8,6 +9,7 @@ import {
   transformTransaction,
 } from './transformers'
 import {
+  Attachment,
   CheckIn,
   FeedbackReport,
   Log,
@@ -59,6 +61,7 @@ export function createTestkit(): Testkit {
   let transactions: Transaction[] = []
   let logs: Log[] = []
   let metrics: Metric[] = []
+  let attachments: Attachment[] = []
   let feedback: FeedbackReport[] = []
   let checkIns: CheckIn[] = []
 
@@ -72,11 +75,20 @@ export function createTestkit(): Testkit {
       reports.push(transformReport(JSON.parse(request.postData())))
     }
     if (/\/api\/[0-9]*\/envelope/.test(path)) {
-      parseEnvelope(request.postData()).forEach(({ header, payload }) => {
+      const items = parseEnvelope(request.postData())
+
+      const envelopeAttachments = items
+        .filter(({ header }) => header.type === 'attachment')
+        .map(({ header, payloadBytes }) =>
+          transformAttachment(header, payloadBytes)
+        )
+      envelopeAttachments.forEach(attachment => attachments.push(attachment))
+
+      items.forEach(({ header, payload }) => {
         if (header.type === 'transaction') {
           transactions.push(transformTransaction(payload))
         } else if (header.type === 'event') {
-          reports.push(transformReport(payload))
+          reports.push(transformReport(payload, envelopeAttachments))
         } else if (header.type === 'log') {
           const items = (payload && payload.items) || []
           items.forEach((log: any) => logs.push(transformLog(log)))
@@ -128,6 +140,10 @@ export function createTestkit(): Testkit {
       return metrics
     },
 
+    attachments() {
+      return attachments
+    },
+
     feedback() {
       return feedback
     },
@@ -152,6 +168,10 @@ export function createTestkit(): Testkit {
       return waitFor('metrics', () => metrics, count, options)
     },
 
+    waitForAttachments(count, options) {
+      return waitFor('attachments', () => attachments, count, options)
+    },
+
     waitForFeedback(count, options) {
       return waitFor('feedback', () => feedback, count, options)
     },
@@ -165,6 +185,7 @@ export function createTestkit(): Testkit {
       transactions = []
       logs = []
       metrics = []
+      attachments = []
       feedback = []
       checkIns = []
     },

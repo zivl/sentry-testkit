@@ -1,4 +1,6 @@
+import { fromBytes, toBytes } from './bytes'
 import {
+  transformAttachment,
   transformCheckIn,
   transformFeedback,
   transformLog,
@@ -6,7 +8,7 @@ import {
   transformReport,
   transformTransaction,
 } from './transformers'
-import { Testkit } from './types'
+import { Attachment, Testkit } from './types'
 
 const dsnKeys = 'source protocol user pass host port path'.split(' ')
 const dsnPattern = /^(?:(\w+):)?\/\/(?:(\w+)(:\w+)?@)?([\w\.-]+)(?::(\d+))?(\/.*)/ //eslint-disable-line no-useless-escape
@@ -42,25 +44,11 @@ export interface EnvelopeItemHeader {
 export interface EnvelopeItem {
   header: EnvelopeItemHeader
   payload: any
+  // The undecoded payload, which attachments need to survive binary data
+  payloadBytes: Uint8Array
 }
 
 const NEWLINE = 0x0a
-
-// Buffer in Node.js, TextEncoder/TextDecoder in browsers (Puppeteer page context)
-function toBytes(input: string | Uint8Array): Uint8Array {
-  if (typeof input !== 'string') {
-    return input
-  }
-  return typeof Buffer !== 'undefined'
-    ? Buffer.from(input)
-    : new TextEncoder().encode(input)
-}
-
-function fromBytes(bytes: Uint8Array): string {
-  return typeof Buffer !== 'undefined'
-    ? Buffer.from(bytes).toString()
-    : new TextDecoder().decode(bytes)
-}
 
 // Envelope format: https://develop.sentry.dev/sdk/data-model/envelopes/
 // <envelope header>\n(<item header>\n<item payload>\n)*
@@ -93,9 +81,9 @@ export function parseEnvelope(rawBody: string | Uint8Array): EnvelopeItem[] {
     }
     const header = JSON.parse(headerLine)
 
-    let rawPayload: string
+    let payloadBytes: Uint8Array
     if (typeof header.length === 'number') {
-      rawPayload = fromBytes(bytes.subarray(next, next + header.length))
+      payloadBytes = bytes.subarray(next, next + header.length)
       offset = next + header.length
       // Skip the newline separating this payload from the next item header
       if (bytes[offset] === NEWLINE) {
@@ -103,10 +91,11 @@ export function parseEnvelope(rawBody: string | Uint8Array): EnvelopeItem[] {
       }
     } else {
       const payloadLine = readLine(next)
-      rawPayload = payloadLine.line
+      payloadBytes = bytes.subarray(next, payloadLine.next - 1)
       offset = payloadLine.next
     }
 
+    const rawPayload = fromBytes(payloadBytes)
     let payload: any
     try {
       payload = JSON.parse(rawPayload)
@@ -115,7 +104,7 @@ export function parseEnvelope(rawBody: string | Uint8Array): EnvelopeItem[] {
       payload = rawPayload
     }
 
-    items.push({ header, payload })
+    items.push({ header, payload, payloadBytes })
   }
 
   return items
@@ -125,11 +114,22 @@ export function handleEnvelopeRequestData(
   requestBody: any,
   testkit: Testkit
 ): void {
-  parseEnvelope(requestBody).forEach(({ header, payload }) => {
+  const items = parseEnvelope(requestBody)
+
+  // Attachments ride in the same envelope as the event they belong to, so they
+  // are collected up front and handed to every report from this envelope
+  const attachments: Attachment[] = items
+    .filter(({ header }) => header.type === 'attachment')
+    .map(({ header, payloadBytes }) =>
+      transformAttachment(header, payloadBytes)
+    )
+  attachments.forEach(attachment => testkit.attachments().push(attachment))
+
+  items.forEach(({ header, payload }) => {
     if (header.type === 'transaction') {
       testkit.transactions().push(transformTransaction(payload))
     } else if (header.type === 'event') {
-      testkit.reports().push(transformReport(payload))
+      testkit.reports().push(transformReport(payload, attachments))
     } else if (header.type === 'log') {
       // Log items are containers: their payload is { items: SerializedLog[] }
       const logs = (payload && payload.items) || []

@@ -1,5 +1,18 @@
 # Changelog
 
+## [7.3.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.2.1...sentry-testkit-v7.3.0) (2026-08-05)
+
+
+### Features
+
+* capture application metrics via testkit.metrics() ([#346](https://github.com/zivl/sentry-testkit/issues/346)) ([bafdd59](https://github.com/zivl/sentry-testkit/commit/bafdd59fd9cbb46b12d430d0d3e7de0fb3c8701f)), closes [#306](https://github.com/zivl/sentry-testkit/issues/306)
+* capture attachments and expose them on the report they were sent with ([#347](https://github.com/zivl/sentry-testkit/issues/347)) ([19b8f0e](https://github.com/zivl/sentry-testkit/commit/19b8f0e85c8be22de9cd3319e516d3d6ffb44dd2)), closes [#307](https://github.com/zivl/sentry-testkit/issues/307)
+
+
+### Documentation
+
+* add contributor skills for the code change lifecycle ([#341](https://github.com/zivl/sentry-testkit/issues/341)) ([69d2698](https://github.com/zivl/sentry-testkit/commit/69d2698f95e346fe3717f27012ebcd78f84a3fb4))
+
 ## [7.2.1](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.2.0...sentry-testkit-v7.2.1) (2026-07-26)
 
 

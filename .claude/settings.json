@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "attribution": {
     "commit": "",
     "pr": ""
@@ -20,6 +21,9 @@
       "Bash(git push:*)",
       "Bash(git rebase:*)",
       "Bash(git restore:*)",
+      "Bash(git rm *)",
+      "Bash(git stash *)",
+      "Bash(grep :*)",
       "Bash(npm pack:*)",
       "Bash(yarn build:*)",
       "Bash(yarn install:*)",

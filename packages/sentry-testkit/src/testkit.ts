@@ -6,6 +6,8 @@ import {
   transformLog,
   transformMetric,
   transformReport,
+  transformSession,
+  transformSessionAggregate,
   transformTransaction,
 } from './transformers'
 import {
@@ -16,6 +18,8 @@ import {
   Metric,
   Report,
   ReportError,
+  Session,
+  SessionAggregate,
   Testkit,
   Transaction,
 } from './types'
@@ -64,6 +68,8 @@ export function createTestkit(): Testkit {
   let attachments: Attachment[] = []
   let feedback: FeedbackReport[] = []
   let checkIns: CheckIn[] = []
+  let sessions: Session[] = []
+  let sessionAggregates: SessionAggregate[] = []
 
   const createRequestHandler = (baseUrl: string) => (request: any) => {
     const url = request.url()
@@ -99,6 +105,15 @@ export function createTestkit(): Testkit {
           feedback.push(transformFeedback(payload))
         } else if (header.type === 'check_in') {
           checkIns.push(transformCheckIn(payload))
+        } else if (header.type === 'session') {
+          sessions.push(transformSession(payload))
+        } else if (header.type === 'sessions') {
+          const aggregates = (payload && payload.aggregates) || []
+          aggregates.forEach((aggregate: any) =>
+            sessionAggregates.push(
+              transformSessionAggregate(aggregate, payload.attrs)
+            )
+          )
         }
       })
     }
@@ -152,6 +167,14 @@ export function createTestkit(): Testkit {
       return checkIns
     },
 
+    sessions() {
+      return sessions
+    },
+
+    sessionAggregates() {
+      return sessionAggregates
+    },
+
     waitForReports(count, options) {
       return waitFor('reports', () => reports, count, options)
     },
@@ -180,6 +203,19 @@ export function createTestkit(): Testkit {
       return waitFor('check-ins', () => checkIns, count, options)
     },
 
+    waitForSessions(count, options) {
+      return waitFor('sessions', () => sessions, count, options)
+    },
+
+    waitForSessionAggregates(count, options) {
+      return waitFor(
+        'session aggregates',
+        () => sessionAggregates,
+        count,
+        options
+      )
+    },
+
     reset() {
       reports = []
       transactions = []
@@ -188,6 +224,8 @@ export function createTestkit(): Testkit {
       attachments = []
       feedback = []
       checkIns = []
+      sessions = []
+      sessionAggregates = []
     },
 
     getExceptionAt(index: number) {

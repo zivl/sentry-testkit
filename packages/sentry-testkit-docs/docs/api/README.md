@@ -17,9 +17,11 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 * [`attachments()`](#attachments) — captured event attachments
 * [`feedback()`](#feedback) — captured user feedback
 * [`checkIns()`](#checkins) — captured cron monitor check-ins
+* [`sessions()`](#sessions) — captured release health sessions
+* [`sessionAggregates()`](#sessionaggregates) — captured aggregated session counts
 
 **Awaiting asynchronously-sent data**
-* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`, `waitForSessions`, `waitForSessionAggregates`
 
 **Finding and filtering**
 * [`findReport(error)`](#findreporterror)
@@ -91,7 +93,7 @@ test('waitForReports example', async function() {
 })
 ```
 
-Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForAttachments(count, options)`, `waitForFeedback(count, options)` and `waitForCheckIns(count, options)`.
+Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForAttachments(count, options)`, `waitForFeedback(count, options)`, `waitForCheckIns(count, options)`, `waitForSessions(count, options)` and `waitForSessionAggregates(count, options)`.
 
 ### `findReport(error)`
 Finds a report by a given error.
@@ -395,6 +397,68 @@ test('check-in example', async function() {
 
     const checkIns = await testkit.waitForCheckIns(2)
     expect(checkIns.map(c => c.status)).toEqual(['in_progress', 'ok'])
+})
+```
+
+### `sessions()`
+Gets all captured [release health sessions](https://docs.sentry.io/platforms/javascript/configuration/releases/#sessions), reported either by automatic session tracking or by `Sentry.startSession()` / `Sentry.captureSession()` / `Sentry.endSession()`.
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>Session</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `sid` | <code>string</code> | The session id |
+| `status` | <code>string</code> | `ok` \| `exited` \| `crashed` \| `abnormal` |
+| `errors` | <code>number</code> | The number of errors reported during the session |
+| `release` | <code>string</code> | The release, if set |
+| `environment` | <code>string</code> | The environment, if set |
+| `duration` | <code>number</code> | The session duration in seconds, for a finished session |
+| `originalSession` | <code>Object</code> | The raw session payload as sent by the SDK |
+
+For example
+```javascript
+test('session example', async function() {
+    Sentry.startSession()
+    Sentry.captureException(new Error('checkout failed'))
+    await Sentry.flush()
+    Sentry.endSession()
+
+    const sessions = await testkit.waitForSessions(1)
+    const session = sessions[sessions.length - 1]
+    expect(session.status).toEqual('exited')
+    expect(session.errors).toEqual(1)
+    expect(session.release).toEqual('my-release')
+})
+```
+
+:::note
+The Node SDK starts a session when `Sentry.init()` runs, and `Sentry.startSession()` ends that one before starting a new one. Assert on the session you started rather than assuming a single captured session — either take the last one, or match on the `sid` from `Sentry.getIsolationScope().getSession()`.
+:::
+
+### `sessionAggregates()`
+Gets all captured aggregated session counts. Server-side SDKs report request-mode release health in `sessions` envelopes, which batch per-minute counts instead of individual sessions. Each time bucket in such an envelope becomes one entry.
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>SessionAggregate</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `started` | <code>string</code> | The ISO timestamp of the time bucket |
+| `exited` | <code>number</code> | The number of sessions that exited without errors |
+| `errored` | <code>number</code> | The number of sessions that had errors |
+| `crashed` | <code>number</code> | The number of crashed sessions |
+| `abnormal` | <code>number</code> | The number of abnormally-ended sessions |
+| `release` | <code>string</code> | The release, if set |
+| `environment` | <code>string</code> | The environment, if set |
+| `originalAggregate` | <code>Object</code> | The raw aggregate payload as sent by the SDK |
+
+For example
+```javascript
+test('aggregated sessions example', async function() {
+    // your server framework reports these while handling requests
+    const aggregates = await testkit.waitForSessionAggregates(1)
+
+    expect(aggregates[0].crashed).toEqual(0)
+    expect(aggregates[0].exited).toEqual(2)
 })
 ```
 

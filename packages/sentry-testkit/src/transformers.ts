@@ -7,6 +7,8 @@ import {
   Metric,
   Report,
   ReportError,
+  Session,
+  SessionAggregate,
   Transaction,
 } from './types'
 
@@ -116,6 +118,35 @@ export function transformCheckIn(checkIn: any): CheckIn {
     release: checkIn.release,
     environment: checkIn.environment,
     originalCheckIn: checkIn,
+  }
+}
+
+export function transformSession(session: any): Session {
+  return {
+    sid: session.sid,
+    status: session.status,
+    errors: session.errors ?? 0,
+    // Release health attributes are nested under `attrs` on the wire
+    release: session.attrs?.release,
+    environment: session.attrs?.environment,
+    duration: session.duration,
+    originalSession: session,
+  }
+}
+
+export function transformSessionAggregate(
+  aggregate: any,
+  attrs: any
+): SessionAggregate {
+  return {
+    started: aggregate.started,
+    exited: aggregate.exited ?? 0,
+    errored: aggregate.errored ?? 0,
+    crashed: aggregate.crashed ?? 0,
+    abnormal: aggregate.abnormal ?? 0,
+    release: attrs?.release,
+    environment: attrs?.environment,
+    originalAggregate: aggregate,
   }
 }
 

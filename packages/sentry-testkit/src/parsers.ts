@@ -6,6 +6,8 @@ import {
   transformLog,
   transformMetric,
   transformReport,
+  transformSession,
+  transformSessionAggregate,
   transformTransaction,
 } from './transformers'
 import { Attachment, Testkit } from './types'
@@ -144,6 +146,16 @@ export function handleEnvelopeRequestData(
       testkit.feedback().push(transformFeedback(payload))
     } else if (header.type === 'check_in') {
       testkit.checkIns().push(transformCheckIn(payload))
+    } else if (header.type === 'session') {
+      testkit.sessions().push(transformSession(payload))
+    } else if (header.type === 'sessions') {
+      // Aggregate session items batch per-time-bucket counts under `aggregates`
+      const aggregates = (payload && payload.aggregates) || []
+      aggregates.forEach((aggregate: any) =>
+        testkit
+          .sessionAggregates()
+          .push(transformSessionAggregate(aggregate, payload.attrs))
+      )
     }
   })
 }

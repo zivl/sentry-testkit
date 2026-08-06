@@ -4,7 +4,7 @@ import { createTestkit } from '../src/testkit'
 const envelopeHeader = `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.node","version":"6.11.0"}}`
 const eventPayload = `{"exception":{"values":[{"type":"Error","value":"testing error"}]},"level":"error","tags":{}}`
 const transactionPayload = `{"type":"transaction","transaction":"test-transaction","contexts":{"trace":{"trace_id":"1234","span_id":"5678"}},"spans":[]}`
-const sessionPayload = `{"sid":"abc","init":false,"started":"2021-08-17T14:27:11.361Z","status":"ok","errors":1}`
+const sessionPayload = `{"sid":"abc","init":false,"started":"2021-08-17T14:27:11.361Z","status":"ok","errors":1,"duration":4.5,"attrs":{"release":"1.0.0","environment":"production"}}`
 
 describe('parseEnvelope', () => {
   test('parses a single-item event envelope', () => {
@@ -298,9 +298,56 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.checkIns()[0]!.duration).toBe(3.2)
   })
 
+  test('captures a session item alongside the event of the same envelope', () => {
+    const testkit = createTestkit()
+    const body =
+      `${envelopeHeader}\n` +
+      `{"type":"session"}\n${sessionPayload}\n` +
+      `{"type":"event"}\n${eventPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.sessions()).toHaveLength(1)
+    const session = testkit.sessions()[0]!
+    expect(session.sid).toBe('abc')
+    expect(session.status).toBe('ok')
+    expect(session.errors).toBe(1)
+    expect(session.duration).toBe(4.5)
+    expect(session.release).toBe('1.0.0')
+    expect(session.environment).toBe('production')
+    expect(testkit.reports()).toHaveLength(1)
+  })
+
+  test('captures aggregates from a sessions container item', () => {
+    const testkit = createTestkit()
+    const aggregatesPayload = JSON.stringify({
+      attrs: { release: '1.0.0', environment: 'production' },
+      aggregates: [
+        { started: '2021-08-17T14:27:00.000Z', exited: 2, crashed: 1 },
+        { started: '2021-08-17T14:28:00.000Z', errored: 3, abnormal: 1 },
+      ],
+    })
+    const body = `${envelopeHeader}\n{"type":"sessions"}\n${aggregatesPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.sessionAggregates()).toHaveLength(2)
+    const aggregate = testkit.sessionAggregates()[0]!
+    expect(aggregate.started).toBe('2021-08-17T14:27:00.000Z')
+    expect(aggregate.exited).toBe(2)
+    expect(aggregate.crashed).toBe(1)
+    expect(aggregate.errored).toBe(0)
+    expect(aggregate.abnormal).toBe(0)
+    expect(aggregate.release).toBe('1.0.0')
+    expect(aggregate.environment).toBe('production')
+    expect(testkit.sessionAggregates()[1]!.errored).toBe(3)
+    expect(testkit.sessionAggregates()[1]!.abnormal).toBe(1)
+    expect(testkit.sessions()).toHaveLength(0)
+  })
+
   test('ignores unknown item types without throwing', () => {
     const testkit = createTestkit()
-    const body = `${envelopeHeader}\n{"type":"session"}\n${sessionPayload}`
+    const body = `${envelopeHeader}\n{"type":"client_report"}\n{"timestamp":123,"discarded_events":[]}`
 
     expect(() => handleEnvelopeRequestData(body, testkit)).not.toThrow()
     expect(testkit.reports()).toHaveLength(0)

@@ -6,6 +6,8 @@ import {
   transformLog,
   transformMetric,
   transformReport,
+  transformSession,
+  transformSessionAggregate,
   transformTransaction,
 } from './transformers'
 import { Attachment, Testkit } from './types'
@@ -57,6 +59,16 @@ export function createSentryTransport(testkit: Testkit): any {
           testkit.feedback().push(transformFeedback(data))
         } else if (headers.type === 'check_in') {
           testkit.checkIns().push(transformCheckIn(data))
+        } else if (headers.type === 'session') {
+          testkit.sessions().push(transformSession(data))
+        } else if (headers.type === 'sessions') {
+          // Aggregate session items batch per-time-bucket counts under `aggregates`
+          const aggregates = (data && data.aggregates) || []
+          aggregates.forEach((aggregate: any) =>
+            testkit
+              .sessionAggregates()
+              .push(transformSessionAggregate(aggregate, data.attrs))
+          )
         }
       })
 

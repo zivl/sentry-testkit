@@ -128,6 +128,29 @@ declare namespace sentryTestkit {
     originalCheckIn: any
   }
 
+  type SessionStatus = 'ok' | 'exited' | 'crashed' | 'abnormal'
+
+  interface Session {
+    sid: string
+    status: SessionStatus
+    errors: number
+    release?: string
+    environment?: string
+    duration?: number
+    originalSession: any
+  }
+
+  interface SessionAggregate {
+    started: string
+    exited: number
+    errored: number
+    crashed: number
+    abnormal: number
+    release?: string
+    environment?: string
+    originalAggregate: any
+  }
+
   interface WaitForOptions {
     timeout?: number
   }
@@ -148,6 +171,8 @@ declare namespace sentryTestkit {
     attachments(): Attachment[]
     feedback(): FeedbackReport[]
     checkIns(): CheckIn[]
+    sessions(): Session[]
+    sessionAggregates(): SessionAggregate[]
     waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
     waitForTransactions(
       count: number,
@@ -164,6 +189,11 @@ declare namespace sentryTestkit {
       options?: WaitForOptions
     ): Promise<FeedbackReport[]>
     waitForCheckIns(count: number, options?: WaitForOptions): Promise<CheckIn[]>
+    waitForSessions(count: number, options?: WaitForOptions): Promise<Session[]>
+    waitForSessionAggregates(
+      count: number,
+      options?: WaitForOptions
+    ): Promise<SessionAggregate[]>
     reset(): void
     getExceptionAt(index: number): ReportError | undefined
     findReport(e: Error): Report | undefined

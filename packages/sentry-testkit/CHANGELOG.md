@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.4.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.3.0...sentry-testkit-v7.4.0) (2026-08-06)
+
+
+### Features
+
+* capture release health sessions via testkit.sessions() ([#349](https://github.com/zivl/sentry-testkit/issues/349)) ([f5aeeae](https://github.com/zivl/sentry-testkit/commit/f5aeeaec430785a49f365e8c5d1f9d5edac967ed)), closes [#303](https://github.com/zivl/sentry-testkit/issues/303)
+
 ## [7.3.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.2.1...sentry-testkit-v7.3.0) (2026-08-05)
 
 

@@ -13,7 +13,12 @@ describe('sentry test-kit test suite - user feedback', function() {
     })
   )
 
-  beforeEach(() => testkit.reset())
+  // Error events are processed asynchronously (context lines are read from disk), so they can
+  // land after the next test's reset() and show up as another test's report. Drain first.
+  beforeEach(async () => {
+    await Sentry.flush()
+    testkit.reset()
+  })
 
   test('feedback() is empty when nothing was submitted', () => {
     expect(testkit.feedback()).toEqual([])
@@ -42,8 +47,10 @@ describe('sentry test-kit test suite - user feedback', function() {
       associatedEventId: eventId,
     })
     const [feedback] = await testkit.waitForFeedback(1)
+    const [report] = await testkit.waitForReports(1)
 
     expect(feedback!.associatedEventId).toBe(eventId)
+    expect(report!.error!.message).toBe('boom')
   })
 
   test('exposes the raw feedback event as originalFeedback', async () => {

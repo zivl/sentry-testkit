@@ -19,9 +19,10 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 * [`checkIns()`](#checkins) — captured cron monitor check-ins
 * [`sessions()`](#sessions) — captured release health sessions
 * [`sessionAggregates()`](#sessionaggregates) — captured aggregated session counts
+* [`replays()`](#replays) — captured session replay segments
 
 **Awaiting asynchronously-sent data**
-* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`, `waitForSessions`, `waitForSessionAggregates`
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`, `waitForSessions`, `waitForSessionAggregates`, `waitForReplays`
 
 **Finding and filtering**
 * [`findReport(error)`](#findreporterror)
@@ -74,6 +75,8 @@ expect(testkit.reports()[0].flags).toEqual([{ flag: 'new-checkout', result: true
 
 Files sent with the event are exposed as `report.attachments` — see [`attachments()`](#attachments) — and the array is empty when the event carried none.
 
+When the error happened while a [session replay](#replays) was recording, `report.replayId` holds the id of that replay, and is `undefined` otherwise.
+
 ### `waitForReports(count, options)`
 Waits until at least `count` reports have been captured. This replaces "sleep then assert" patterns and third-party polling helpers — Sentry transports are asynchronous, so reports may not be captured yet when your assertion runs.
 
@@ -93,7 +96,7 @@ test('waitForReports example', async function() {
 })
 ```
 
-Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForAttachments(count, options)`, `waitForFeedback(count, options)`, `waitForCheckIns(count, options)`, `waitForSessions(count, options)` and `waitForSessionAggregates(count, options)`.
+Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForAttachments(count, options)`, `waitForFeedback(count, options)`, `waitForCheckIns(count, options)`, `waitForSessions(count, options)`, `waitForSessionAggregates(count, options)` and `waitForReplays(count, options)`.
 
 ### `findReport(error)`
 Finds a report by a given error.
@@ -461,6 +464,51 @@ test('aggregated sessions example', async function() {
     expect(aggregates[0].exited).toEqual(2)
 })
 ```
+
+### `replays()`
+Gets all captured [session replay](https://docs.sentry.io/platforms/javascript/session-replay/) segments. A replay is recorded in segments, and each one is sent as a `replay_event` item paired with a `replay_recording` item in the same envelope — so each captured segment is one entry here, and a single replay usually produces several.
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>Replay</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `replayId` | <code>string</code> | The replay id, shared by all segments of the same replay |
+| `segmentId` | <code>number</code> | The zero-based index of this segment within the replay |
+| `replayType` | <code>string</code> | `session` for a sampled session, `buffer` for a replay flushed because an error occurred |
+| `traceIds` | <code>Array&lt;string&gt;</code> | The traces recorded during the segment |
+| `errorIds` | <code>Array&lt;string&gt;</code> | The ids of the error events recorded during the segment |
+| `urls` | <code>Array&lt;string&gt;</code> | The urls visited during the segment |
+| `timestamp` | <code>number</code> | The segment timestamp, in seconds |
+| `release` | <code>string</code> | The release, if set |
+| `environment` | <code>string</code> | The environment, if set |
+| `recording` | <code>Uint8Array</code> | The raw recording payload of the segment, undefined when the envelope carried none |
+| `originalReplay` | <code>Object</code> | The raw replay event payload as sent by the SDK |
+
+For example
+```javascript
+test('replay example', async function() {
+    // your app runs with Sentry.replayIntegration() enabled
+
+    const replays = await testkit.waitForReplays(1)
+    expect(replays[0].replayType).toEqual('session')
+    expect(replays[0].urls).toContain('https://example.com/checkout')
+})
+```
+
+The error events recorded while a replay is running carry its id, so you can assert that an error is linked to a replay:
+
+```javascript
+test('errors are linked to the replay they happened in', async function() {
+    const [report] = await testkit.waitForReports(1)
+    const [replay] = await testkit.waitForReplays(1)
+
+    expect(report.replayId).toEqual(replay.replayId)
+})
+```
+
+:::note
+`recording` holds the segment payload exactly as it was sent: its own `{"segment_id":n}` header line followed by the [rrweb](https://github.com/rrweb-io/rrweb) events, gzipped whenever the SDK has a compression worker available. Assert on the metadata fields rather than on the recording contents.
+:::
 
 ### `reset()`
 Resets the testkit state and clear all existing reports.

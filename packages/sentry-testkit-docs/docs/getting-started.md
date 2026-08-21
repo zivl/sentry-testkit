@@ -44,7 +44,7 @@ test('collect performance events', function () {
 });
 ```
 
-### Beyond errors: logs, metrics, attachments, feedback, check-ins and sessions
+### Beyond errors: logs, metrics, attachments, feedback, check-ins, sessions and replays
 
 `sentry-testkit` captures more than errors and transactions. If your app uses these Sentry features, you can assert on them the same way — each has its own accessor and an awaitable `waitFor*` helper:
 
@@ -54,6 +54,7 @@ test('collect performance events', function () {
 - **[User feedback](/docs/api#feedback)** — submissions from `Sentry.captureFeedback(...)` or the feedback widget, via `testkit.feedback()`
 - **[Cron check-ins](/docs/api#checkins)** — monitor check-ins from `Sentry.captureCheckIn(...)` / `Sentry.withMonitor(...)`, via `testkit.checkIns()`
 - **[Release health sessions](/docs/api#sessions)** — sessions from automatic session tracking or `Sentry.startSession()` / `Sentry.endSession()`, via `testkit.sessions()` and `testkit.sessionAggregates()`
+- **[Session replays](/docs/api#replays)** — replay segments recorded by `Sentry.replayIntegration()`, via `testkit.replays()` and `report.replayId`
 
 ```javascript
 Sentry.captureFeedback({ message: 'the checkout page is confusing' })

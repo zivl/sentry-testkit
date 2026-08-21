@@ -5,6 +5,7 @@ import {
   transformFeedback,
   transformLog,
   transformMetric,
+  transformReplay,
   transformReport,
   transformSession,
   transformSessionAggregate,
@@ -16,6 +17,7 @@ import {
   FeedbackReport,
   Log,
   Metric,
+  Replay,
   Report,
   ReportError,
   Session,
@@ -70,6 +72,7 @@ export function createTestkit(): Testkit {
   let checkIns: CheckIn[] = []
   let sessions: Session[] = []
   let sessionAggregates: SessionAggregate[] = []
+  let replays: Replay[] = []
 
   const createRequestHandler = (baseUrl: string) => (request: any) => {
     const url = request.url()
@@ -90,6 +93,10 @@ export function createTestkit(): Testkit {
         )
       envelopeAttachments.forEach(attachment => attachments.push(attachment))
 
+      const replayRecording = items.find(
+        ({ header }) => header.type === 'replay_recording'
+      )
+
       items.forEach(({ header, payload }) => {
         if (header.type === 'transaction') {
           transactions.push(transformTransaction(payload))
@@ -107,6 +114,8 @@ export function createTestkit(): Testkit {
           checkIns.push(transformCheckIn(payload))
         } else if (header.type === 'session') {
           sessions.push(transformSession(payload))
+        } else if (header.type === 'replay_event') {
+          replays.push(transformReplay(payload, replayRecording?.payloadBytes))
         } else if (header.type === 'sessions') {
           const aggregates = (payload && payload.aggregates) || []
           aggregates.forEach((aggregate: any) =>
@@ -175,6 +184,10 @@ export function createTestkit(): Testkit {
       return sessionAggregates
     },
 
+    replays() {
+      return replays
+    },
+
     waitForReports(count, options) {
       return waitFor('reports', () => reports, count, options)
     },
@@ -216,6 +229,10 @@ export function createTestkit(): Testkit {
       )
     },
 
+    waitForReplays(count, options) {
+      return waitFor('replays', () => replays, count, options)
+    },
+
     reset() {
       reports = []
       transactions = []
@@ -226,6 +243,7 @@ export function createTestkit(): Testkit {
       checkIns = []
       sessions = []
       sessionAggregates = []
+      replays = []
     },
 
     getExceptionAt(index: number) {

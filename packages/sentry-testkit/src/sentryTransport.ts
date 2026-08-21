@@ -5,6 +5,7 @@ import {
   transformFeedback,
   transformLog,
   transformMetric,
+  transformReplay,
   transformReport,
   transformSession,
   transformSessionAggregate,
@@ -40,6 +41,12 @@ export function createSentryTransport(testkit: Testkit): any {
         .map(([headers, data]) => transformAttachment(headers, data))
       attachments.forEach(attachment => testkit.attachments().push(attachment))
 
+      // A replay segment is a `replay_event` item paired with the
+      // `replay_recording` item of the same envelope
+      const replayRecording = items.find(
+        ([headers]) => headers.type === 'replay_recording'
+      )
+
       items.forEach(([headers, data]) => {
         if (headers.type === 'transaction') {
           testkit.transactions().push(transformTransaction(data))
@@ -61,6 +68,10 @@ export function createSentryTransport(testkit: Testkit): any {
           testkit.checkIns().push(transformCheckIn(data))
         } else if (headers.type === 'session') {
           testkit.sessions().push(transformSession(data))
+        } else if (headers.type === 'replay_event') {
+          testkit
+            .replays()
+            .push(transformReplay(data, replayRecording && replayRecording[1]))
         } else if (headers.type === 'sessions') {
           // Aggregate session items batch per-time-bucket counts under `aggregates`
           const aggregates = (data && data.aggregates) || []

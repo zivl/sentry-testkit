@@ -51,6 +51,7 @@ declare namespace sentryTestkit {
     tags: { [key: string]: string }
     flags: ReportFlag[]
     attachments: Attachment[]
+    replayId?: string
     originalReport: Event
   }
 
@@ -151,6 +152,22 @@ declare namespace sentryTestkit {
     originalAggregate: any
   }
 
+  type ReplayType = 'session' | 'buffer'
+
+  interface Replay {
+    replayId: string
+    segmentId: number
+    replayType?: ReplayType
+    traceIds: string[]
+    errorIds: string[]
+    urls: string[]
+    timestamp?: number
+    release?: string
+    environment?: string
+    recording?: Uint8Array
+    originalReplay: any
+  }
+
   interface WaitForOptions {
     timeout?: number
   }
@@ -173,6 +190,7 @@ declare namespace sentryTestkit {
     checkIns(): CheckIn[]
     sessions(): Session[]
     sessionAggregates(): SessionAggregate[]
+    replays(): Replay[]
     waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
     waitForTransactions(
       count: number,
@@ -194,6 +212,7 @@ declare namespace sentryTestkit {
       count: number,
       options?: WaitForOptions
     ): Promise<SessionAggregate[]>
+    waitForReplays(count: number, options?: WaitForOptions): Promise<Replay[]>
     reset(): void
     getExceptionAt(index: number): ReportError | undefined
     findReport(e: Error): Report | undefined

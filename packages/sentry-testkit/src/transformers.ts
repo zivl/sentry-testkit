@@ -5,6 +5,7 @@ import {
   FeedbackReport,
   Log,
   Metric,
+  Replay,
   Report,
   ReportError,
   Session,
@@ -50,6 +51,7 @@ export function transformReport(
     tags: report.tags || {},
     flags: report.contexts?.flags?.values ?? [],
     attachments,
+    replayId: report.contexts?.replay?.replay_id,
     originalReport: report,
   }
 }
@@ -147,6 +149,27 @@ export function transformSessionAggregate(
     release: attrs?.release,
     environment: attrs?.environment,
     originalAggregate: aggregate,
+  }
+}
+
+export function transformReplay(
+  event: any,
+  recording?: string | Uint8Array
+): Replay {
+  return {
+    replayId: event.replay_id,
+    segmentId: event.segment_id,
+    replayType: event.replay_type,
+    traceIds: event.trace_ids ?? [],
+    errorIds: event.error_ids ?? [],
+    urls: event.urls ?? [],
+    timestamp: event.timestamp,
+    release: event.release,
+    environment: event.environment,
+    // rrweb recordings are opaque here: they may be gzipped, and their payload
+    // is prefixed with its own `{"segment_id":n}` header line
+    recording: recording === undefined ? undefined : toBytes(recording),
+    originalReplay: event,
   }
 }
 

@@ -345,6 +345,75 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.sessions()).toHaveLength(0)
   })
 
+  test('captures a replay event together with its recording item', () => {
+    const testkit = createTestkit()
+    const replayPayload = JSON.stringify({
+      type: 'replay_event',
+      replay_id: 'rp123',
+      segment_id: 2,
+      replay_type: 'buffer',
+      timestamp: 1717081538.235,
+      urls: ['https://example.com/checkout'],
+      error_ids: ['err456'],
+      trace_ids: ['trc789'],
+      release: '1.0.0',
+      environment: 'production',
+    })
+    const recordingPayload = `{"segment_id":2}\n[{"type":4,"timestamp":1717081538235}]`
+    const body =
+      `${envelopeHeader}\n` +
+      `{"type":"replay_event"}\n${replayPayload}\n` +
+      `{"type":"replay_recording","length":${recordingPayload.length}}\n` +
+      `${recordingPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.replays()).toHaveLength(1)
+    const replay = testkit.replays()[0]!
+    expect(replay.replayId).toBe('rp123')
+    expect(replay.segmentId).toBe(2)
+    expect(replay.replayType).toBe('buffer')
+    expect(replay.timestamp).toBe(1717081538.235)
+    expect(replay.urls).toEqual(['https://example.com/checkout'])
+    expect(replay.errorIds).toEqual(['err456'])
+    expect(replay.traceIds).toEqual(['trc789'])
+    expect(replay.release).toBe('1.0.0')
+    expect(replay.environment).toBe('production')
+    expect(Buffer.from(replay.recording!).toString()).toBe(recordingPayload)
+  })
+
+  test('keeps a compressed replay recording intact', () => {
+    const testkit = createTestkit()
+    const compressedRecording = Buffer.from([0x1f, 0x8b, 0x08, 0x00, 0xff])
+    const body = Buffer.concat([
+      Buffer.from(
+        `${envelopeHeader}\n` +
+          `{"type":"replay_event"}\n{"type":"replay_event","replay_id":"rp123","segment_id":0}\n` +
+          `{"type":"replay_recording","length":${compressedRecording.length}}\n`
+      ),
+      compressedRecording,
+    ])
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(Array.from(testkit.replays()[0]!.recording!)).toEqual(
+      Array.from(compressedRecording)
+    )
+  })
+
+  test('links an event to the replay it was recorded in', () => {
+    const testkit = createTestkit()
+    const eventWithReplay = JSON.stringify({
+      exception: { values: [{ type: 'Error', value: 'checkout failed' }] },
+      contexts: { replay: { replay_id: 'rp123' } },
+    })
+    const body = `${envelopeHeader}\n{"type":"event"}\n${eventWithReplay}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.reports()[0]!.replayId).toBe('rp123')
+  })
+
   test('ignores unknown item types without throwing', () => {
     const testkit = createTestkit()
     const body = `${envelopeHeader}\n{"type":"client_report"}\n{"timestamp":123,"discarded_events":[]}`

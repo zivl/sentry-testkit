@@ -5,6 +5,7 @@ import {
   transformFeedback,
   transformLog,
   transformMetric,
+  transformReplay,
   transformReport,
   transformSession,
   transformSessionAggregate,
@@ -127,6 +128,12 @@ export function handleEnvelopeRequestData(
     )
   attachments.forEach(attachment => testkit.attachments().push(attachment))
 
+  // A replay segment is a `replay_event` item paired with the `replay_recording`
+  // item of the same envelope
+  const replayRecording = items.find(
+    ({ header }) => header.type === 'replay_recording'
+  )
+
   items.forEach(({ header, payload }) => {
     if (header.type === 'transaction') {
       testkit.transactions().push(transformTransaction(payload))
@@ -148,6 +155,10 @@ export function handleEnvelopeRequestData(
       testkit.checkIns().push(transformCheckIn(payload))
     } else if (header.type === 'session') {
       testkit.sessions().push(transformSession(payload))
+    } else if (header.type === 'replay_event') {
+      testkit
+        .replays()
+        .push(transformReplay(payload, replayRecording?.payloadBytes))
     } else if (header.type === 'sessions') {
       // Aggregate session items batch per-time-bucket counts under `aggregates`
       const aggregates = (payload && payload.aggregates) || []

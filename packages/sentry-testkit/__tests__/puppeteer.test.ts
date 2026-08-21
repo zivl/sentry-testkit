@@ -43,6 +43,16 @@ describe('Puppeteer testkit', () => {
 {"sid":"<removed>","init":false,"started":"2021-08-17T14:27:11.361Z","timestamp":"2021-08-17T14:27:12.489Z","status":"ok","errors":1,"attrs":{"release":"<removed>","environment":"<removed>","user_agent":"<removed>"}}`,
   }
 
+  const replayRecordingPayload = `{"segment_id":0}\n[{"type":4,"timestamp":1717081538235}]`
+  const sentryReplayRequest = {
+    url: () => 'https://sentry.io/api/1234567/envelope',
+    postData: () => `{"event_id":"rp123","sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.browser","version":"10.46.0"}}
+{"type":"replay_event"}
+{"type":"replay_event","replay_id":"rp123","segment_id":0,"replay_type":"session","urls":["https://example.com/checkout"],"error_ids":["err456"],"trace_ids":[]}
+{"type":"replay_recording","length":${replayRecordingPayload.length}}
+${replayRecordingPayload}`,
+  }
+
   beforeEach(() => {
     testkit.reset()
     page = new EventEmitter()
@@ -90,6 +100,22 @@ describe('Puppeteer testkit', () => {
     testkit.puppeteer.startListening(page)
     page.emit('request', sentrySessionRequest)
     expect(testkit.transactions()).toHaveLength(0)
+  })
+
+  test('should collect a replay segment with its recording', () => {
+    testkit.puppeteer.startListening(page)
+    page.emit('request', sentryReplayRequest)
+    expect(testkit.replays()).toHaveLength(1)
+    const replay = testkit.replays()[0]!
+    expect(replay.replayId).toEqual('rp123')
+    expect(replay.segmentId).toEqual(0)
+    expect(replay.replayType).toEqual('session')
+    expect(replay.urls).toEqual(['https://example.com/checkout'])
+    expect(replay.errorIds).toEqual(['err456'])
+    expect(Buffer.from(replay.recording!).toString()).toEqual(
+      replayRecordingPayload
+    )
+    expect(testkit.reports()).toHaveLength(0)
   })
 
   test('should stop listening after calling stopListening', () => {

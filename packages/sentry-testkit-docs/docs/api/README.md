@@ -12,6 +12,7 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 **Capture and assertions**
 * [`reports()`](#reports) — captured errors and messages
 * [`transactions()`](#transactions) — captured performance transactions
+* [`spans()`](#spans) — captured spans, standalone ones included
 * [`logs()`](#logs) — captured structured logs
 * [`metrics()`](#metrics) — captured application metrics
 * [`attachments()`](#attachments) — captured event attachments
@@ -22,12 +23,13 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 * [`replays()`](#replays) — captured session replay segments
 
 **Awaiting asynchronously-sent data**
-* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`, `waitForSessions`, `waitForSessionAggregates`, `waitForReplays`
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`, `waitForSessions`, `waitForSessionAggregates`, `waitForReplays`, `waitForSpans`
 
 **Finding and filtering**
 * [`findReport(error)`](#findreporterror)
 * [`findReportByMessage(message)`](#findreportbymessagemessage)
 * [`findTransaction(name)`](#findtransactionname)
+* [`findSpansByOp(op)`](#findspansbyopop)
 * [`reportsWithTag(key, value)`](#reportswithtagkey-value) — and `transactionsWithTag(key, value)`
 * [`isExist(error)`](#isexisterror)
 * [`getExceptionAt(index)`](#getexceptionatindex)
@@ -96,7 +98,7 @@ test('waitForReports example', async function() {
 })
 ```
 
-Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForAttachments(count, options)`, `waitForFeedback(count, options)`, `waitForCheckIns(count, options)`, `waitForSessions(count, options)`, `waitForSessionAggregates(count, options)` and `waitForReplays(count, options)`.
+Sibling helpers with the same signature exist for the other captured types: `waitForTransactions(count, options)`, `waitForLogs(count, options)`, `waitForMetrics(count, options)`, `waitForAttachments(count, options)`, `waitForFeedback(count, options)`, `waitForCheckIns(count, options)`, `waitForSessions(count, options)`, `waitForSessionAggregates(count, options)`, `waitForReplays(count, options)` and `waitForSpans(count, options)`.
 
 ### `findReport(error)`
 Finds a report by a given error.
@@ -155,6 +157,27 @@ test('findTransaction example', async function() {
     await testkit.waitForTransactions(1)
 
     expect(testkit.findTransaction(/^checkout/)).toBeDefined()
+})
+```
+
+### `findSpansByOp(op)`
+Finds all captured [spans](#spans) with a given `op`, across standalone spans and the spans of every captured transaction.
+
+**Arguments**
+* op: `String` | `RegExp` - exact span op to match, or a regular expression to test against
+
+**Returns**: <code>Array</code> - the matching spans (empty array when none match).
+
+For example
+```javascript
+test('findSpansByOp example', async function() {
+    // your app runs an AI agent, which reports gen_ai.* spans
+
+    await testkit.waitForSpans(1)
+    const chatSpans = testkit.findSpansByOp('gen_ai.chat')
+
+    expect(chatSpans).toHaveLength(1)
+    expect(chatSpans[0].data['gen_ai.request.model']).toEqual('gpt-4')
 })
 ```
 
@@ -239,6 +262,61 @@ test('transactions example', async function() {
     // Do what ever you want with the transactions
 })
 ```
+
+### `spans()`
+Gets all captured spans, in capture order: the child spans of every captured [transaction](#transactions), plus the standalone spans the SDK sends as their own `span` envelope item - which is how [AI Agent Monitoring](https://docs.sentry.io/platforms/javascript/tracing/instrumentation/ai-agents-module/) reports its `gen_ai.*` spans, and how the browser SDK reports web vitals such as INP.
+
+The spans of a transaction are the very same objects as `testkit.transactions()[0].spans`, so you can assert on either.
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>Span</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `spanId` | <code>string</code> | The span id |
+| `traceId` | <code>string</code> | The trace this span belongs to |
+| `parentSpanId` | <code>string</code> | The parent span id, undefined for a standalone span |
+| `op` | <code>string</code> | The span operation, e.g. `db.query` or `gen_ai.chat` |
+| `description` | <code>string</code> | The span description, i.e. the name it was started with |
+| `status` | <code>string</code> | The span status, e.g. `ok`, when the SDK sent one |
+| `origin` | <code>string</code> | What created the span, e.g. `manual` or `auto.http.otel` |
+| `startTimestamp` | <code>number</code> | Start time in seconds |
+| `endTimestamp` | <code>number</code> | End time in seconds |
+| `data` | <code>Object</code> | The span attributes, e.g. `{ 'gen_ai.request.model': 'gpt-4' }` |
+| `attributes` | <code>Object</code> | Alias of `data`, for SDK versions that send the attributes under either name |
+| `isStandalone` | <code>boolean</code> | `true` for a span sent on its own, `false` for a span of a transaction |
+| `originalSpan` | <code>Object</code> | The raw span payload as sent by the SDK |
+
+For example
+```javascript
+test('spans example', async function() {
+    Sentry.startSpan({ name: 'checkout-flow' }, () => {
+        Sentry.startInactiveSpan({ name: 'select users', op: 'db.query' }).end()
+    })
+
+    const spans = await testkit.waitForSpans(1)
+    expect(spans[0].description).toEqual('select users')
+    expect(spans[0].op).toEqual('db.query')
+    expect(spans[0].isStandalone).toBe(false)
+})
+```
+
+Use [`findSpansByOp(op)`](#findspansbyopop) to pick spans out of the list, which is handy for AI agent runs:
+
+```javascript
+test('ai agent spans example', async function() {
+    // your app runs an AI agent, which reports gen_ai.* spans
+
+    await testkit.waitForSpans(2)
+    const [chat] = testkit.findSpansByOp('gen_ai.chat')
+
+    expect(chat.data['gen_ai.request.model']).toEqual('gpt-4')
+    expect(testkit.findSpansByOp(/^gen_ai/)).toHaveLength(2)
+})
+```
+
+:::note
+Every span also carries its wire-format fields - `span_id`, `trace_id`, `parent_span_id` and `id` (an alias of `span_id`) - so assertions written against the raw span payload keep working. Prefer the camelCase fields in new tests.
+:::
 
 ### `logs()`
 Gets all captured [structured logs](https://docs.sentry.io/platforms/javascript/logs/) (requires `enableLogs: true` in `Sentry.init`).

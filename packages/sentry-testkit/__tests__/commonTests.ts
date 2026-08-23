@@ -243,9 +243,86 @@ export function createCommonTests({
 
       transaction.end()
       await waitForExpect(() => expect(testkit.transactions()).toHaveLength(1))
-      const span = testkit.transactions()[0]!.spans[0]
+      const span = testkit.transactions()[0]!.spans[0]!
+      expect(span.parentSpanId).toEqual(transaction.spanContext().spanId)
+      expect(span.traceId).toEqual(transaction.spanContext().traceId)
       expect(span.parent_span_id).toEqual(transaction.spanContext().spanId)
       expect(span.trace_id).toEqual(transaction.spanContext().traceId)
+    })
+  })
+
+  describe('spans', () => {
+    test('should expose the spans of a transaction through spans()', async function() {
+      const transaction = Sentry.startSpan(
+        { name: 'checkout-flow', op: 'http.server' },
+        span => {
+          Sentry.startInactiveSpan({
+            name: 'chat with gpt-4',
+            op: 'gen_ai.chat',
+            attributes: { 'gen_ai.request.model': 'gpt-4' },
+          }).end()
+          return span
+        }
+      )
+      await testkit.waitForTransactions(1)
+
+      const spans = await testkit.waitForSpans(1)
+      expect(spans).toHaveLength(1)
+      const span = spans[0]!
+      expect(span.description).toEqual('chat with gpt-4')
+      expect(span.op).toEqual('gen_ai.chat')
+      expect(span.spanId).toEqual(expect.any(String))
+      expect(span.traceId).toEqual(transaction.spanContext().traceId)
+      expect(span.parentSpanId).toEqual(transaction.spanContext().spanId)
+      expect(span.data['gen_ai.request.model']).toEqual('gpt-4')
+      expect(span.attributes['gen_ai.request.model']).toEqual('gpt-4')
+      expect(span.startTimestamp).toEqual(expect.any(Number))
+      expect(span.endTimestamp).toEqual(expect.any(Number))
+      expect(span.isStandalone).toBe(false)
+      expect(span.originalSpan.description).toEqual('chat with gpt-4')
+    })
+
+    test('should collect the spans of every captured transaction', async function() {
+      Sentry.startSpan({ name: 'first-transaction' }, () => {
+        Sentry.startInactiveSpan({ name: 'first-child', op: 'db.query' }).end()
+      })
+      Sentry.startSpan({ name: 'second-transaction' }, () => {
+        Sentry.startInactiveSpan({ name: 'second-child', op: 'db.query' }).end()
+      })
+      await testkit.waitForTransactions(2)
+
+      const spans = await testkit.waitForSpans(2)
+      expect(spans.map(span => span.description)).toEqual([
+        'first-child',
+        'second-child',
+      ])
+    })
+
+    test('findSpansByOp matches by exact op and by regex', async function() {
+      Sentry.startSpan({ name: 'ai-flow' }, () => {
+        Sentry.startInactiveSpan({ name: 'chat', op: 'gen_ai.chat' }).end()
+        Sentry.startInactiveSpan({
+          name: 'embeddings',
+          op: 'gen_ai.embeddings',
+        }).end()
+        Sentry.startInactiveSpan({ name: 'query', op: 'db.query' }).end()
+      })
+      await testkit.waitForSpans(3)
+
+      expect(testkit.findSpansByOp('gen_ai.chat')).toHaveLength(1)
+      expect(testkit.findSpansByOp(/^gen_ai/)).toHaveLength(2)
+      expect(testkit.findSpansByOp('no.such.op')).toHaveLength(0)
+    })
+
+    test('reset() clears captured spans', async function() {
+      Sentry.startSpan({ name: 'transaction-name' }, () => {
+        Sentry.startInactiveSpan({ name: 'child', op: 'db.query' }).end()
+      })
+      await testkit.waitForSpans(1)
+
+      testkit.reset()
+
+      expect(testkit.spans()).toHaveLength(0)
     })
   })
 

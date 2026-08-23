@@ -9,6 +9,7 @@ import {
   transformReport,
   transformSession,
   transformSessionAggregate,
+  transformSpan,
   transformTransaction,
 } from './transformers'
 import { Attachment, Testkit } from './types'
@@ -18,7 +19,9 @@ export function createSentryTransport(testkit: Testkit): any {
     // Send transport for API < v7
     const sendEvent = function(event: Event) {
       if (event.type === 'transaction') {
-        testkit.transactions().push(transformTransaction(event))
+        const transaction = transformTransaction(event)
+        testkit.transactions().push(transaction)
+        transaction.spans.forEach(span => testkit.spans().push(span))
       } else {
         testkit.reports().push(transformReport(event))
       }
@@ -49,7 +52,9 @@ export function createSentryTransport(testkit: Testkit): any {
 
       items.forEach(([headers, data]) => {
         if (headers.type === 'transaction') {
-          testkit.transactions().push(transformTransaction(data))
+          const transaction = transformTransaction(data)
+          testkit.transactions().push(transaction)
+          transaction.spans.forEach(span => testkit.spans().push(span))
         } else if (headers.type === 'event') {
           testkit.reports().push(transformReport(data, attachments))
         } else if (headers.type === 'log') {
@@ -72,6 +77,8 @@ export function createSentryTransport(testkit: Testkit): any {
           testkit
             .replays()
             .push(transformReplay(data, replayRecording && replayRecording[1]))
+        } else if (headers.type === 'span') {
+          testkit.spans().push(transformSpan(data, true))
         } else if (headers.type === 'sessions') {
           // Aggregate session items batch per-time-bucket counts under `aggregates`
           const aggregates = (data && data.aggregates) || []

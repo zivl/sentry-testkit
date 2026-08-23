@@ -5,8 +5,8 @@
 <a href="https://npmjs.org/package/sentry-testkit">
     <img src="https://img.shields.io/npm/dm/sentry-testkit.svg" alt="npm downloads">
   </a>
-<a href="https://github.com/zivl/sentry-testkit/actions">
-    <img src="https://github.com/zivl/sentry-testkit/workflows/Test/badge.svg" alt="Test">
+<a href="https://github.com/zivl/sentry-testkit/actions/workflows/tests.yml">
+    <img src="https://github.com/zivl/sentry-testkit/actions/workflows/tests.yml/badge.svg?branch=master" alt="Test">
   </a>
 </p>
 <p align="center">

@@ -53,6 +53,13 @@ describe('Puppeteer testkit', () => {
 ${replayRecordingPayload}`,
   }
 
+  const sentrySpanRequest = {
+    url: () => 'https://sentry.io/api/1234567/envelope',
+    postData: () => `{"sent_at":"2026-08-22T10:24:38.562Z","trace":{"trace_id":"ea0a0403d31e4359a544682fa294112f","public_key":"acacaeaccacacacabcaacdacdacadaca"}}
+{"type":"span"}
+{"data":{"sentry.op":"gen_ai.chat","gen_ai.request.model":"gpt-4"},"description":"chat gpt-4","op":"gen_ai.chat","span_id":"a047b3f1e1b402ad","start_timestamp":1787394278.5618343,"timestamp":1787394278.5620565,"trace_id":"ea0a0403d31e4359a544682fa294112f","origin":"manual","is_segment":true,"segment_id":"a047b3f1e1b402ad"}`,
+  }
+
   beforeEach(() => {
     testkit.reset()
     page = new EventEmitter()
@@ -116,6 +123,32 @@ ${replayRecordingPayload}`,
       replayRecordingPayload
     )
     expect(testkit.reports()).toHaveLength(0)
+  })
+
+  test('should collect a standalone span', () => {
+    testkit.puppeteer.startListening(page)
+    page.emit('request', sentrySpanRequest)
+    expect(testkit.spans()).toHaveLength(1)
+    const span = testkit.spans()[0]!
+    expect(span.spanId).toEqual('a047b3f1e1b402ad')
+    expect(span.traceId).toEqual('ea0a0403d31e4359a544682fa294112f')
+    expect(span.op).toEqual('gen_ai.chat')
+    expect(span.description).toEqual('chat gpt-4')
+    expect(span.data['gen_ai.request.model']).toEqual('gpt-4')
+    expect(span.isStandalone).toBe(true)
+    expect(testkit.transactions()).toHaveLength(0)
+  })
+
+  test('should collect the spans of a transaction', () => {
+    testkit.puppeteer.startListening(page)
+    page.emit('request', createSentryPerfRequest())
+    expect(testkit.spans()).toHaveLength(1)
+    const span = testkit.spans()[0]!
+    expect(span.description).toEqual('child-description')
+    expect(span.op).toEqual('child-span')
+    expect(span.parentSpanId).toEqual('9ce5f4be9f39417f')
+    expect(span.isStandalone).toBe(false)
+    expect(testkit.findSpansByOp('child-span')).toHaveLength(1)
   })
 
   test('should stop listening after calling stopListening', () => {

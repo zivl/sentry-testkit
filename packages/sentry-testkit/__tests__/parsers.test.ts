@@ -414,6 +414,72 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.reports()[0]!.replayId).toBe('rp123')
   })
 
+  test('captures a standalone span item', () => {
+    const testkit = createTestkit()
+    const spanPayload = JSON.stringify({
+      span_id: 'a047b3f1e1b402ad',
+      trace_id: 'ea0a0403d31e4359a544682fa294112f',
+      description: 'chat gpt-4',
+      op: 'gen_ai.chat',
+      status: 'ok',
+      origin: 'manual',
+      start_timestamp: 1717081538.235,
+      timestamp: 1717081538.435,
+      is_segment: true,
+      segment_id: 'a047b3f1e1b402ad',
+      data: { 'gen_ai.request.model': 'gpt-4' },
+    })
+    const body = `${envelopeHeader}\n{"type":"span"}\n${spanPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.spans()).toHaveLength(1)
+    const span = testkit.spans()[0]!
+    expect(span.spanId).toBe('a047b3f1e1b402ad')
+    expect(span.traceId).toBe('ea0a0403d31e4359a544682fa294112f')
+    expect(span.parentSpanId).toBeUndefined()
+    expect(span.description).toBe('chat gpt-4')
+    expect(span.op).toBe('gen_ai.chat')
+    expect(span.status).toBe('ok')
+    expect(span.origin).toBe('manual')
+    expect(span.startTimestamp).toBe(1717081538.235)
+    expect(span.endTimestamp).toBe(1717081538.435)
+    expect(span.data['gen_ai.request.model']).toBe('gpt-4')
+    expect(span.isStandalone).toBe(true)
+    expect(testkit.transactions()).toHaveLength(0)
+  })
+
+  test('captures the spans of a transaction item', () => {
+    const testkit = createTestkit()
+    const transactionWithSpans = JSON.stringify({
+      type: 'transaction',
+      transaction: 'checkout-flow',
+      contexts: { trace: { trace_id: '1234', span_id: '5678' } },
+      spans: [
+        {
+          span_id: '9abc',
+          trace_id: '1234',
+          parent_span_id: '5678',
+          description: 'select users',
+          op: 'db.query',
+          data: { 'db.system': 'postgresql' },
+        },
+      ],
+    })
+    const body = `${envelopeHeader}\n{"type":"transaction"}\n${transactionWithSpans}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.spans()).toHaveLength(1)
+    const span = testkit.spans()[0]!
+    expect(span.spanId).toBe('9abc')
+    expect(span.parentSpanId).toBe('5678')
+    expect(span.op).toBe('db.query')
+    expect(span.attributes['db.system']).toBe('postgresql')
+    expect(span.isStandalone).toBe(false)
+    expect(testkit.transactions()[0]!.spans).toEqual(testkit.spans())
+  })
+
   test('ignores unknown item types without throwing', () => {
     const testkit = createTestkit()
     const body = `${envelopeHeader}\n{"type":"client_report"}\n{"timestamp":123,"discarded_events":[]}`

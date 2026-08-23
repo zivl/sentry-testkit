@@ -44,10 +44,11 @@ test('collect performance events', function () {
 });
 ```
 
-### Beyond errors: logs, metrics, attachments, feedback, check-ins, sessions and replays
+### Beyond errors: spans, logs, metrics, attachments, feedback, check-ins, sessions and replays
 
 `sentry-testkit` captures more than errors and transactions. If your app uses these Sentry features, you can assert on them the same way — each has its own accessor and an awaitable `waitFor*` helper:
 
+- **[Spans](/docs/api#spans)** — the spans of every transaction plus standalone ones, such as the `gen_ai.*` spans of AI Agent Monitoring, via `testkit.spans()` and `testkit.findSpansByOp(...)`
 - **[Structured logs](/docs/api#logs)** — everything sent via `Sentry.logger.*` (requires `enableLogs: true` in `Sentry.init`), via `testkit.logs()`
 - **[Application metrics](/docs/api#metrics)** — counters, gauges and distributions from `Sentry.metrics.*` (Sentry SDK v10 and above), via `testkit.metrics()`
 - **[Attachments](/docs/api#attachments)** — files sent with an event via `scope.addAttachment(...)` or the `attachments` capture option, via `testkit.attachments()` and `report.attachments`

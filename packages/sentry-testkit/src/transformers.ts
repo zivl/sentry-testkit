@@ -10,6 +10,7 @@ import {
   ReportError,
   Session,
   SessionAggregate,
+  Span,
   Transaction,
 } from './types'
 
@@ -173,6 +174,34 @@ export function transformReplay(
   }
 }
 
+export function transformSpan(span: any, isStandalone = false): Span {
+  // `transaction.spans` used to hold the raw span payload, so its wire-format
+  // fields are kept alongside the mapped ones
+  const rawSpan: { [key: string]: any } = span
+  return {
+    ...rawSpan,
+    spanId: span.span_id,
+    traceId: span.trace_id,
+    parentSpanId: span.parent_span_id,
+    op: span.op,
+    description: span.description,
+    status: span.status,
+    origin: span.origin,
+    startTimestamp: span.start_timestamp,
+    endTimestamp: span.timestamp,
+    // Span attributes travel under `data` on the wire; `attributes` is what the
+    // SDKs call them, and what a future span format is expected to send
+    data: span.data ?? {},
+    attributes: span.attributes ?? span.data ?? {},
+    isStandalone,
+    originalSpan: span,
+    id: span.span_id,
+    span_id: span.span_id,
+    parent_span_id: span.parent_span_id,
+    trace_id: span.trace_id,
+  }
+}
+
 export function transformTransaction(item: any): Transaction {
   return {
     name: item.transaction,
@@ -186,7 +215,7 @@ export function transformTransaction(item: any): Transaction {
     release: item.release,
     tags: item.tags || {},
     extra: item.extra,
-    spans: item.spans,
+    spans: (item.spans ?? []).map((span: any) => transformSpan(span)),
     user: item.user,
   }
 }

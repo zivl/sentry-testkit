@@ -56,11 +56,23 @@ declare namespace sentryTestkit {
   }
 
   interface Span {
-    id: string
-    span_id: string
+    spanId: string
+    traceId?: string
+    parentSpanId?: string
     op?: string
     description?: string
-    parentSpanId: string
+    status?: string
+    origin?: string
+    startTimestamp?: number
+    endTimestamp?: number
+    data: { [key: string]: any }
+    attributes: { [key: string]: any }
+    isStandalone: boolean
+    originalSpan: any
+    // Wire-format aliases, kept so assertions written against the raw span
+    // payload keep working
+    id: string
+    span_id: string
     parent_span_id?: string
     trace_id?: string
   }
@@ -191,6 +203,7 @@ declare namespace sentryTestkit {
     sessions(): Session[]
     sessionAggregates(): SessionAggregate[]
     replays(): Replay[]
+    spans(): Span[]
     waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
     waitForTransactions(
       count: number,
@@ -213,11 +226,13 @@ declare namespace sentryTestkit {
       options?: WaitForOptions
     ): Promise<SessionAggregate[]>
     waitForReplays(count: number, options?: WaitForOptions): Promise<Replay[]>
+    waitForSpans(count: number, options?: WaitForOptions): Promise<Span[]>
     reset(): void
     getExceptionAt(index: number): ReportError | undefined
     findReport(e: Error): Report | undefined
     findReportByMessage(message: string | RegExp): Report | undefined
     findTransaction(name: string | RegExp): Transaction | undefined
+    findSpansByOp(op: string | RegExp): Span[]
     reportsWithTag(key: string, value?: string): Report[]
     transactionsWithTag(key: string, value?: any): Transaction[]
     isExist(e: Error): boolean

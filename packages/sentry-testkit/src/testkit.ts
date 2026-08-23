@@ -9,6 +9,7 @@ import {
   transformReport,
   transformSession,
   transformSessionAggregate,
+  transformSpan,
   transformTransaction,
 } from './transformers'
 import {
@@ -22,6 +23,7 @@ import {
   ReportError,
   Session,
   SessionAggregate,
+  Span,
   Testkit,
   Transaction,
 } from './types'
@@ -73,6 +75,7 @@ export function createTestkit(): Testkit {
   let sessions: Session[] = []
   let sessionAggregates: SessionAggregate[] = []
   let replays: Replay[] = []
+  let spans: Span[] = []
 
   const createRequestHandler = (baseUrl: string) => (request: any) => {
     const url = request.url()
@@ -99,7 +102,9 @@ export function createTestkit(): Testkit {
 
       items.forEach(({ header, payload }) => {
         if (header.type === 'transaction') {
-          transactions.push(transformTransaction(payload))
+          const transaction = transformTransaction(payload)
+          transactions.push(transaction)
+          transaction.spans.forEach(span => spans.push(span))
         } else if (header.type === 'event') {
           reports.push(transformReport(payload, envelopeAttachments))
         } else if (header.type === 'log') {
@@ -116,6 +121,8 @@ export function createTestkit(): Testkit {
           sessions.push(transformSession(payload))
         } else if (header.type === 'replay_event') {
           replays.push(transformReplay(payload, replayRecording?.payloadBytes))
+        } else if (header.type === 'span') {
+          spans.push(transformSpan(payload, true))
         } else if (header.type === 'sessions') {
           const aggregates = (payload && payload.aggregates) || []
           aggregates.forEach((aggregate: any) =>
@@ -188,6 +195,10 @@ export function createTestkit(): Testkit {
       return replays
     },
 
+    spans() {
+      return spans
+    },
+
     waitForReports(count, options) {
       return waitFor('reports', () => reports, count, options)
     },
@@ -233,6 +244,10 @@ export function createTestkit(): Testkit {
       return waitFor('replays', () => replays, count, options)
     },
 
+    waitForSpans(count, options) {
+      return waitFor('spans', () => spans, count, options)
+    },
+
     reset() {
       reports = []
       transactions = []
@@ -244,6 +259,7 @@ export function createTestkit(): Testkit {
       sessions = []
       sessionAggregates = []
       replays = []
+      spans = []
     },
 
     getExceptionAt(index: number) {
@@ -269,6 +285,10 @@ export function createTestkit(): Testkit {
 
     findTransaction(name: string | RegExp) {
       return transactions.find(t => matches(t.name, name))
+    },
+
+    findSpansByOp(op: string | RegExp) {
+      return spans.filter(span => matches(span.op, op))
     },
 
     reportsWithTag(key: string, value?: string) {

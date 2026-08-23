@@ -9,6 +9,7 @@ import {
   transformReport,
   transformSession,
   transformSessionAggregate,
+  transformSpan,
   transformTransaction,
 } from './transformers'
 import { Attachment, Testkit } from './types'
@@ -136,7 +137,9 @@ export function handleEnvelopeRequestData(
 
   items.forEach(({ header, payload }) => {
     if (header.type === 'transaction') {
-      testkit.transactions().push(transformTransaction(payload))
+      const transaction = transformTransaction(payload)
+      testkit.transactions().push(transaction)
+      transaction.spans.forEach(span => testkit.spans().push(span))
     } else if (header.type === 'event') {
       testkit.reports().push(transformReport(payload, attachments))
     } else if (header.type === 'log') {
@@ -159,6 +162,8 @@ export function handleEnvelopeRequestData(
       testkit
         .replays()
         .push(transformReplay(payload, replayRecording?.payloadBytes))
+    } else if (header.type === 'span') {
+      testkit.spans().push(transformSpan(payload, true))
     } else if (header.type === 'sessions') {
       // Aggregate session items batch per-time-bucket counts under `aggregates`
       const aggregates = (payload && payload.aggregates) || []

@@ -6,6 +6,10 @@
 [![npm version](https://badge.fury.io/js/raven-testkit.svg)](https://badge.fury.io/js/raven-testkit)
 ![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=popout)
 
+> **Deprecated**
+>
+> `raven-testkit` is deprecated. This reference remains temporarily available for existing users, but Raven-specific documentation will be removed from this project in a future release. Migrate to [`sentry-testkit`](https://zivl.github.io/sentry-testkit/docs/getting-started) with Sentry JavaScript SDK v9 or v10.
+
 Raven is a JavaScript SDK published by [Sentry.io](https://docs.sentry.io/clients/) to enable software flow tracking and issues reporting to the *Sentry* system.<br>
 However, when building tests for your application, you want to assert that the right flow-tracking or error is being sent to *Sentry*, **but** without really sending it to the *Sentry* system. This way you won't swamp it with false reports during test running and other CI operations.
 

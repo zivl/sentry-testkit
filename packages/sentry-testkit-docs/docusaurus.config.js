@@ -129,7 +129,7 @@ const config = {
                 to: '/docs/category/migration',
               },
               {
-                label: 'Raven-Testkit (Legacy Support)',
+                label: 'Raven-Testkit (Deprecated)',
                 to: '/docs/raven-testkit-legacy',
               },
             ],

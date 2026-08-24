@@ -127,9 +127,11 @@ See the full API description and documentation here: https://zivl.github.io/sent
 
 sentry-testkit is expanding to cover the full modern Sentry SDK surface — user feedback, cron check-ins, sessions, session replay, attachments, metrics, and more. Follow (or help shape) the plan in the [tracking issue](https://github.com/zivl/sentry-testkit/issues/313).
 
-## Raven-Testkit
+## Raven-Testkit (deprecated)
 
-The good old legacy `raven-testkit` documentation can be found [here](https://github.com/zivl/sentry-testkit/blob/master/LEGACY_API.md). It is still there to serve `Raven`, which is the old legacy SDK of _Sentry_ for JavaScript/Node.js platforms.
+`raven-testkit` is deprecated. Its [legacy API documentation](https://github.com/zivl/sentry-testkit/blob/master/LEGACY_API.md) remains temporarily available for existing users, but Raven-specific references will be removed from this project in a future release.
+
+Migrate to `sentry-testkit` with Sentry JavaScript SDK v9 or v10. See the [current setup guide](https://zivl.github.io/sentry-testkit/docs/getting-started).
 
 ## Change Log
 

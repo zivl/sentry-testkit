@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.5.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.4.0...sentry-testkit-v7.5.0) (2026-08-23)
+
+
+### Features
+
+* capture session replays via testkit.replays() ([#354](https://github.com/zivl/sentry-testkit/issues/354)) ([2f38f7a](https://github.com/zivl/sentry-testkit/commit/2f38f7a42a41a6ed15b2c3e38d3fc7d1a6b6ccdc)), closes [#304](https://github.com/zivl/sentry-testkit/issues/304)
+* capture spans via testkit.spans() and findSpansByOp() ([#356](https://github.com/zivl/sentry-testkit/issues/356)) ([54a4039](https://github.com/zivl/sentry-testkit/commit/54a4039e4f0f368563a0e981891e4e56ab1a09e1)), closes [#305](https://github.com/zivl/sentry-testkit/issues/305)
+
 ## [7.4.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.3.0...sentry-testkit-v7.4.0) (2026-08-06)
 
 

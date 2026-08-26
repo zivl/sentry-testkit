@@ -1,10 +1,14 @@
 ---
-title: Raven Testkit (Legacy API)
-description: The legacy API reference of raven testkit.
+title: Raven Testkit (Deprecated)
+description: Deprecated Raven Testkit API reference retained temporarily for existing users.
 sidebar_position: 10
 ---
 
-# Raven Testkit (Legacy API)
+# Raven Testkit (Deprecated)
+
+:::warning Deprecated
+`raven-testkit` is deprecated. This reference remains temporarily available for existing users, but Raven-specific documentation will be removed from this project in a future release. Migrate to [`sentry-testkit`](/docs/getting-started) with Sentry JavaScript SDK v9 or v10.
+:::
 
 Raven is a JavaScript SDK published by [Sentry.io](https://docs.sentry.io/clients/) to enable software flow tracking and issues reporting to the *Sentry* system.<br />
 However, when building tests for your application, you want to assert that the right flow-tracking or error is being sent to *Sentry*, **but** without really sending it to the *Sentry* system. This way you won't swamp it with false reports during test running and other CI operations.

@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.6.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.5.0...sentry-testkit-v7.6.0) (2026-09-06)
+
+
+### Features
+
+* capture client reports via testkit.clientReports() ([#363](https://github.com/zivl/sentry-testkit/issues/363)) ([20d3acd](https://github.com/zivl/sentry-testkit/commit/20d3acdb0a8fced192184f488c6ecc0ccc0643f0)), closes [#308](https://github.com/zivl/sentry-testkit/issues/308)
+
 ## [7.5.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.4.0...sentry-testkit-v7.5.0) (2026-08-23)
 
 

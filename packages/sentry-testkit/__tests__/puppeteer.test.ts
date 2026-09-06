@@ -60,6 +60,13 @@ ${replayRecordingPayload}`,
 {"data":{"sentry.op":"gen_ai.chat","gen_ai.request.model":"gpt-4"},"description":"chat gpt-4","op":"gen_ai.chat","span_id":"a047b3f1e1b402ad","start_timestamp":1787394278.5618343,"timestamp":1787394278.5620565,"trace_id":"ea0a0403d31e4359a544682fa294112f","origin":"manual","is_segment":true,"segment_id":"a047b3f1e1b402ad"}`,
   }
 
+  const sentryClientReportRequest = {
+    url: () => 'https://sentry.io/api/1234567/envelope',
+    postData: () => `{"sent_at":"2021-08-17T14:27:12.489Z","sdk":{"name":"sentry.javascript.browser","version":"10.46.0"}}
+{"type":"client_report"}
+{"timestamp":1717081538.235,"discarded_events":[{"reason":"before_send","category":"error","quantity":2}]}`,
+  }
+
   beforeEach(() => {
     testkit.reset()
     page = new EventEmitter()
@@ -149,6 +156,18 @@ ${replayRecordingPayload}`,
     expect(span.parentSpanId).toEqual('9ce5f4be9f39417f')
     expect(span.isStandalone).toBe(false)
     expect(testkit.findSpansByOp('child-span')).toHaveLength(1)
+  })
+
+  test('should collect a client report with its discarded events', () => {
+    testkit.puppeteer.startListening(page)
+    page.emit('request', sentryClientReportRequest)
+    expect(testkit.clientReports()).toHaveLength(1)
+    const clientReport = testkit.clientReports()[0]!
+    expect(clientReport.timestamp).toEqual(1717081538.235)
+    expect(clientReport.discardedEvents).toEqual([
+      { reason: 'before_send', category: 'error', quantity: 2 },
+    ])
+    expect(testkit.reports()).toHaveLength(0)
   })
 
   test('should stop listening after calling stopListening', () => {

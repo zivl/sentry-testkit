@@ -44,7 +44,7 @@ test('collect performance events', function () {
 });
 ```
 
-### Beyond errors: spans, logs, metrics, attachments, feedback, check-ins, sessions and replays
+### Beyond errors: spans, logs, metrics, attachments, feedback, check-ins, sessions, replays and client reports
 
 `sentry-testkit` captures more than errors and transactions. If your app uses these Sentry features, you can assert on them the same way — each has its own accessor and an awaitable `waitFor*` helper:
 
@@ -56,6 +56,7 @@ test('collect performance events', function () {
 - **[Cron check-ins](/docs/api#checkins)** — monitor check-ins from `Sentry.captureCheckIn(...)` / `Sentry.withMonitor(...)`, via `testkit.checkIns()`
 - **[Release health sessions](/docs/api#sessions)** — sessions from automatic session tracking or `Sentry.startSession()` / `Sentry.endSession()`, via `testkit.sessions()` and `testkit.sessionAggregates()`
 - **[Session replays](/docs/api#replays)** — replay segments recorded by `Sentry.replayIntegration()`, via `testkit.replays()` and `report.replayId`
+- **[Client reports](/docs/api#clientreports)** — the events the SDK dropped client-side, so you can assert that a `beforeSend` filter, `ignoreErrors` entry or sample rate really drops them, via `testkit.clientReports()`
 
 ```javascript
 Sentry.captureFeedback({ message: 'the checkout page is confusing' })

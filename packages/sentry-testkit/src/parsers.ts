@@ -2,6 +2,7 @@ import { fromBytes, toBytes } from './bytes'
 import {
   transformAttachment,
   transformCheckIn,
+  transformClientReport,
   transformFeedback,
   transformLog,
   transformMetric,
@@ -172,6 +173,8 @@ export function handleEnvelopeRequestData(
           .sessionAggregates()
           .push(transformSessionAggregate(aggregate, payload.attrs))
       )
+    } else if (header.type === 'client_report') {
+      testkit.clientReports().push(transformClientReport(payload))
     }
   })
 }

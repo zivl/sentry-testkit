@@ -2,6 +2,7 @@ import { fromBytes, toBytes } from './bytes'
 import {
   Attachment,
   CheckIn,
+  ClientReport,
   FeedbackReport,
   Log,
   Metric,
@@ -150,6 +151,20 @@ export function transformSessionAggregate(
     release: attrs?.release,
     environment: attrs?.environment,
     originalAggregate: aggregate,
+  }
+}
+
+export function transformClientReport(clientReport: any): ClientReport {
+  return {
+    timestamp: clientReport.timestamp,
+    discardedEvents: (clientReport.discarded_events ?? []).map(
+      (event: any) => ({
+        reason: event.reason,
+        category: event.category,
+        quantity: event.quantity,
+      })
+    ),
+    originalClientReport: clientReport,
   }
 }
 

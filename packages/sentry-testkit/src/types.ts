@@ -164,6 +164,18 @@ declare namespace sentryTestkit {
     originalAggregate: any
   }
 
+  interface DiscardedEvent {
+    reason: string
+    category: string
+    quantity: number
+  }
+
+  interface ClientReport {
+    timestamp: number
+    discardedEvents: DiscardedEvent[]
+    originalClientReport: any
+  }
+
   type ReplayType = 'session' | 'buffer'
 
   interface Replay {
@@ -204,6 +216,7 @@ declare namespace sentryTestkit {
     sessionAggregates(): SessionAggregate[]
     replays(): Replay[]
     spans(): Span[]
+    clientReports(): ClientReport[]
     waitForReports(count: number, options?: WaitForOptions): Promise<Report[]>
     waitForTransactions(
       count: number,
@@ -227,6 +240,10 @@ declare namespace sentryTestkit {
     ): Promise<SessionAggregate[]>
     waitForReplays(count: number, options?: WaitForOptions): Promise<Replay[]>
     waitForSpans(count: number, options?: WaitForOptions): Promise<Span[]>
+    waitForClientReports(
+      count: number,
+      options?: WaitForOptions
+    ): Promise<ClientReport[]>
     reset(): void
     getExceptionAt(index: number): ReportError | undefined
     findReport(e: Error): Report | undefined

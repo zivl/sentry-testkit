@@ -2,6 +2,7 @@ import { Event } from '@sentry/types'
 import {
   transformAttachment,
   transformCheckIn,
+  transformClientReport,
   transformFeedback,
   transformLog,
   transformMetric,
@@ -87,6 +88,8 @@ export function createSentryTransport(testkit: Testkit): any {
               .sessionAggregates()
               .push(transformSessionAggregate(aggregate, data.attrs))
           )
+        } else if (headers.type === 'client_report') {
+          testkit.clientReports().push(transformClientReport(data))
         }
       })
 

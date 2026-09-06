@@ -2,6 +2,7 @@ import { parseEnvelope } from './parsers'
 import {
   transformAttachment,
   transformCheckIn,
+  transformClientReport,
   transformFeedback,
   transformLog,
   transformMetric,
@@ -15,6 +16,7 @@ import {
 import {
   Attachment,
   CheckIn,
+  ClientReport,
   FeedbackReport,
   Log,
   Metric,
@@ -76,6 +78,7 @@ export function createTestkit(): Testkit {
   let sessionAggregates: SessionAggregate[] = []
   let replays: Replay[] = []
   let spans: Span[] = []
+  let clientReports: ClientReport[] = []
 
   const createRequestHandler = (baseUrl: string) => (request: any) => {
     const url = request.url()
@@ -130,6 +133,8 @@ export function createTestkit(): Testkit {
               transformSessionAggregate(aggregate, payload.attrs)
             )
           )
+        } else if (header.type === 'client_report') {
+          clientReports.push(transformClientReport(payload))
         }
       })
     }
@@ -199,6 +204,10 @@ export function createTestkit(): Testkit {
       return spans
     },
 
+    clientReports() {
+      return clientReports
+    },
+
     waitForReports(count, options) {
       return waitFor('reports', () => reports, count, options)
     },
@@ -248,6 +257,10 @@ export function createTestkit(): Testkit {
       return waitFor('spans', () => spans, count, options)
     },
 
+    waitForClientReports(count, options) {
+      return waitFor('client reports', () => clientReports, count, options)
+    },
+
     reset() {
       reports = []
       transactions = []
@@ -260,6 +273,7 @@ export function createTestkit(): Testkit {
       sessionAggregates = []
       replays = []
       spans = []
+      clientReports = []
     },
 
     getExceptionAt(index: number) {

@@ -480,9 +480,57 @@ describe('handleEnvelopeRequestData', () => {
     expect(testkit.transactions()[0]!.spans).toEqual(testkit.spans())
   })
 
+  test('captures a client report with its discarded events', () => {
+    const testkit = createTestkit()
+    const clientReportPayload = JSON.stringify({
+      timestamp: 1717081538.235,
+      discarded_events: [
+        { reason: 'before_send', category: 'error', quantity: 2 },
+        { reason: 'sample_rate', category: 'transaction', quantity: 1 },
+      ],
+    })
+    const body = `${envelopeHeader}\n{"type":"client_report"}\n${clientReportPayload}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.clientReports()).toHaveLength(1)
+    const clientReport = testkit.clientReports()[0]!
+    expect(clientReport.timestamp).toBe(1717081538.235)
+    expect(clientReport.discardedEvents).toEqual([
+      { reason: 'before_send', category: 'error', quantity: 2 },
+      { reason: 'sample_rate', category: 'transaction', quantity: 1 },
+    ])
+    expect(testkit.reports()).toHaveLength(0)
+  })
+
+  test('captures a client report riding along with an event item', () => {
+    const testkit = createTestkit()
+    const body =
+      `${envelopeHeader}\n` +
+      `{"type":"event"}\n${eventPayload}\n` +
+      `{"type":"client_report"}\n{"timestamp":123,"discarded_events":[{"reason":"queue_overflow","category":"error","quantity":5}]}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.reports()).toHaveLength(1)
+    expect(testkit.clientReports()).toHaveLength(1)
+    expect(testkit.clientReports()[0]!.discardedEvents).toEqual([
+      { reason: 'queue_overflow', category: 'error', quantity: 5 },
+    ])
+  })
+
+  test('captures a client report that discarded nothing', () => {
+    const testkit = createTestkit()
+    const body = `${envelopeHeader}\n{"type":"client_report"}\n{"timestamp":123}`
+
+    handleEnvelopeRequestData(body, testkit)
+
+    expect(testkit.clientReports()[0]!.discardedEvents).toEqual([])
+  })
+
   test('ignores unknown item types without throwing', () => {
     const testkit = createTestkit()
-    const body = `${envelopeHeader}\n{"type":"client_report"}\n{"timestamp":123,"discarded_events":[]}`
+    const body = `${envelopeHeader}\n{"type":"profile"}\n{"platform":"node","version":"1"}`
 
     expect(() => handleEnvelopeRequestData(body, testkit)).not.toThrow()
     expect(testkit.reports()).toHaveLength(0)

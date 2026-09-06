@@ -21,9 +21,10 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 * [`sessions()`](#sessions) — captured release health sessions
 * [`sessionAggregates()`](#sessionaggregates) — captured aggregated session counts
 * [`replays()`](#replays) — captured session replay segments
+* [`clientReports()`](#clientreports) — captured client reports of events the SDK dropped
 
 **Awaiting asynchronously-sent data**
-* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`, `waitForSessions`, `waitForSessionAggregates`, `waitForReplays`, `waitForSpans`
+* [`waitForReports(count, options)`](#waitforreportscount-options) — and its siblings `waitForTransactions`, `waitForLogs`, `waitForMetrics`, `waitForAttachments`, `waitForFeedback`, `waitForCheckIns`, `waitForSessions`, `waitForSessionAggregates`, `waitForReplays`, `waitForSpans`, `waitForClientReports`
 
 **Finding and filtering**
 * [`findReport(error)`](#findreporterror)
@@ -586,6 +587,54 @@ test('errors are linked to the replay they happened in', async function() {
 
 :::note
 `recording` holds the segment payload exactly as it was sent: its own `{"segment_id":n}` header line followed by the [rrweb](https://github.com/rrweb-io/rrweb) events, gzipped whenever the SDK has a compression worker available. Assert on the metadata fields rather than on the recording contents.
+:::
+
+### `clientReports()`
+Gets all captured [client reports](https://develop.sentry.dev/sdk/telemetry/client-reports/) — the SDK's own account of events it dropped client-side instead of sending, because a `beforeSend` hook returned `null`, an `ignoreErrors` entry matched, a sample rate discarded them, the queue overflowed, or the SDK was rate limited.
+
+This is how you assert on what was *not* sent.
+
+**Returns**: <code>Array</code> - where each member of the array consists of a <code>ClientReport</code> type:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | <code>number</code> | The time the report was created, in seconds |
+| `discardedEvents` | <code>Array</code> | One entry per `reason` and `category` pair, each with a `reason` (`before_send`, `event_processor`, `sample_rate`, `queue_overflow`, `ratelimit_backoff`, ...), a `category` (`error`, `transaction`, `span`, `replay`, `log_item`, ...) and the `quantity` of items dropped for that pair |
+| `originalClientReport` | <code>Object</code> | The raw client report payload as sent by the SDK |
+
+For example
+```javascript
+test('beforeSend filters out the errors it is meant to filter', async function() {
+    Sentry.captureException(new Error('a noisy error you filter out'))
+    await Sentry.flush()
+    await Sentry.flush()
+
+    const [clientReport] = await testkit.waitForClientReports(1)
+    expect(clientReport.discardedEvents).toEqual([
+        { reason: 'before_send', category: 'error', quantity: 1 },
+    ])
+    expect(testkit.reports()).toHaveLength(0)
+})
+```
+
+:::note Why two flushes
+The Node SDK sends the outcomes it has accumulated at the *start* of a flush, and records the outcome of a dropped event only while that same flush drains the event pipeline. A client report therefore goes out on the flush *after* the one that dropped the event. Dropping decisions made synchronously, such as a transaction discarded by `tracesSampleRate`, need only a single flush.
+
+The browser SDK does not flush outcomes on `Sentry.flush()` at all — it sends them when the page becomes hidden. In a browser test environment, dispatch that yourself:
+
+```javascript
+Sentry.captureException(new Error('a noisy error you filter out'))
+await Sentry.flush()
+
+Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true })
+document.dispatchEvent(new Event('visibilitychange'))
+
+const [clientReport] = await testkit.waitForClientReports(1)
+```
+:::
+
+:::note
+Client reports are only sent when `sendClientReports` is enabled in `Sentry.init` — it defaults to `true`. Outcomes are batched, so a single report usually covers several dropped events, and the same `reason` and `category` pair arrives as one entry with its `quantity` summed rather than as repeated entries.
 :::
 
 ### `reset()`

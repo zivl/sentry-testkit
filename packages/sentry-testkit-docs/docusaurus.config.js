@@ -128,10 +128,6 @@ const config = {
                 label: 'Migration Guides',
                 to: '/docs/category/migration',
               },
-              {
-                label: 'Raven-Testkit (Deprecated)',
-                to: '/docs/raven-testkit-legacy',
-              },
             ],
           },
           {

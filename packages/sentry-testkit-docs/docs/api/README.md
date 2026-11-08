@@ -41,10 +41,6 @@ Sentry Testkit consists of a very simple and strait-forward API using the follow
 ### What About Nodejs? - Of Course!
 Sentry Testkit has full support in both `@sentry/browser` and `@sentry/node` (as well as other `@sentry/<what-ever>` clients) since they have the same API and lifecycle under the hood.
 
-:::warning Raven-Testkit is deprecated
-`raven-testkit` is deprecated. Its [legacy API documentation](/docs/raven-testkit-legacy) remains temporarily available for existing users. Migrate to [`sentry-testkit`](/docs/getting-started) with Sentry JavaScript SDK v9 or v10.
-:::
-
 ## Reference
 ### `reports()`
 Gets all existing reports.

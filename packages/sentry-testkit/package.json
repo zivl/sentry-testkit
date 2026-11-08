@@ -36,12 +36,8 @@
     "url": "git+https://github.com/zivl/sentry-testkit.git"
   },
   "keywords": [
-    "raven-test-kit",
-    "raven",
     "sentry",
     "sentry-io",
-    "raven-js",
-    "raven-node",
     "sentry-testkit",
     "error-reporting",
     "error-monitoring",

@@ -111,8 +111,8 @@ Example conventions on the docs site:
 Docusaurus admonitions for genuine caveats only, not emphasis:
 
 ```markdown
-:::note Raven-Testkit
-The legacy `raven-testkit` documentation can be found [here](/docs/raven-testkit-legacy).
+:::note Browser-only builds
+Import from `sentry-testkit/browser` when your bundle must not include Node modules. See [Browser Only](/docs/browser-only).
 :::
 ```
 

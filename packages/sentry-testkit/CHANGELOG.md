@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.6.1](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.6.0...sentry-testkit-v7.6.1) (2026-11-08)
+
+
+### Documentation
+
+* remove legacy raven-testkit references ([#387](https://github.com/zivl/sentry-testkit/issues/387)) ([5f7945a](https://github.com/zivl/sentry-testkit/commit/5f7945a2560d5624baff87772e245df0dc74ddbc)), closes [#357](https://github.com/zivl/sentry-testkit/issues/357)
+
 ## [7.6.0](https://github.com/zivl/sentry-testkit/compare/sentry-testkit-v7.5.0...sentry-testkit-v7.6.0) (2026-09-06)
 
 
